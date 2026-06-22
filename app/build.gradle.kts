@@ -44,7 +44,7 @@ android {
 
 dependencies {
     implementation(project(":feature:main"))
-    implementation(project(":feature:create"))
+    implementation(project(":feature:product"))
 
     implementation(project(":core:design"))
     implementation(project(":core:navigation"))

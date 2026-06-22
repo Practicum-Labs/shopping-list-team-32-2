@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.practicum.shopping_list.feature.create"
+    namespace = "com.practicum.shopping_list.feature.product"
     //noinspection GradleDependency
     compileSdk = libs.versions.targetSdk.get().toInt()
 
