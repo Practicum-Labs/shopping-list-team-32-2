@@ -1,4 +1,4 @@
-package com.practicum.shopping_list
+package com.practicum.list
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

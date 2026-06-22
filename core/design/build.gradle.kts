@@ -2,10 +2,11 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.detekt)
 }
 
 android {
-    namespace = "ru.practicum.shopping_list.core.theme"
+    namespace = "ru.practicum.list.core.theme"
     //noinspection GradleDependency
     compileSdk = libs.versions.targetSdk.get().toInt()
 
@@ -34,4 +35,11 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.ui.tooling.preview)
+    detektPlugins(libs.detekt.formatting)
+}
+
+detekt {
+    config.setFrom(files("$rootDir/config/detekt/detekt.yml"))
+    buildUponDefaultConfig = true
+    allRules = false
 }
