@@ -16,3 +16,9 @@ dependencyResolutionManagement {
 
 rootProject.name = "shopping_list"
 include(":app")
+include(":core:common")
+include(":core:mvi")
+include(":core:design")
+include(":core:navigation")
+include(":feature:main")
+include(":feature:create")
