@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.practicum.list.core.theme.ShoppingListTheme
+import domain.ListEntry
 import ui.NavGraph
 
 class MainActivity : ComponentActivity() {
@@ -14,8 +15,10 @@ class MainActivity : ComponentActivity() {
 
         val lists = listOf(
             ListEntry("Первый список"),
-            ListEntry("Второй список"),
-            ListEntry("Третий список"),
+            ListEntry("Первый список"),
+            ListEntry("Первый список"),
+            ListEntry("Первый список"),
+            ListEntry("Первый список"),
         )
 
         setContent {

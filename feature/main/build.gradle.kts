@@ -33,7 +33,6 @@ dependencies {
     implementation(project(":core:mvi"))
     implementation(project(":core:design"))
     implementation(project(":core:common"))
-    implementation(project(":core:navigation"))
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)

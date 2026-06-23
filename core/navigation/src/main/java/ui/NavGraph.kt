@@ -20,11 +20,16 @@ fun NavGraph(
             route = "main"
         ) { MainScreen(navController, lists) }
         composable(
+            route = "onboarding"
+        ) {
+            OnboardingScreen()
+        }
+        composable(
             route = "listDetails/{list}",
             arguments = listOf(navArgument("list") { type = NavType.StringType })
         ) { navBackStackEntry ->
             val listJson = navBackStackEntry.arguments?.getString("list")
-            val list = listOf(ListEntry("????"))//gson.fromJson(movieJson, ListEntry::class.java)
+            val list = ListEntry("Пример экрана списка")//gson.fromJson(listJson, ListEntry::class.java)
             ListScreen(list)
         }
     }
