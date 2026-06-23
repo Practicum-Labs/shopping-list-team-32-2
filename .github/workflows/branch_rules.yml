@@ -1,0 +1,62 @@
+name: Branch rules
+
+on:
+    pull_request:
+        types:
+            - opened
+            - synchronize
+            - reopened
+            - edited
+
+jobs:
+    validate:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Validate branch naming and PR flow
+              env:
+                  BASE_REF: ${{ github.base_ref }}
+                  HEAD_REF: ${{ github.head_ref }}
+              run: |
+                  set -euo pipefail
+
+                  feature_pattern='^[0-9]+-[a-zA-Z0-9]+(-[a-zA-Z0-9]+){0,5}$'
+                  iteration_pattern='^iteration-[0-9]+$'
+                  release_pattern='^release-[0-9]+\.[0-9]+\.[0-9]+$'
+
+                  is_feature=false
+                  is_iteration=false
+                  is_release=false
+
+                  if [[ "$HEAD_REF" =~ $feature_pattern ]]; then
+                    is_feature=true
+                  fi
+                  if [[ "$HEAD_REF" =~ $iteration_pattern ]]; then
+                    is_iteration=true
+                  fi
+                  if [[ "$HEAD_REF" =~ $release_pattern ]]; then
+                    is_release=true
+                  fi
+
+                  case "$BASE_REF" in
+                    develop)
+                      if $is_feature || $is_iteration; then
+                        echo "OK: PR из '$HEAD_REF' в develop разрешён."
+                        exit 0
+                      fi
+                      echo "PR в develop допускается только из feature-веток (N-описание) или iteration-N."
+                      exit 1
+                      ;;
+                    main)
+                      if $is_iteration || $is_release; then
+                        echo "OK: PR из '$HEAD_REF' в main разрешён."
+                        exit 0
+                      fi
+                      echo "PR в main допускается только из iteration-N или release-X.Y.Z."
+                      exit 1
+                      ;;
+                    *)
+                      echo "PR в ветку '$BASE_REF' не описан в GitFlow. Разрешены только develop и main."
+                      exit 1
+                      ;;
+                  esac
