@@ -19,11 +19,22 @@
         <item name="colorAppPrimaryContainer">@color/primary_container_light</item>
         <item name="colorAppOnPrimaryContainer">@color/on_primary_container_light</item>
         <item name="colorAppSecondary">@color/secondary_light</item>
+        <item name="colorAppSecondaryContainer">@color/secondary_container_light</item>
+        <item name="colorAppOnSecondaryContainer">@color/on_secondary_container_light</item>
+        <item name="colorAppTertiary">@color/tertiary_container_light</item>
+        <item name="colorAppTertiaryContainer">@color/tertiary_container_light</item>
+        <item name="colorAppOnTertiaryContainer">@color/on_tertiary_container_light</item>
         <item name="colorAppSurface">@color/surface_light</item>
         <item name="colorAppOnSurface">@color/on_surface_light</item>
         <item name="colorAppOnSurfaceVariant">@color/on_surface_variant_light</item>
+        <item name="colorAppSurfaceContainer">@color/surface_container_light</item>
+        <item name="colorAppSurfaceContainerHigh">@color/surface_container_high_light</item>
         <item name="colorAppSurfaceContainerLow">@color/surface_container_low_light</item>
+        <item name="colorAppSurfaceContainerLowest">@color/surface_container_lowest_light</item>
+        <item name="colorAppSurfaceContainerHighest">@color/surface_container_highest_light</item>
+        <item name="colorAppInverseOnSurface">@color/inverse_on_surface_light</item>
         <item name="colorAppOutline">@color/outline_light</item>
+        <item name="colorAppOutlineVariant">@color/outline_variant_light</item>
     </style>
 
 </resources>

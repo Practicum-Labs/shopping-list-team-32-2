@@ -6,14 +6,17 @@
     <color name="secondary_light">#FF845416</color>
     <color name="secondary_container_light">#FFFEDDBD</color>
     <color name="on_secondary_container_light">#FF281805</color>
+    <color name="tertiary_container_light">#FF845416</color>
+    <color name="on_tertiary_container_light">#FFFFFFFF</color>
     <color name="surface_light">#FFFFF8F4</color>
     <color name="surface_container_light">#FFFAEBE0</color>
     <color name="surface_container_high_light">#FFF4E6DA</color>
     <color name="surface_container_low_light">#FFFFF1E7</color>
     <color name="surface_container_lowest_light">#FFFFFFFF</color>
+    <color name="surface_container_highest_light">#FFEEE0D5</color>
     <color name="on_surface_light">#FF211A14</color>
     <color name="on_surface_variant_light">#FF50453A</color>
+    <color name="inverse_on_surface_light">#FFFFF8F4</color>
     <color name="outline_light">#FF827568</color>
     <color name="outline_variant_light">#FFD4C4B5</color>
-    <color name="surface_container_highest_light">#FFEEE0D5</color>
 </resources>

@@ -19,11 +19,22 @@
         <item name="colorAppPrimaryContainer">@color/primary_container_dark</item>
         <item name="colorAppOnPrimaryContainer">@color/on_primary_container_dark</item>
         <item name="colorAppSecondary">@color/secondary_dark</item>
+        <item name="colorAppSecondaryContainer">@color/secondary_container_dark</item>
+        <item name="colorAppOnSecondaryContainer">@color/on_secondary_container_dark</item>
+        <item name="colorAppTertiary">@color/tertiary_container_dark</item>
+        <item name="colorAppTertiaryContainer">@color/tertiary_container_dark</item>
+        <item name="colorAppOnTertiaryContainer">@color/on_tertiary_container_dark</item>
         <item name="colorAppSurface">@color/surface_dark</item>
         <item name="colorAppOnSurface">@color/on_surface_dark</item>
         <item name="colorAppOnSurfaceVariant">@color/on_surface_variant_dark</item>
+        <item name="colorAppSurfaceContainer">@color/surface_container_dark</item>
+        <item name="colorAppSurfaceContainerHigh">@color/surface_container_high_dark</item>
         <item name="colorAppSurfaceContainerLow">@color/surface_container_low_dark</item>
+        <item name="colorAppSurfaceContainerLowest">@color/surface_container_lowest_dark</item>
+        <item name="colorAppSurfaceContainerHighest">@color/surface_container_highest_dark</item>
+        <item name="colorAppInverseOnSurface">@color/inverse_on_surface_dark</item>
         <item name="colorAppOutline">@color/outline_dark</item>
+        <item name="colorAppOutlineVariant">@color/outline_variant_dark</item>
     </style>
 
 </resources>
