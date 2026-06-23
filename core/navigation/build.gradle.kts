@@ -24,7 +24,14 @@ android {
 
 dependencies {
     implementation(project(":core:common"))
+    implementation(project(":feature:main"))
+    implementation(project(":feature:product"))
+    implementation(libs.androidx.navigation.compose)
     detektPlugins(libs.detekt.formatting)
+    implementation(libs.androidx.navigation3.ui)
+    implementation(libs.androidx.navigation3.runtime)
+    implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+    implementation(libs.androidx.material3.adaptive.navigation3)
 }
 
 detekt {
