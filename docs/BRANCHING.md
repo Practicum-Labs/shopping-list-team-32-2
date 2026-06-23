@@ -31,33 +31,11 @@
 2. `main` → `iteration-N`
 3. `iteration-N` → `develop`
 
-## Защита веток на GitHub
+## Защита веток
 
-В репозитории лежат готовые rulesets для импорта:
+**develop** — только через PR, без force-push и удаления ветки.
 
-- `.github/rulesets/develop.json`
-- `.github/rulesets/main.json`
-
-### Как импортировать (нужны права администратора репозитория)
-
-1. Откройте **Settings → Rules → Rulesets**.
-2. Нажмите **New ruleset → Import a ruleset**.
-3. Импортируйте `develop.json`, затем `main.json`.
-4. Сохраните оба ruleset в режиме **Active**.
-
-### Что настроено
-
-**develop**
-
-- Запрещён прямой push (только через PR)
-- Запрещены force-push и удаление ветки
-- Ревью не обязательно (достаточно PR от команды)
-
-**main**
-
-- Запрещён прямой push (только через PR)
-- Требуется минимум 1 approving review
-- Запрещены force-push и удаление ветки
+**main** — только через PR, минимум 1 approving review, без force-push и удаления ветки.
 
 ## Автоматические проверки
 
