@@ -12,7 +12,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ShoppingListTheme {
-                // Screens will be added in feature modules
+                // здесь может быть ваша реклама 
             }
         }
     }
