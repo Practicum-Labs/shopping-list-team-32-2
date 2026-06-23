@@ -1,4 +1,4 @@
-package com.practicum.shopping_list
+package com.practicum.list
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -10,4 +10,3 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
     }
 }
-

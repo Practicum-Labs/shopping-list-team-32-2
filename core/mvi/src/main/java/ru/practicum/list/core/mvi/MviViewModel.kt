@@ -1,4 +1,4 @@
-package ru.practicum.shoppinglist.core.mvi
+package ru.practicum.list.core.mvi
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

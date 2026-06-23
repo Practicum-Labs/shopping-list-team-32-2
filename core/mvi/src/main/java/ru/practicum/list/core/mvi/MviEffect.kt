@@ -1,4 +1,4 @@
-package ru.practicum.shoppinglist.core.mvi
+package ru.practicum.list.core.mvi
 
 /** Маркерный интерфейс для одноразовых side-effects (Effect). */
 interface MviEffect
