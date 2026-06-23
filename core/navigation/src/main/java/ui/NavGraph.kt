@@ -29,7 +29,7 @@ fun NavGraph(
             arguments = listOf(navArgument("list") { type = NavType.StringType })
         ) { navBackStackEntry ->
             val listJson = navBackStackEntry.arguments?.getString("list")
-            val list = ListEntry("Пример экрана списка")//gson.fromJson(listJson, ListEntry::class.java)
+            val list = ListEntry("Пример экрана списка",0 )//gson.fromJson(listJson, ListEntry::class.java)
             ListScreen(list)
         }
     }

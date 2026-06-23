@@ -14,11 +14,11 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         val lists = listOf(
-            ListEntry("Первый список"),
-            ListEntry("Первый список"),
-            ListEntry("Первый список"),
-            ListEntry("Первый список"),
-            ListEntry("Первый список"),
+            ListEntry("Первый список", 0),
+            ListEntry("Первый список", 1),
+            ListEntry("Первый список", 2),
+            ListEntry("Первый список", 3),
+            ListEntry("Первый список", 4),
         )
 
         setContent {
