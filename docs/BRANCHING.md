@@ -33,7 +33,7 @@
 
 ## Защита веток
 
-**develop** — только через PR, без force-push и удаления ветки.
+**develop** — только через PR, минимум 1 approving review, без force-push и удаления ветки.
 
 **main** — только через PR, минимум 1 approving review, без force-push и удаления ветки.
 
