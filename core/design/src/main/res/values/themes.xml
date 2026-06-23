@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.ShoppingList.Base" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">@color/primary_light</item>
+        <item name="colorPrimaryContainer">@color/primary_container_light</item>
+        <item name="colorOnPrimaryContainer">@color/on_primary_container_light</item>
+        <item name="colorSecondary">@color/secondary_light</item>
+        <item name="colorSecondaryContainer">@color/secondary_container_light</item>
+        <item name="colorOnSecondaryContainer">@color/on_secondary_container_light</item>
+        <item name="android:colorBackground">@color/surface_light</item>
+        <item name="colorSurface">@color/surface_light</item>
+        <item name="colorOnSurface">@color/on_surface_light</item>
+        <item name="colorOnSurfaceVariant">@color/on_surface_variant_light</item>
+        <item name="colorOutline">@color/outline_light</item>
+        <item name="colorOutlineVariant">@color/outline_variant_light</item>
+
+        <item name="colorAppPrimary">@color/primary_light</item>
+        <item name="colorAppPrimaryContainer">@color/primary_container_light</item>
+        <item name="colorAppOnPrimaryContainer">@color/on_primary_container_light</item>
+        <item name="colorAppSecondary">@color/secondary_light</item>
+        <item name="colorAppSurface">@color/surface_light</item>
+        <item name="colorAppOnSurface">@color/on_surface_light</item>
+        <item name="colorAppOnSurfaceVariant">@color/on_surface_variant_light</item>
+        <item name="colorAppSurfaceContainerLow">@color/surface_container_low_light</item>
+        <item name="colorAppOutline">@color/outline_light</item>
+    </style>
+
+</resources>
