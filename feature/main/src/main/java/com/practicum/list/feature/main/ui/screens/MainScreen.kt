@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 
 @Composable
 fun MainScreen(
-    onBackTap: () -> Unit,
     onItemTap: () -> Unit
 ) {
 

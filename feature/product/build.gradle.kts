@@ -42,6 +42,8 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.material3)
+    implementation(libs.navigation.common.ktx)
+    implementation(libs.navigation.runtime.ktx)
     detektPlugins(libs.detekt.formatting)
 }
 
