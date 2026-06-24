@@ -4,39 +4,26 @@ import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavType
-import androidx.navigation.navArgument
+import androidx.navigation.compose.composable
+import com.practicum.list.core.navigation.ListScreenRoute
 
 fun NavGraphBuilder.listScreenNavigation(
     navController: NavController
 ) {
-    composable(
-        route = "listDetails/{list}",
+    composable<ListScreenRoute>(
         enterTransition = {
-            return@composable slideIntoContainer(
-                AnimatedContentTransitionScope.SlideDirection.Start, tween(300)
-            )
+            slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Start, tween(300))
         },
         exitTransition = {
-            return@composable slideOutOfContainer(
-                AnimatedContentTransitionScope.SlideDirection.Start, tween(300)
-            )
+            slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Start, tween(300))
         },
         popEnterTransition = {
-            return@composable slideIntoContainer(
-                AnimatedContentTransitionScope.SlideDirection.End, tween(300)
-            )
+            slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.End, tween(300))
         },
         popExitTransition = {
-            return@composable slideOutOfContainer(
-                AnimatedContentTransitionScope.SlideDirection.End, tween(300)
-            )
-        },
-        arguments = listOf(navArgument("list") { type = NavType.StringType })
+            slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.End, tween(300))
+        }
     ) {
-//            navBackStackEntry ->
-//            val listJson = navBackStackEntry.arguments?.getString("list")
-//            val list = ListEntry("Пример экрана списка",0 )//gson.fromJson(listJson, ListEntry::class.java)
-        listScreen { navController.navigate("main") }
+        ListScreen(onBackTap = { navController.popBackStack() })
     }
 }

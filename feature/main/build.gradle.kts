@@ -33,6 +33,7 @@ dependencies {
     implementation(project(":core:mvi"))
     implementation(project(":core:design"))
     implementation(project(":core:common"))
+    implementation(project(":core:navigation"))
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
@@ -41,7 +42,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.navigation.runtime.ktx)
+    implementation(libs.androidx.navigation.compose)
     detektPlugins(libs.detekt.formatting)
 }
 

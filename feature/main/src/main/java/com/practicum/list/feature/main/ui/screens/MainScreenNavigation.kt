@@ -4,33 +4,27 @@ import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.composable
+import com.practicum.list.core.navigation.ListScreenRoute
+import com.practicum.list.core.navigation.MainScreenRoute
 
 fun NavGraphBuilder.mainScreenNavigation(
     navController: NavController
 ) {
-    composable(
-        route = "main",
+    composable<MainScreenRoute>(
         enterTransition = {
-            return@composable slideIntoContainer(
-                AnimatedContentTransitionScope.SlideDirection.Start, tween(300)
-            )
+            slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Start, tween(300))
         },
         exitTransition = {
-            return@composable slideOutOfContainer(
-                AnimatedContentTransitionScope.SlideDirection.Start, tween(300)
-            )
+            slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Start, tween(300))
         },
         popEnterTransition = {
-            return@composable slideIntoContainer(
-                AnimatedContentTransitionScope.SlideDirection.End, tween(300)
-            )
+            slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.End, tween(300))
         },
         popExitTransition = {
-            return@composable slideOutOfContainer(
-                AnimatedContentTransitionScope.SlideDirection.End, tween(300)
-            )
+            slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.End, tween(300))
         }
     ) {
-        MainScreen { navController.navigate("item") }
+        MainScreen { navController.navigate(ListScreenRoute(id = 1L)) }
     }
 }
