@@ -4,8 +4,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.navigation.compose.rememberNavController
 import com.practicum.list.core.theme.ShoppingListTheme
 import com.practicum.list.core.navigation.NavGraph
+import com.practicum.list.feature.main.ui.screens.MainScreen
+import com.practicum.list.feature.product.ui.screens.ListScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -13,11 +18,12 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            val navController = navHostController()
+            val navController = rememberNavController()
             ShoppingListTheme {
                 NavGraph(
                     navController,
-                    lists = lists
+                    mainScreen = MainScreen(),
+                    listScreen = ListScreen()
                 )
             }
         }

@@ -59,6 +59,7 @@ dependencies {
     implementation(libs.androidx.activity.compose)
 
     implementation(libs.dagger)
+    implementation(libs.navigation.compose)
     ksp(libs.dagger.compiler)
     implementation(libs.moshi)
     implementation(libs.moshi.kotlin)

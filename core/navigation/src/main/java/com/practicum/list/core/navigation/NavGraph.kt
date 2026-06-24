@@ -5,23 +5,24 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import java.lang.reflect.Modifier
 
 @Composable
 fun NavGraph(
     navController: NavHostController,
-    modifier: Modifier = Modifier,
-    mainScreen: @Composable () -> Unit,
-    listScreen: Composable () -> Unit
+    mainScreen: @Composable (
+        onItemTap: () -> Unit
+    ) -> Unit,
+    listScreen: @Composable (
+        onBackTap: () -> Unit
+    ) -> Unit,
 ) {
-    val navController = rememberNavController()
-
-    NavHost(navController = navController, startDestination = startDestination) {
+    NavHost(navController = navController, startDestination = "main") {
         composable(
             route = "main"
-        ) { mainScreen() }
+        ) {
+            mainScreen { navController.navigate("item") }
+        }
         composable(
             route = "listDetails/{list}",
             arguments = listOf(navArgument("list") { type = NavType.StringType })
@@ -29,7 +30,7 @@ fun NavGraph(
 //            navBackStackEntry ->
 //            val listJson = navBackStackEntry.arguments?.getString("list")
 //            val list = ListEntry("Пример экрана списка",0 )//gson.fromJson(listJson, ListEntry::class.java)
-            listScreen()
+            listScreen { navController.navigate("main") }
         }
     }
 }
