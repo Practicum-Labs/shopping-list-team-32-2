@@ -12,7 +12,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ShoppingListTheme {
-                // здесь может быть ваша реклама 
+                // здесь может быть ваша реклама
             }
         }
     }

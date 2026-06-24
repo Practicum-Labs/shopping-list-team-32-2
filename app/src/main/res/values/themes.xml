@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.ShoppingList" parent="Theme.ShoppingList.Base" />
+    <!-- Минимальная системная тема для окна до Compose. Цвета UI — только в ShoppingListTheme. -->
+    <style name="Theme.ShoppingList" parent="Theme.Material3.DayNight.NoActionBar" />
 
 </resources>
