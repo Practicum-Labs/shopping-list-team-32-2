@@ -17,7 +17,8 @@ shopping-list-team-32-2/
 ├── app/              # точка входа, MainActivity
 ├── config/detekt/    # detekt.yml
 ├── core/
-│   ├── common/       # общие модели, утилиты
+│   ├── common/       # domain-модели, общий код
+│   ├── data/         # Room, Retrofit, DI modules
 │   ├── design/       # Compose-тема (Kotlin only)
 │   ├── mvi/          # MVI-база
 │   └── navigation/ # NavGraph (Compose Navigation)
@@ -40,6 +41,7 @@ Gradle modules:
 - :app
 - :core:common
 - :core:mvi
+- :core:data
 - :core:design
 - :core:navigation
 - :feature:main
@@ -121,9 +123,9 @@ feature/product/ — ListScreen
 | Navigation Compose | :core:navigation | NavHost, composable-маршруты |
 | Coroutines / StateFlow | :core:mvi | `MviViewModel` |
 | Detekt | все модули + CI | `config/detekt/detekt.yml` |
-| Room | — | планируется в :core или :data |
-| Dagger | — | планируется, KSP |
-| Retrofit / OkHttp | — | планируется для API товаров |
+| Room | :core:data | ShoppingDatabase, DAOs |
+| Dagger | :app + :core:data | AppComponent, DatabaseModule, NetworkModule |
+| Retrofit / OkHttp | :core:data | ProductApi (base URL-заглушка) |
 
 **Тема:** Compose-only по требованию заказчика — без XML attrs/colors в `:core:design`.
 

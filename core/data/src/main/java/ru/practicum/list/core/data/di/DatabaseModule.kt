@@ -1,0 +1,33 @@
+package ru.practicum.list.core.data.di
+
+import android.content.Context
+import androidx.room.Room
+import dagger.Module
+import dagger.Provides
+import ru.practicum.list.core.data.local.ShoppingDatabase
+import ru.practicum.list.core.data.local.dao.ProductDao
+import ru.practicum.list.core.data.local.dao.ShoppingListDao
+import javax.inject.Singleton
+
+@Module
+object DatabaseModule {
+
+    private const val DATABASE_NAME = "shopping_list.db"
+
+    @Provides
+    @Singleton
+    fun provideDatabase(context: Context): ShoppingDatabase =
+        Room.databaseBuilder(
+            context,
+            ShoppingDatabase::class.java,
+            DATABASE_NAME,
+        ).build()
+
+    @Provides
+    fun provideShoppingListDao(database: ShoppingDatabase): ShoppingListDao =
+        database.shoppingListDao()
+
+    @Provides
+    fun provideProductDao(database: ShoppingDatabase): ProductDao =
+        database.productDao()
+}
