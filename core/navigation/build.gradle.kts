@@ -1,11 +1,11 @@
-plugins {
+﻿plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.detekt)
 }
 
 android {
-    namespace = "ru.practicum.shopping_list.core.navigation"
+    namespace = "com.practicum.list.core.navigation"
     //noinspection GradleDependency
     compileSdk = libs.versions.targetSdk.get().toInt()
 

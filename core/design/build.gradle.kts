@@ -1,4 +1,4 @@
-plugins {
+﻿plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "ru.practicum.list.core.theme"
+    namespace = "com.practicum.list.core.theme"
     //noinspection GradleDependency
     compileSdk = libs.versions.targetSdk.get().toInt()
 

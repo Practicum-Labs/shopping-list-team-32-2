@@ -1,11 +1,11 @@
-plugins {
+﻿plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.detekt)
 }
 
 android {
-    namespace = "ru.practicum.list.core.common"
+    namespace = "com.practicum.list.core.common"
     //noinspection GradleDependency
     compileSdk = libs.versions.targetSdk.get().toInt()
 

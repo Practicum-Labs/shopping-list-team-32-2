@@ -65,7 +65,7 @@ Build system:
 | JVM target | 21 |
 | Compose | включён в app, core:design, core:navigation, feature:* |
 
-**Namespace:** в Kotlin-коде используется `ru.practicum.list.*`, в части `build.gradle.kts` — `ru.practicum.shopping_list.*`. Сборка проходит, но именование стоит унифицировать.
+**Namespace:** во всех модулях используется единая схема `com.practicum.list.*`.
 
 ---
 
@@ -77,14 +77,14 @@ app/src/main/java/
     └── MainActivity.kt
 
 core/design/src/main/java/
-└── ru.practicum.list.core.theme/
+└── com.practicum.list.core.theme/
     ├── ColorHex.kt    — HEX-константы light/dark (Figma)
     ├── Color.kt       — androidx.compose.ui.graphics.Color
     ├── Theme.kt       — ShoppingListTheme, light/dark ColorScheme
     └── Type.kt        — Typography (M3)
 
 core/mvi/src/main/java/
-└── ru.practicum.list.core.mvi/
+└── com.practicum.list.core.mvi/
     ├── MviState.kt, MviIntent.kt, MviEffect.kt
     └── MviViewModel.kt
 

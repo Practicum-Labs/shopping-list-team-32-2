@@ -1,4 +1,4 @@
-plugins {
+﻿plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "ru.practicum.shopping_list.core.mvi"
+    namespace = "com.practicum.list.core.mvi"
     //noinspection GradleDependency
     compileSdk = libs.versions.targetSdk.get().toInt()
 

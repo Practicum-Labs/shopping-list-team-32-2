@@ -2,10 +2,10 @@ package com.practicum.list.di
 
 import android.app.Application
 import dagger.Component
-import ru.practicum.list.core.data.di.DatabaseModule
-import ru.practicum.list.core.data.di.NetworkModule
-import ru.practicum.list.core.data.local.ShoppingDatabase
-import ru.practicum.list.core.data.remote.api.ProductApi
+import com.practicum.list.core.data.di.DatabaseModule
+import com.practicum.list.core.data.di.NetworkModule
+import com.practicum.list.core.data.local.ShoppingDatabase
+import com.practicum.list.core.data.remote.api.ProductApi
 import javax.inject.Singleton
 
 @Singleton
