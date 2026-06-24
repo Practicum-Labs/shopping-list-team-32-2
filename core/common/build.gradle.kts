@@ -1,11 +1,11 @@
-plugins {
+﻿plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.detekt)
 }
 
 android {
-    namespace = "ru.practicum.shopping_list.core.common"
+    namespace = "com.practicum.list.core.common"
     //noinspection GradleDependency
     compileSdk = libs.versions.targetSdk.get().toInt()
 
@@ -13,9 +13,18 @@ android {
         minSdk = libs.versions.minSdk.get().toInt()
     }
 
-    dependencies {
-        detektPlugins(libs.detekt.formatting)
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
+
+    kotlinOptions {
+        jvmTarget = "21"
+    }
+}
+
+dependencies {
+    detektPlugins(libs.detekt.formatting)
 }
 
 detekt {

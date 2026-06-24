@@ -17,7 +17,8 @@ shopping-list-team-32-2/
 ├── app/              # точка входа, MainActivity
 ├── config/detekt/    # detekt.yml
 ├── core/
-│   ├── common/       # общие модели, утилиты
+│   ├── common/       # domain-модели, общий код
+│   ├── data/         # Room, Retrofit, DI modules
 │   ├── design/       # Compose-тема (Kotlin only)
 │   ├── mvi/          # MVI-база
 │   └── navigation/ # NavGraph (Compose Navigation)
@@ -40,6 +41,7 @@ Gradle modules:
 - :app
 - :core:common
 - :core:mvi
+- :core:data
 - :core:design
 - :core:navigation
 - :feature:main
@@ -63,7 +65,7 @@ Build system:
 | JVM target | 21 |
 | Compose | включён в app, core:design, core:navigation, feature:* |
 
-**Namespace:** в Kotlin-коде используется `ru.practicum.list.*`, в части `build.gradle.kts` — `ru.practicum.shopping_list.*`. Сборка проходит, но именование стоит унифицировать.
+**Namespace:** во всех модулях используется единая схема `com.practicum.list.*`.
 
 ---
 
@@ -75,14 +77,14 @@ app/src/main/java/
     └── MainActivity.kt
 
 core/design/src/main/java/
-└── ru.practicum.list.core.theme/
+└── com.practicum.list.core.theme/
     ├── ColorHex.kt    — HEX-константы light/dark (Figma)
     ├── Color.kt       — androidx.compose.ui.graphics.Color
     ├── Theme.kt       — ShoppingListTheme, light/dark ColorScheme
     └── Type.kt        — Typography (M3)
 
 core/mvi/src/main/java/
-└── ru.practicum.list.core.mvi/
+└── com.practicum.list.core.mvi/
     ├── MviState.kt, MviIntent.kt, MviEffect.kt
     └── MviViewModel.kt
 
@@ -121,9 +123,9 @@ feature/product/ — ListScreen
 | Navigation Compose | :core:navigation | NavHost, composable-маршруты |
 | Coroutines / StateFlow | :core:mvi | `MviViewModel` |
 | Detekt | все модули + CI | `config/detekt/detekt.yml` |
-| Room | — | планируется в :core или :data |
-| Dagger | — | планируется, KSP |
-| Retrofit / OkHttp | — | планируется для API товаров |
+| Room | :core:data | ShoppingDatabase, DAOs |
+| Dagger | :app + :core:data | AppComponent, DatabaseModule, NetworkModule |
+| Retrofit / OkHttp | :core:data | ProductApi (base URL-заглушка) |
 
 **Тема:** Compose-only по требованию заказчика — без XML attrs/colors в `:core:design`.
 
