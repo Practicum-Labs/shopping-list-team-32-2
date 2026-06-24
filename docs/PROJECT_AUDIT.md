@@ -1,104 +1,39 @@
-# Аудит проекта shopping-list-team-32-2
+# Документация проекта shopping-list-team-32-2
 
-> Дата аудита: 23.06.2026 (обновлено после перехода на Compose-only тему)  
-> Ветка: `2-theme-files`  
-> Базовый commit: `bc79ff24c214eace221dbea094ef0491409dbfab`  
-> Статус: **есть незакоммиченные изменения** (рефакторинг темы Compose без XML)  
-> Задача: подготовка к «Добавление базовых зависимостей: Compose, Dagger, Retrofit, Room, Detekt»
+Справочник по архитектуре, структуре модулей и ключевым техническим решениям.
 
 ---
 
-## 1. Краткое резюме
-
-Проект — **многомодульный Android-скелет** с рабочей сборкой. Реализованы **Detekt**, **Compose**, **MVI-инфраструктура** и **тема полностью в Compose** (по требованию заказчика — без XML attrs/colors/themes в `:core:design`).
-
-**Не подключены и не реализованы:** Dagger, Room, Retrofit, Navigation Compose, экраны, БД, сеть, DI, кастомный `Application`.
-
-**Готовность к задаче «Добавление базовых зависимостей»:** **~50%**
-
-| Компонент задачи | Статус |
-|------------------|--------|
-| Compose (включая тему) | готово (~90%) |
-| Detekt | почти готово (~90%) |
-| Dagger | 0% |
-| Room | 0% |
-| Retrofit | 0% |
-
-**Важно про ТЗ vs заказчик:**
-
-| Источник | Требование к теме |
-|----------|-------------------|
-| ТЗ Практикума | `theme + attrs` (+2) или `values-night/colors` (+1) |
-| Заказчик / команда | **Compose-only**, без XML-палитры |
-| Текущая реализация | **Compose `MaterialTheme`** — соответствует заказчику, **не** формату `theme + attrs` из ТЗ |
-
-С наставником стоит согласовать, какой критерий оценки приоритетнее.
-
----
-
-## 2. Git / репозиторий
+## 1. Репозиторий и структура проекта
 
 | Параметр | Значение |
 |----------|----------|
 | Название проекта | `shopping_list` (`rootProject.name` в `settings.gradle.kts`) |
 | Репозиторий | `Practicum-Labs/shopping-list-team-32-2` |
-| Текущая ветка | `2-theme-files` (tracking `origin/2-theme-files`) |
-| Последний commit | `bc79ff2` — theme + attrs (устарел, переписан локально) |
-| Рабочая директория | **modified** — рефакторинг на Compose-only тему не закоммичен |
-| Remote | `origin` → `git@github.com:Practicum-Labs/shopping-list-team-32-2.git` |
-
-**Локальные ветки:**
-
-- `10-branch-rules`
-- `2-theme-files` ← текущая
-- `develop`
-
-**Remote-ветки:**
-
-- `origin/main`
-- `origin/develop`
-- `origin/10-branch-rules`
-- `origin/2-theme-files`
-
-**Незакоммиченные изменения (Compose-only тема):**
-
-```
-modified:   app/.../MainActivity.kt
-modified:   app/.../themes.xml
-modified:   core/design/build.gradle.kts
-modified:   core/design/.../Theme.kt
-deleted:    ColorFromAttr.kt, ColorSchemeFromAttrs.kt, ThemedContext.kt
-deleted:    core/design/res/values/*, values-night/*
-added:      Color.kt, ColorHex.kt
-```
-
-**Структура корня:**
 
 ```
 shopping-list-team-32-2/
 ├── .github/          # CI, rulesets, PR template
-├── app/
-├── config/detekt/
+├── app/              # точка входа, MainActivity
+├── config/detekt/    # detekt.yml
 ├── core/
-│   ├── common/       # только build.gradle.kts, без src/
-│   ├── design/       # Compose theme (Kotlin only, без res/)
-│   ├── mvi/          # MVI base
-│   └── navigation/   # только build.gradle.kts, без src/
+│   ├── common/       # общие модели, утилиты
+│   ├── design/       # Compose-тема (Kotlin only)
+│   ├── mvi/          # MVI-база
+│   └── navigation/ # NavGraph (Compose Navigation)
 ├── docs/             # BRANCHING.md, PROJECT_AUDIT.md
 ├── feature/
-│   ├── main/         # только build.gradle.kts, без src/
-│   └── product/      # только build.gradle.kts, без src/
+│   ├── main/         # главный экран
+│   └── product/      # экран списка / товаров
 ├── gradle/
 ├── build.gradle.kts
 ├── settings.gradle.kts
 └── gradlew / gradlew.bat
 ```
 
-**Нет:** `README.md`, `proguard-rules.pro` (файл отсутствует, хотя указан в Gradle).
-
 ---
 
-## 3. Gradle / модули
+## 2. Gradle и модули
 
 ```text
 Gradle modules:
@@ -112,64 +47,27 @@ Gradle modules:
 
 Build system:
 - Kotlin DSL (все *.gradle.kts)
-- Version Catalog: yes (gradle/libs.versions.toml)
+- Version Catalog: gradle/libs.versions.toml
 - Gradle Wrapper: yes
 - Configuration Cache: enabled (gradle.properties)
 ```
 
 | Параметр | Значение |
 |----------|----------|
-| Android Gradle Plugin | **8.7.3** |
-| Kotlin | **2.1.0** |
+| Android Gradle Plugin | 8.7.3 |
+| Kotlin | 2.1.0 |
 | Compose Compiler | plugin `kotlin-compose` 2.1.0 |
-| compileSdk | **35** |
-| minSdk | **24** |
-| targetSdk | **35** |
-| JVM target | **21** |
-| Compose enabled | **yes** |
+| compileSdk | 35 |
+| minSdk | 24 |
+| targetSdk | 35 |
+| JVM target | 21 |
+| Compose | включён в app, core:design, core:navigation, feature:* |
 
-**Замечание по namespace:** в Kotlin-коде — `ru.practicum.list.*`, в части `build.gradle.kts` — `ru.practicum.shopping_list.*`. Расхождение есть, сборка проходит.
-
----
-
-## 4. Текущий стек
-
-| Область | Ожидается по стеку | Сейчас есть? | Где найдено | Комментарий |
-|---------|-------------------|--------------|-------------|-------------|
-| **Jetpack Compose** | да | ✅ | app, :core:design, :feature:* | BOM 2024.11.00 |
-| **Material 3** | да | ✅ | Compose Material3 | `ShoppingListTheme` + `MaterialTheme` |
-| **Activity Compose** | да | ✅ | `MainActivity` | `setContent` |
-| **Lifecycle Compose** | да | ⚠️ частично | :core:mvi, :feature:* | Не в :app |
-| **Navigation Compose** | да | ❌ | — | Модуль пустой |
-| **Compose Tooling** | желательно | ⚠️ | ui-tooling-preview в модулях | `@Preview` нет |
-| **Coroutines / StateFlow** | да | ✅ | `MviViewModel.kt` | |
-| **Room** | да | ❌ | — | |
-| **KSP / KAPT** | да | ❌ | — | |
-| **Dagger** | да | ❌ | — | |
-| **Retrofit / OkHttp** | да | ❌ | — | |
-| **Compose Theme (Kotlin)** | да (заказчик) | ✅ | `ColorHex.kt`, `Color.kt`, `Theme.kt`, `Type.kt` | Единственный источник цветов UI |
-| **XML attrs / colors** | ТЗ (опционально) | ❌ убрано | — | По требованию заказчика |
-| **Detekt** | да | ✅ | все модули + CI | |
+**Namespace:** в Kotlin-коде используется `ru.practicum.list.*`, в части `build.gradle.kts` — `ru.practicum.shopping_list.*`. Сборка проходит, но именование стоит унифицировать.
 
 ---
 
-## 5. AndroidManifest / Application
-
-| Параметр | Значение |
-|----------|----------|
-| namespace | `com.practicum.list` |
-| applicationId | `com.practicum.shopping_list` |
-| Кастомный Application | ❌ |
-| MainActivity | ✅ `ComponentActivity` |
-| Theme (manifest) | `@style/Theme.ShoppingList` → `Theme.Material3.DayNight.NoActionBar` |
-
-**Минимальный XML в `app`** — только системная тема окна до Compose. **Палитра UI не в XML.**
-
-**Готовность к Dagger:** ❌ (нет Application, AppComponent, inject).
-
----
-
-## 6. Структура пакетов
+## 3. Структура пакетов
 
 ```text
 app/src/main/java/
@@ -188,59 +86,67 @@ core/mvi/src/main/java/
     ├── MviState.kt, MviIntent.kt, MviEffect.kt
     └── MviViewModel.kt
 
-core/common/     — src/ отсутствует
-core/navigation/ — src/ отсутствует
-feature/main/    — src/ отсутствует
-feature/product/ — src/ отсутствует
+core/common/     — domain-модели, общий код
+core/navigation/ — NavGraph, маршруты
+feature/main/    — MainScreen, OnboardingScreen
+feature/product/ — ListScreen
 ```
 
-**`:core:design` не содержит `src/main/res/`** — тема полностью в Kotlin.
+**`:core:design` не содержит `src/main/res/`** — палитра и типографика только в Kotlin.
 
-Пакеты `data`, `domain`, `presentation`, `di` — отсутствуют.
-
----
-
-## 7. UI / Compose
-
-| Элемент | Статус |
-|---------|--------|
-| `setContent` | ✅ |
-| `ShoppingListTheme` | ✅ |
-| `MaterialTheme.colorScheme` | ✅ light/dark через `isSystemInDarkTheme()` |
-| Стартовый экран | ❌ заглушка |
-| `@Preview` | ❌ |
-| Navigation Compose | ❌ |
-| Экраны приложения | ❌ |
+Целевая раскладка feature-модулей: `presentation` (UI + ViewModel), `domain`, `data`, `di` — по мере роста проекта.
 
 ---
 
-## 8. MVI
+## 4. AndroidManifest и Application
 
-**MVI-инфраструктура есть** (`MviViewModel`, State/Intent/Effect). Экранных ViewModel нет.
+| Параметр | Значение |
+|----------|----------|
+| namespace | `com.practicum.list` |
+| applicationId | `com.practicum.shopping_list` |
+| MainActivity | `ComponentActivity` + `setContent` |
+| Theme (manifest) | `@style/Theme.ShoppingList` → `Theme.Material3.DayNight.NoActionBar` |
 
----
-
-## 9. Room
-
-**Не реализовано.** Рекомендуемый каркас — без изменений (entities, DAOs, `ShoppingDatabase`).
-
----
-
-## 10. Dagger
-
-**Не подключён.** Hilt не используется. Нужны: KSP, `AppComponent`, `Application`, modules.
+В `app` остаётся минимальный XML — системная тема окна до старта Compose. Цвета UI задаются в `ShoppingListTheme`, не в XML.
 
 ---
 
-## 11. Retrofit
+## 5. Стек технологий
 
-**Не реализовано.** Обоснование для README: API популярных товаров → кэш в Room → подсказки offline.
+| Область | Где подключено | Примечание |
+|---------|----------------|------------|
+| Jetpack Compose | app, :core:design, :core:navigation, :feature:* | BOM 2024.11.00 |
+| Material 3 | :core:design | `ShoppingListTheme` + `MaterialTheme` |
+| Activity Compose | app | `setContent` в MainActivity |
+| Navigation Compose | :core:navigation | NavHost, composable-маршруты |
+| Coroutines / StateFlow | :core:mvi | `MviViewModel` |
+| Detekt | все модули + CI | `config/detekt/detekt.yml` |
+| Room | — | планируется в :core или :data |
+| Dagger | — | планируется, KSP |
+| Retrofit / OkHttp | — | планируется для API товаров |
+
+**Тема:** Compose-only по требованию заказчика — без XML attrs/colors в `:core:design`.
+
+В ТЗ Практикума для баллов предусмотрены варианты `theme + attrs` (+2) или `values-night/colors` (+1). Команда сознательно выбрала Compose `MaterialTheme`; с наставником стоит согласовать, какой критерий оценки приоритетнее.
 
 ---
 
-## 12. Тема (Compose-only)
+## 6. MVI
 
-**Реализовано по требованию заказчика** — вся палитра в Kotlin, без XML в `:core:design`.
+Базовый контракт в `:core:mvi`:
+
+- `MviState` — неизменяемое состояние экрана
+- `MviIntent` — действия пользователя / UI
+- `MviEffect` — одноразовые события (навигация, snackbar)
+- `MviViewModel` — `StateFlow` для state, `Channel` для effects
+
+Экранные ViewModel наследуют `MviViewModel` и обрабатывают intent'ы в `handleIntent`.
+
+---
+
+## 7. Тема (Compose-only)
+
+Вся палитра в Kotlin, без XML в `:core:design`.
 
 ### Архитектура темы
 
@@ -262,14 +168,8 @@ UI: MaterialTheme.colorScheme.surface, .secondary, ...
 |------|------|
 | `ColorHex.kt` | Константы `0xAARRGGBB` для light и dark |
 | `Color.kt` | Обёртки `Color(...)` |
-| `Theme.kt` | `ShoppingListTheme`, переключение day/night |
+| `Theme.kt` | `ShoppingListTheme`, переключение day/night через `isSystemInDarkTheme()` |
 | `Type.kt` | `Typography` (titleLarge, bodyLarge, …) |
-
-### Что удалено (бывший подход theme + attrs)
-
-- `attrs.xml`, `colors.xml`, `themes.xml`, `values-night/*` в `:core:design`
-- `ColorFromAttr.kt`, `ColorSchemeFromAttrs.kt`, `ThemedContext.kt`
-- `libs.material` в `:core:design` (XML-тема не нужна)
 
 ### Минимальный XML (только app)
 
@@ -279,7 +179,7 @@ UI: MaterialTheme.colorScheme.surface, .secondary, ...
 <style name="Theme.ShoppingList" parent="Theme.Material3.DayNight.NoActionBar" />
 ```
 
-Нужен для `AndroidManifest` и системного окна. **Не содержит цветов приложения.**
+Нужен для `AndroidManifest` и системного окна. Не содержит цветов приложения.
 
 ### Использование в UI
 
@@ -290,134 +190,50 @@ ShoppingListTheme {
 }
 ```
 
-### Соответствие ТЗ
-
-| Критерий ТЗ | Статус |
-|-------------|--------|
-| `theme + attrs` (+2) | ❌ не реализовано (сознательно) |
-| `values-night/colors` (+1) | ❌ не реализовано |
-| Тёмная/светлая тема работает | ✅ через `isSystemInDarkTheme()` + два ColorScheme |
-
-**Для задачи «базовые зависимости»:** тему **не нужно** переделывать — она готова в формате Compose.
+Переключение light/dark — автоматически по системной теме устройства.
 
 ---
 
-## 13. Detekt
+## 8. Detekt
 
-| Элемент | Статус |
-|---------|--------|
-| Plugin | ✅ все модули |
-| `config/detekt/detekt.yml` | ✅ |
-| Правила ТЗ (50 строк / 6 args / 350 класс) | ✅ |
-| CI | ✅ `pr_checks.yml` |
-| `detektAll` | ❌ |
+| Элемент | Описание |
+|---------|----------|
+| Plugin | подключён во всех модулях |
+| Конфиг | `config/detekt/detekt.yml` |
+| Правила ТЗ | LongMethod ≤ 50 строк, LongParameterList ≤ 6, LargeClass ≤ 350 |
+| CI | `.github/workflows/pr_checks.yml` |
 
-Замечания: `maxIssues: 100500`; `:app` без явного `detekt { config.setFrom(...) }`.
-
----
-
-## 14. Small phone support
-
-UI-экранов нет. Рекомендации: `LazyColumn`, `safeDrawingPadding`, без фиксированных высот, preview 320×640.
+В `detekt.yml` задано `maxIssues: 100500` — при стабилизации проекта порог можно ужесточить.
 
 ---
 
-## 15. Release build
+## 9. Release build
 
-| Элемент | Статус |
-|---------|--------|
-| release buildType | ✅ |
-| minifyEnabled | ❌ false |
-| proguard-rules.pro | ❌ файл отсутствует |
-| signing config | ❌ |
-
----
-
-## 16. Проверки сборки
-
-После рефакторинга Compose-only (локально, незакоммичено):
-
-```text
-assembleDebug: success
-detekt:          success
-detektAll:       not configured
-```
+| Параметр | Значение |
+|----------|----------|
+| release buildType | объявлен |
+| minifyEnabled | false |
+| proguard-rules.pro | указан в Gradle, файл может отсутствовать |
+| signing config | не настроен |
 
 ---
 
-## 17. Что делать в задаче «Добавление базовых зависимостей»
+## 10. Навигация
 
-### Что уже есть
+`:core:navigation` содержит `NavGraph` на Compose Navigation:
 
-- Многомодульная структура (7 модулей)
-- Compose BOM, Material3, Activity Compose
-- **Compose Theme** (`ColorHex` → `Color` → `ShoppingListTheme`)
-- MVI base (`MviViewModel`)
-- Detekt + CI
-- `ComponentActivity` + `setContent`
+- маршруты объявляются в `NavHost`
+- feature-экраны подключаются как composable destination
+- передача аргументов — через `navArgument` (рекомендуется `listId: Long`, не JSON в path)
 
-### Что отсутствует
-
-- Dagger, Room, Retrofit, Navigation Compose
-- Application, DI graph
-- Feature source code, экраны, ViewModels, repositories
-- README
-
-### Что сделать (порядок)
-
-1. **Закоммитить** Compose-only тему в `2-theme-files`
-2. **Version Catalog** — Dagger, Room, Retrofit, Navigation, KSP
-3. **Dagger** — Application, AppComponent, modules
-4. **Room** — Database, entities, DAOs
-5. **Retrofit** — API каркас + NetworkModule
-6. **Navigation Compose** — NavGraph в `:core:navigation`
-7. **Feature stubs** — MainScreen, ListScreen + ViewModels
-8. **README** — стек; указать: тема в Compose по требованию заказчика
-9. Detekt / namespace cleanup
-
-### Готовность
-
-```text
-Готовность к задаче "Добавление базовых зависимостей": ~50%
-
-Что уже есть:
-- Compose + Material3 + ShoppingListTheme (Kotlin-only)
-- Detekt + CI
-- MVI infrastructure
-- Multimodule skeleton
-- assembleDebug проходит
-
-Что отсутствует:
-- Dagger, Room, Retrofit, Navigation Compose
-- Application, DI, экраны, README
-
-Критичные риски:
-- Незакоммиченный рефакторинг темы
-- ТЗ (theme+attrs) vs заказчик (Compose-only) — согласовать с наставником
-- PR #18 (navigation) — черновик
-- namespace mismatch
-- proguard-rules.pro отсутствует
-
-Рекомендованный порядок:
-1. Commit Compose-only theme → merge #2 в develop
-2. KSP + Dagger
-3. Room
-4. Retrofit
-5. Navigation Compose
-6. README + detekt cleanup
-```
+Целевая схема зависимостей: `:app` связывает feature-модули с navigation; `:core:navigation` не должен тянуть feature напрямую.
 
 ---
 
-## 18. Риски и рекомендации
+## 11. Планируемые слои (Room, Dagger, Retrofit)
 
-1. **Закоммитить Compose-only изменения** перед merge PR #2.
-2. **ТЗ vs заказчик** — зафиксировать в README: «тема в Compose по требованию заказчика; формат theme+attrs из ТЗ не используется».
-3. **PR #18** — черновик навигации; согласовать с h0mepunk.
-4. **MVI готов** — новые ViewModels наследовать от `MviViewModel`.
-5. **Тему не трогать** в задаче базовых зависимостей — она закрыта.
-6. **Detekt** — подключить config к `:app`, обсудить снижение `maxIssues`.
+Кратко о задуманной интеграции — без привязки к доске задач:
 
----
-
-**Итог:** фундамент готов (модули, Compose, MVI, Detekt, **Compose-only тема**). Задача «базовые зависимости» — это **Dagger + Room + Retrofit + Navigation + feature-каркас**. Тема и Compose закрыты; XML attrs больше не используются.
+- **Room** — entities, DAOs, `ShoppingDatabase`; кэш списков и товаров
+- **Dagger** — `Application`, `AppComponent`, модули по слоям (network, database, repository)
+- **Retrofit** — API популярных товаров → кэш в Room → подсказки offline
