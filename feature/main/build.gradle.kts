@@ -30,6 +30,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:data"))
     implementation(project(":core:mvi"))
     implementation(project(":core:design"))
     implementation(project(":core:common"))

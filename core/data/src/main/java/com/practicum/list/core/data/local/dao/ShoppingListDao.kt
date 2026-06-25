@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ShoppingListDao {
-
     @Query("SELECT * FROM shopping_lists ORDER BY id")
     fun observeAll(): Flow<List<ShoppingListEntity>>
 
