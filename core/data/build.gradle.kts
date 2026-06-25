@@ -3,6 +3,7 @@
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
     alias(libs.plugins.detekt)
+    alias(libs.plugins.hilt)
 }
 
 android {
@@ -38,8 +39,8 @@ dependencies {
     implementation(libs.moshi)
     implementation(libs.moshi.kotlin)
 
-    implementation(libs.dagger)
-    ksp(libs.dagger.compiler)
+    implementation(libs.hilt)
+    ksp(libs.hilt.compiler)
 
     detektPlugins(libs.detekt.formatting)
 }

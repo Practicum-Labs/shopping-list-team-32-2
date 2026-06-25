@@ -4,6 +4,7 @@
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
     alias(libs.plugins.detekt)
+    alias(libs.plugins.hilt)
 }
 
 android {
@@ -58,9 +59,10 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity.compose)
 
-    implementation(libs.dagger)
+    implementation(libs.hilt)
+    ksp(libs.hilt.compiler)
+
     implementation(libs.androidx.navigation.compose)
-    ksp(libs.dagger.compiler)
     implementation(libs.moshi)
     implementation(libs.moshi.kotlin)
     implementation(libs.okhttp)
