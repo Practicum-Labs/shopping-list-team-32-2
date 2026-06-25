@@ -48,6 +48,7 @@ dependencies {
     implementation(project(":feature:main"))
     implementation(project(":feature:product"))
 
+    implementation(project(":core:common"))
     implementation(project(":core:design"))
     implementation(project(":core:navigation"))
     implementation(project(":core:data"))
@@ -58,6 +59,7 @@ dependencies {
     implementation(libs.androidx.activity.compose)
 
     implementation(libs.dagger)
+    implementation(libs.androidx.navigation.compose)
     ksp(libs.dagger.compiler)
     implementation(libs.moshi)
     implementation(libs.moshi.kotlin)

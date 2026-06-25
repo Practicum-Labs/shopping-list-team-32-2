@@ -26,6 +26,10 @@ android {
 dependencies {
     detektPlugins(libs.detekt.formatting)
 }
+dependencies {
+    implementation(libs.androidx.activity.ktx)
+    implementation(libs.androidx.navigation.common.ktx)
+}
 
 detekt {
     config.setFrom(files("$rootDir/config/detekt/detekt.yml"))
