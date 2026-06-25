@@ -1,6 +1,5 @@
 package com.practicum.list.feature.product.ui.screens
 
-import android.graphics.Paint
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
