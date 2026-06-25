@@ -12,7 +12,7 @@ import com.practicum.list.core.data.local.entity.ShoppingListEntity
         ShoppingListEntity::class,
         ProductEntity::class,
     ],
-    version = 1,
+    version = 2,
     exportSchema = false,
 )
 abstract class ShoppingDatabase : RoomDatabase() {

@@ -5,12 +5,12 @@ import androidx.compose.animation.core.tween
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.practicum.list.core.common.domain.ListEntry
+import com.practicum.list.core.common.domain.ShoppingList
 import com.practicum.list.core.navigation.ListScreenRoute
 import com.practicum.list.core.navigation.MainScreenRoute
 
 fun NavGraphBuilder.mainScreenNavigation(
-    itemsList: List<ListEntry>,
+    itemsList: List<ShoppingList>,
     navController: NavController
 ) {
     composable<MainScreenRoute>(
