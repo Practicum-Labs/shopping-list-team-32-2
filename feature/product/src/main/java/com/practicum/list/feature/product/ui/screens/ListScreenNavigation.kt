@@ -24,6 +24,9 @@ fun NavGraphBuilder.listScreenNavigation(
             slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.End, tween(300))
         }
     ) {
-        ListScreen(onBackTap = { navController.popBackStack() })
+        ListScreen(
+            id = ,
+            onBackTap = { navController.popBackStack() }
+        )
     }
 }

@@ -5,10 +5,12 @@ import androidx.compose.animation.core.tween
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import com.practicum.list.core.common.domain.ListEntry
 import com.practicum.list.core.navigation.ListScreenRoute
 import com.practicum.list.core.navigation.MainScreenRoute
 
 fun NavGraphBuilder.mainScreenNavigation(
+    itemsList: List<ListEntry>,
     navController: NavController
 ) {
     composable<MainScreenRoute>(
@@ -25,6 +27,10 @@ fun NavGraphBuilder.mainScreenNavigation(
             slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.End, tween(300))
         }
     ) {
-        MainScreen { navController.navigate(ListScreenRoute(id = 1L)) }
+        MainScreen(
+            itemsList
+        ) {
+            navController.navigate(ListScreenRoute(id = it))
+        }
     }
 }
