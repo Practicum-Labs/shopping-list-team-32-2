@@ -5,6 +5,7 @@ import androidx.compose.animation.core.tween
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
 import com.practicum.list.core.navigation.ListScreenRoute
 
 fun NavGraphBuilder.listScreenNavigation(
@@ -23,9 +24,10 @@ fun NavGraphBuilder.listScreenNavigation(
         popExitTransition = {
             slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.End, tween(300))
         }
-    ) {
+    ) { entry ->
+        val route = entry.toRoute<ListScreenRoute>()
         ListScreen(
-            id = ,
+            id = route.id,
             onBackTap = { navController.popBackStack() }
         )
     }

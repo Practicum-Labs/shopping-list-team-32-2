@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import com.practicum.list.core.common.domain.ListEntry
 import com.practicum.list.core.navigation.MainScreenRoute
 import com.practicum.list.core.theme.ShoppingListTheme
 import com.practicum.list.feature.main.ui.screens.mainScreenNavigation
@@ -16,6 +17,12 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
+        val list = listOf(
+            ListEntry(1, "??????"),
+            ListEntry(2, "!!!!!!"),
+            ListEntry(3, "???!!!")
+        )
+
         setContent {
             val navController = rememberNavController()
             ShoppingListTheme {
@@ -23,7 +30,7 @@ class MainActivity : ComponentActivity() {
                     navController = navController,
                     startDestination = MainScreenRoute,
                 ) {
-                    mainScreenNavigation(navController)
+                    mainScreenNavigation(list, navController)
                     listScreenNavigation(navController)
                 }
             }
