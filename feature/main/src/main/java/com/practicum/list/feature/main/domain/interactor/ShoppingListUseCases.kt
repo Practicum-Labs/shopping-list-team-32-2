@@ -24,14 +24,13 @@ class ObserveShoppingListsUseCase @Inject constructor(private val repository: Sh
 }
 
 class ObserveShoppingListUseCase @Inject constructor(private val repository: ShoppingListRepository) {
-    operator fun invoke(shoppingListId: Long): Flow<ShoppingList?>{
+    operator fun invoke(shoppingListId: Long): Flow<ShoppingList?> {
         return repository.observeShoppingList(shoppingListId)
     }
 }
 
-class UpsertShoppingListUseCase @Inject constructor(private val repository: ShoppingListRepository){
-    suspend operator fun invoke(shoppingList: ShoppingList){
+class UpsertShoppingListUseCase @Inject constructor(private val repository: ShoppingListRepository) {
+    suspend operator fun invoke(shoppingList: ShoppingList) {
         repository.updateShoppingList(shoppingList)
     }
 }
-

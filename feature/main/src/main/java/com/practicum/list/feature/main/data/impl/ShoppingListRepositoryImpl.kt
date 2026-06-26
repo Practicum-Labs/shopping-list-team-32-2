@@ -4,6 +4,7 @@ import com.practicum.list.core.common.domain.ShoppingList
 import com.practicum.list.core.data.local.dao.ShoppingListDao
 import com.practicum.list.core.data.local.mapper.toDomain
 import com.practicum.list.core.data.local.mapper.toEntity
+import com.practicum.list.core.theme.R
 import com.practicum.list.feature.main.domain.repository.ShoppingListRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -13,6 +14,7 @@ import javax.inject.Inject
 class ShoppingListRepositoryImpl @Inject constructor(
     private val dao: ShoppingListDao
 ) : ShoppingListRepository {
+    private val defaultIconRes = R.drawable.ic_list_cart
 
     override suspend fun updateShoppingList(shoppingList: ShoppingList) {
         val shoppingListEntity = shoppingList.toEntity()
@@ -39,17 +41,16 @@ class ShoppingListRepositoryImpl @Inject constructor(
 
     override fun observeShoppingLists(): Flow<List<ShoppingList>> {
         return dao.observeAll().distinctUntilChanged()
-            .map { lists -> lists.map { list -> list.toDomain(DEFAULT_ICON_RES_ID) } }
+            .map { lists -> lists.map { list -> list.toDomain(defaultIconRes) } }
     }
 
     override fun observeShoppingList(shoppingListId: Long): Flow<ShoppingList?> {
         return dao.observeById(shoppingListId).distinctUntilChanged()
-            .map { list -> list?.toDomain(DEFAULT_ICON_RES_ID) }
+            .map { list -> list?.toDomain(defaultIconRes) }
     }
 
     companion object {
         private const val DEFAULT_ID = 0L
-        private const val DEFAULT_ICON_RES_ID = 1
         private const val COPY_STRING = "Копия"
     }
 }

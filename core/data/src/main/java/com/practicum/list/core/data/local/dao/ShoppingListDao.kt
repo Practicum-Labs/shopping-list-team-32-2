@@ -16,7 +16,7 @@ interface ShoppingListDao {
     fun observeById(id: Long): Flow<ShoppingListEntity?>
 
     @Query("SELECT * FROM shopping_lists WHERE id = :id")
-    fun getById(id: Long): ShoppingListEntity?
+    suspend fun getById(id: Long): ShoppingListEntity?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(entity: ShoppingListEntity): Long

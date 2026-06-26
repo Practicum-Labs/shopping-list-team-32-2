@@ -12,5 +12,7 @@ import dagger.hilt.components.SingletonComponent
 @Suppress("unused")
 abstract class ShoppingListRepositoryModule {
     @Binds
-    abstract fun bindShoppingListRepository(shoppingListRepositoryImpl: ShoppingListRepositoryImpl): ShoppingListRepository
+    abstract fun bindShoppingListRepository(
+        shoppingListRepositoryImpl: ShoppingListRepositoryImpl
+    ): ShoppingListRepository
 }
