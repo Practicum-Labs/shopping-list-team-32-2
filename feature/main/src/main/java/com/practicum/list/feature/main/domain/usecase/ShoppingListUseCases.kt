@@ -1,4 +1,4 @@
-package com.practicum.list.feature.main.domain.interactor
+package com.practicum.list.feature.main.domain.usecase
 
 import com.practicum.list.core.common.domain.ShoppingList
 import com.practicum.list.feature.main.domain.repository.ShoppingListRepository

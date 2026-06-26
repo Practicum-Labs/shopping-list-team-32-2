@@ -74,29 +74,44 @@ Build system:
 ```text
 app/src/main/java/
 └── com.practicum.list/
-    └── MainActivity.kt
+    ├── MainActivity.kt
+    ├── ShoppingListApplication.kt
+    └── di/
+        └── AppModule.kt
 
 core/design/src/main/java/
 └── com.practicum.list.core.theme/
     ├── ColorHex.kt    — HEX-константы light/dark (Figma)
     ├── Color.kt       — androidx.compose.ui.graphics.Color
     ├── Theme.kt       — ShoppingListTheme, light/dark ColorScheme
-    └── Type.kt        — Typography (M3)
+    ├── Type.kt        — Typography (M3)
+    └── ListIcons.kt   — DEFAULT_LIST_ICON и др.
 
 core/mvi/src/main/java/
 └── com.practicum.list.core.mvi/
     ├── MviState.kt, MviIntent.kt, MviEffect.kt
     └── MviViewModel.kt
 
-core/common/     — domain-модели, общий код
-core/navigation/ — NavGraph, маршруты
-feature/main/    — MainScreen, OnboardingScreen
-feature/product/ — ListScreen
+core/data/       — Room, Retrofit, DatabaseModule, NetworkModule
+core/common/     — domain-модели (ShoppingList, Product, …)
+core/navigation/ — type-safe маршруты (MainScreenRoute, ListScreenRoute)
+
+feature/main/
+├── presentation/  — MainState, MainIntent, MainEffect, MainViewModel
+├── domain/
+│   ├── repository/ — ShoppingListRepository
+│   └── usecase/    — *UseCase (ObserveShoppingLists, Upsert, …)
+├── data/
+│   ├── impl/       — ShoppingListRepositoryImpl
+│   └── di/         — ShoppingListRepositoryModule
+└── ui/screens/    — MainScreen, mainScreenNavigation
+
+feature/product/   — ListScreen, listScreenNavigation
 ```
 
-**`:core:design` не содержит `src/main/res/`** — палитра и типографика только в Kotlin.
+**`:core:design` не содержит `src/main/res/`** — палитра и типографика только в Kotlin (drawable иконок списков — в `:core:design`).
 
-Целевая раскладка feature-модулей: `presentation` (UI + ViewModel), `domain`, `data`, `di` — по мере роста проекта.
+Раскладка feature-модулей: `presentation`, `domain/usecase`, `data`, `ui` — см. README.
 
 ---
 
@@ -107,6 +122,7 @@ feature/product/ — ListScreen
 | namespace | `com.practicum.list` |
 | applicationId | `com.practicum.shopping_list` |
 | MainActivity | `ComponentActivity` + `setContent` |
+| Application | `ShoppingListApplication` + `@HiltAndroidApp` |
 | Theme (manifest) | `@style/Theme.ShoppingList` → `Theme.Material3.DayNight.NoActionBar` |
 
 В `app` остаётся минимальный XML — системная тема окна до старта Compose. Цвета UI задаются в `ShoppingListTheme`, не в XML.
@@ -123,8 +139,8 @@ feature/product/ — ListScreen
 | Navigation Compose | :core:navigation | NavHost, composable-маршруты |
 | Coroutines / StateFlow | :core:mvi | `MviViewModel` |
 | Detekt | все модули + CI | `config/detekt/detekt.yml` |
-| Room | :core:data | ShoppingDatabase, DAOs |
-| Dagger | :app + :core:data | AppComponent, DatabaseModule, NetworkModule |
+| Room | :core:data | ShoppingDatabase, DAOs, миграции |
+| Hilt | :app, :core:data, :feature:main | `@InstallIn(SingletonComponent)`, `@HiltViewModel` |
 | Retrofit / OkHttp | :core:data | ProductApi (base URL-заглушка) |
 
 **Тема:** Compose-only по требованию заказчика — без XML attrs/colors в `:core:design`.
@@ -140,9 +156,11 @@ feature/product/ — ListScreen
 - `MviState` — неизменяемое состояние экрана
 - `MviIntent` — действия пользователя / UI
 - `MviEffect` — одноразовые события (навигация, snackbar)
-- `MviViewModel` — `StateFlow` для state, `Channel` для effects
+- `MviViewModel` — `StateFlow` для state, `Channel` для effects; View вызывает `dispatch(intent)`
 
-Экранные ViewModel наследуют `MviViewModel` и обрабатывают intent'ы в `handleIntent`.
+Экранные ViewModel наследуют `MviViewModel`: синхронные изменения state — в `reduce`, side-effects (UseCase, `emitEffect`) — в `handleIntent`.
+
+Пример: `:feature:main` — `MainViewModel`, `MainState`, `MainIntent`, `MainEffect`.
 
 ---
 
@@ -222,20 +240,25 @@ ShoppingListTheme {
 
 ## 10. Навигация
 
-`:core:navigation` содержит `NavGraph` на Compose Navigation:
+Type-safe маршруты в `:core:navigation` (`@Serializable`):
 
-- маршруты объявляются в `NavHost`
-- feature-экраны подключаются как composable destination
-- передача аргументов — через `navArgument` (рекомендуется `listId: Long`, не JSON в path)
+- `MainScreenRoute` — главный экран
+- `ListScreenRoute(id: Long)` — экран списка / товаров
 
-Целевая схема зависимостей: `:app` связывает feature-модули с navigation; `:core:navigation` не должен тянуть feature напрямую.
+Feature-модули регистрируют destination через extension (`mainScreenNavigation`, `listScreenNavigation`). `:app` собирает `NavHost`.
+
+Передача аргументов — через type-safe routes (`ListScreenRoute(id = …)`), не hardcoded path.
 
 ---
 
-## 11. Планируемые слои (Room, Dagger, Retrofit)
+## 11. Data-слой и DI
 
-Кратко о задуманной интеграции — без привязки к доске задач:
+| Компонент | Где | Статус |
+|-----------|-----|--------|
+| **Room** | `:core:data` | `ShoppingDatabase` v2, `ShoppingListDao`, `ProductDao`, миграция `icon_res_id` |
+| **Hilt** | `:app`, `:core:data`, `:feature:*` | `DatabaseModule`, `NetworkModule`, `AppModule`, feature `@Binds`-модули |
+| **Retrofit** | `:core:data` | `ProductApi`, base URL-заглушка |
+| **Repository** | `:feature:main/data` | `ShoppingListRepository` + impl, маппер в `:core:data` |
+| **UseCase** | `:feature:main/domain/usecase` | Observe / Upsert / Delete / Duplicate |
 
-- **Room** — entities, DAOs, `ShoppingDatabase`; кэш списков и товаров
-- **Dagger** — `Application`, `AppComponent`, модули по слоям (network, database, repository)
-- **Retrofit** — API популярных товаров → кэш в Room → подсказки offline
+Domain-слой feature-модулей использует пакет **`domain/usecase`**, не `interactor`.
