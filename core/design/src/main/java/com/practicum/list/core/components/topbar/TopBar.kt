@@ -1,6 +1,5 @@
 package com.practicum.list.core.components.topbar
 
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -85,15 +84,11 @@ private fun TopBarText(text: String) {
 
 @Composable
 private fun DefaultIconButton(imageRes: Int, contentDescription: Int, onButtonClick: () -> Unit) {
-    val buttonModifier = Modifier
-        .size(24.dp)
-        .padding(16.dp)
-
     IconButton(
         onClick = onButtonClick,
     ) {
         Icon(
-            modifier = buttonModifier,
+            modifier = Modifier.size(24.dp),
             painter = painterResource(imageRes),
             tint = MaterialTheme.colorScheme.onSurface,
             contentDescription = stringResource(contentDescription),
@@ -101,36 +96,8 @@ private fun DefaultIconButton(imageRes: Int, contentDescription: Int, onButtonCl
     }
 }
 
-private const val TITLE_MY_LISTS = "Мои списки"
-private const val TITLE_PRODUCTS = "Продукты"
-
-private fun count(): Int {
-    return 1
-}
-
 @Preview
 @Composable
-private fun MainScreenTopBar() {
-    ShoppingListTheme{
-        TopBar(
-            onNavigateBack = { count() },
-            title = TITLE_MY_LISTS,
-            onSearchClick = { count() },
-            onDeleteClick = { count() },
-            onThemeClick = { count() }
-        )
-    }
+private fun MainPreview() {
+    ShoppingListTheme { TopBar(title = "Мои списки", onNavigateBack = {}) }
 }
-
-@Preview
-@Composable
-private fun ProductScreenTopBar() {
-    ShoppingListTheme {
-        TopBar(
-            title = TITLE_PRODUCTS,
-            onNavigateBack = { count() },
-            onOptionsClick = { count() }
-        )
-    }
-}
-        
