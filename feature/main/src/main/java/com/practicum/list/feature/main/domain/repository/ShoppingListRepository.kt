@@ -9,5 +9,5 @@ interface ShoppingListRepository {
     suspend fun deleteShoppingList(shoppingListId: Long)
     suspend fun deleteAllShoppingLists()
     fun observeShoppingLists(): Flow<List<ShoppingList>>
-    fun observeShoppingList(shoppingListId: Long): Flow<ShoppingList>
+    fun observeShoppingList(shoppingListId: Long): Flow<ShoppingList?>
 }
