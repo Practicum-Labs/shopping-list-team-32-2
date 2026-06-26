@@ -12,7 +12,9 @@ import com.practicum.list.core.theme.ListIcons
 import com.practicum.list.core.theme.ShoppingListTheme
 import com.practicum.list.feature.main.ui.screens.mainScreenNavigation
 import com.practicum.list.feature.product.ui.screens.listScreenNavigation
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

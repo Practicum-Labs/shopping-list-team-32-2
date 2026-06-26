@@ -8,9 +8,12 @@ import com.practicum.list.core.data.local.MIGRATION_1_2
 import com.practicum.list.core.data.local.ShoppingDatabase
 import com.practicum.list.core.data.local.dao.ProductDao
 import com.practicum.list.core.data.local.dao.ShoppingListDao
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 @Module
+@InstallIn(SingletonComponent::class)
 object DatabaseModule {
 
     private const val DATABASE_NAME = "shopping_list.db"
