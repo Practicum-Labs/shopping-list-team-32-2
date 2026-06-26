@@ -7,10 +7,12 @@ import com.practicum.list.core.data.local.mapper.toEntity
 import com.practicum.list.feature.main.domain.repository.ShoppingListRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
-class ShoppingListRepositoryImpl(private val dao: ShoppingListDao) : ShoppingListRepository {
+class ShoppingListRepositoryImpl @Inject constructor(
+    private val dao: ShoppingListDao
+) : ShoppingListRepository {
 
     override suspend fun updateShoppingList(shoppingList: ShoppingList) {
         val shoppingListEntity = shoppingList.toEntity()
@@ -18,8 +20,12 @@ class ShoppingListRepositoryImpl(private val dao: ShoppingListDao) : ShoppingLis
     }
 
     override suspend fun duplicateShoppingList(shoppingListId: Long) {
+        val shoppingListEntity = dao.getById(shoppingListId)
         val duplicateListEntity =
-            dao.observeById(shoppingListId).first()?.copy(id = shoppingListId + ID_INCREMENT)
+            shoppingListEntity?.copy(
+                id = DEFAULT_ID,
+                name = "$COPY_STRING ${shoppingListEntity.name}"
+            )
         duplicateListEntity?.let { dao.upsert(it) }
     }
 
@@ -37,11 +43,13 @@ class ShoppingListRepositoryImpl(private val dao: ShoppingListDao) : ShoppingLis
     }
 
     override fun observeShoppingList(shoppingListId: Long): Flow<ShoppingList?> {
-        return dao.observeById(shoppingListId).distinctUntilChanged().map { list -> list?.toDomain(DEFAULT_ICON_RES_ID) }
+        return dao.observeById(shoppingListId).distinctUntilChanged()
+            .map { list -> list?.toDomain(DEFAULT_ICON_RES_ID) }
     }
 
     companion object {
-        private const val ID_INCREMENT = 1
+        private const val DEFAULT_ID = 0L
         private const val DEFAULT_ICON_RES_ID = 1
+        private const val COPY_STRING = "Копия"
     }
 }

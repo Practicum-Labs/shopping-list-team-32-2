@@ -4,8 +4,8 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import kotlinx.coroutines.flow.Flow
 import com.practicum.list.core.data.local.entity.ProductEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ProductDao {

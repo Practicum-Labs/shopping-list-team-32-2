@@ -2,12 +2,12 @@
 
 import android.content.Context
 import androidx.room.Room
-import dagger.Module
-import dagger.Provides
 import com.practicum.list.core.data.local.MIGRATION_1_2
 import com.practicum.list.core.data.local.ShoppingDatabase
 import com.practicum.list.core.data.local.dao.ProductDao
 import com.practicum.list.core.data.local.dao.ShoppingListDao
+import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
