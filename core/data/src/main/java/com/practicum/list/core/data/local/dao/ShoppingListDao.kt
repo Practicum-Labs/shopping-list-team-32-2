@@ -4,8 +4,8 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import kotlinx.coroutines.flow.Flow
 import com.practicum.list.core.data.local.entity.ShoppingListEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ShoppingListDao {
@@ -13,6 +13,15 @@ interface ShoppingListDao {
     @Query("SELECT * FROM shopping_lists ORDER BY id")
     fun observeAll(): Flow<List<ShoppingListEntity>>
 
+    @Query("SELECT * FROM shopping_lists WHERE id = :id")
+    fun observeById(id: Long): Flow<ShoppingListEntity?>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(entity: ShoppingListEntity): Long
+    suspend fun upsert(entity: ShoppingListEntity): Long
+
+    @Query("DELETE FROM shopping_lists WHERE id = :id")
+    suspend fun deleteById(id: Long)
+
+    @Query("DELETE FROM shopping_lists")
+    suspend fun deleteAll()
 }
