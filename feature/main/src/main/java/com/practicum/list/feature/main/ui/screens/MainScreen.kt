@@ -8,12 +8,15 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.practicum.list.core.components.cards.SwipeableListItem
 import com.practicum.list.feature.main.presentation.MainIntent
 import com.practicum.list.feature.main.presentation.MainState
+import com.practicum.list.core.theme.ui.CustomLayoutDialog
 
 @Composable
 fun MainScreen(
@@ -21,6 +24,8 @@ fun MainScreen(
     onIntent: (MainIntent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val shouldShowDialog = remember { mutableStateOf(false) }
+
     Box(
         modifier = modifier.fillMaxSize(),
     ) {
@@ -64,6 +69,30 @@ fun MainScreen(
                         )
                     }
                 }
+            }
+
+            CustomLayoutDialog(
+                isVisible = shouldShowDialog.value,
+                titleTextRes = R.string.new_list_dialog_title_text,
+                iconRes = R.drawable.docs_add_on,
+                primaryButtonTextRes = R.string.cancel_general_text ,
+                secondaryButtonTextRes = R.string.new_list_dialog_create_button_text,
+                textEditLabelRes = R.string.new_list_label_text,
+                textEditPlaceholderTextRes = R.string.new_list_placeholder_text,
+                textEditText = "????",
+                onConfirm = { shouldShowDialog.value = false },
+                onDismiss = { shouldShowDialog.value = false },
+                onTextChange = { }
+            )
+
+            Button(
+                {
+                    onAddClick()
+                    shouldShowDialog.value = true
+                },
+                enabled = true,
+            ) {
+                Text("Добавить")
             }
         }
     }
