@@ -1,6 +1,7 @@
 package com.practicum.list.feature.main.ui.screens
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -12,6 +13,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.practicum.list.core.components.cards.SwipeableListItem
 import com.practicum.list.feature.main.presentation.MainIntent
@@ -25,6 +28,8 @@ fun MainScreen(
     modifier: Modifier = Modifier,
 ) {
     val shouldShowDialog = remember { mutableStateOf(false) }
+    val interactionSource = remember { MutableInteractionSource() }
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     Box(
         modifier = modifier.fillMaxSize(),
@@ -78,11 +83,12 @@ fun MainScreen(
                 primaryButtonTextRes = R.string.cancel_general_text ,
                 secondaryButtonTextRes = R.string.new_list_dialog_create_button_text,
                 textEditLabelRes = R.string.new_list_label_text,
-                textEditPlaceholderTextRes = R.string.new_list_placeholder_text,
                 textEditText = "????",
+                interactionSource = interactionSource,
                 onConfirm = { shouldShowDialog.value = false },
                 onDismiss = { shouldShowDialog.value = false },
-                onTextChange = { }
+                onTextChange = { },
+                onKeyboardDone = { keyboardController?.hide() }
             )
 
             Button(

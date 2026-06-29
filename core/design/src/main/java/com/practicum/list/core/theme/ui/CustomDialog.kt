@@ -1,5 +1,6 @@
 package com.practicum.list.core.theme.ui
 
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,21 +33,24 @@ fun CustomLayoutDialog(
     titleTextRes: Int,
     iconRes: Int,
     textEditLabelRes: Int,
-    textEditPlaceholderTextRes: Int,
     primaryButtonTextRes: Int,
     secondaryButtonTextRes: Int,
     textEditText: String,
+    modifier: Modifier = Modifier,
+    interactionSource: MutableInteractionSource,
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
-    onTextChange: (String) -> Unit
+    onTextChange: (String) -> Unit,
+    onKeyboardDone: () -> Unit,
 ) {
+
     if (isVisible) {
         Dialog(onDismissRequest = onDismiss) {
             Card(
+                modifier = modifier,
                 shape = RoundedCornerShape(28.dp)
             ) {
                 Column(
-                    modifier = Modifier.padding(DialogVerticalPadding),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     DialogIcon(
@@ -56,7 +60,7 @@ fun CustomLayoutDialog(
                     Text(
                         text = stringResource(titleTextRes),
                         style = MaterialTheme.typography.headlineLarge
-                            .copy(color = MaterialTheme.colorScheme.onSurface),
+                            .copy(color = MaterialTheme.colorScheme.surfaceBright),
                         modifier = Modifier.padding(
                             vertical = 16.dp,
                             horizontal = DialogVerticalPadding
@@ -69,13 +73,14 @@ fun CustomLayoutDialog(
                                 horizontal = DialogHorizontalPadding
                             ),
                         labelTextRes = textEditLabelRes,
-                        placeholderTextRes = textEditPlaceholderTextRes,
                         textString = textEditText,
+                        interactionSource = interactionSource,
+                        onKeyboardDone = { onKeyboardDone() },
                         onTextChange = { onTextChange(it) }
                     )
                     Row(
                         horizontalArrangement = Arrangement.End,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth().padding(bottom = DialogVerticalPadding)
                     ) {
                         DialogButton( primaryButtonTextRes ) { onConfirm() }
                         DialogButton(
