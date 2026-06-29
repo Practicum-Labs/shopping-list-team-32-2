@@ -16,6 +16,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.practicum.list.core.theme.ui.ShoppingListCell
+import com.practicum.list.core.theme.ui.SwipeableListItem
+import com.practicum.list.feature.main.R
 import com.practicum.list.feature.main.presentation.MainIntent
 import com.practicum.list.feature.main.presentation.MainState
 
@@ -36,6 +39,15 @@ fun MainScreen(
             state.isEmpty -> {
                 Column(modifier = Modifier.align(Alignment.Center)) {
                     Text("Нет списков покупок")
+                    Text("Временный пример айтема")
+                    SwipeableListItem(
+                            text = "Первый элемент",
+                            iconResId = com.practicum.list.core.theme.R.drawable.ic_list_cart,
+                            onClick = {  },
+                            onDeleteClick = {  },
+                            onEditClick = {  },
+                            onCopyClick = {  }
+                    )
                     Button(onClick = { onIntent(MainIntent.CreateListClicked) }) {
                         Text("Создать список")
                     }
@@ -49,19 +61,14 @@ fun MainScreen(
                     }
 
                     state.lists.forEach { item ->
-                        Button(
-                            modifier = Modifier.align(Alignment.CenterHorizontally),
+                        SwipeableListItem(
+                            text = item.name,
+                            iconResId = item.iconResId,
                             onClick = { onIntent(MainIntent.OpenList(item.id)) },
-                        ) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(
-                                    painter = painterResource(item.iconResId),
-                                    contentDescription = null,
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text(item.name)
-                            }
-                        }
+                            onDeleteClick = { onIntent(MainIntent.DeleteList(item.id)) },
+                            onEditClick = { onIntent(MainIntent.RenameList(item.id)) },
+                            onCopyClick = { onIntent(MainIntent.DuplicateList(item.id)) }
+                        )
                     }
                 }
             }
