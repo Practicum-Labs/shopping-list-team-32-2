@@ -20,6 +20,7 @@ import com.practicum.list.core.components.cards.SwipeableListItem
 import com.practicum.list.feature.main.presentation.MainIntent
 import com.practicum.list.feature.main.presentation.MainState
 import com.practicum.list.core.components.dialogs.CustomLayoutDialog
+import com.practicum.list.core.theme.R as R
 
 @Composable
 fun MainScreen(
@@ -27,7 +28,7 @@ fun MainScreen(
     onIntent: (MainIntent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val shouldShowDialog = remember { mutableStateOf(false) }
+    val dialog = state.createListDialog
     val interactionSource = remember { MutableInteractionSource() }
     val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -42,29 +43,25 @@ fun MainScreen(
             state.isEmpty -> {
                 Column(modifier = Modifier.align(Alignment.Center)) {
                     Text("Нет списков покупок")
-                    Button(
-                        onClick = {
-                        onIntent(MainIntent.CreateListClicked)
-                            shouldShowDialog.value = true
-                        }
-                    ) {
+                    Button(onClick = { onIntent(MainIntent.CreateListClicked) }) {
                         Text("Создать список")
                     }
 
-                    CustomLayoutDialog(
-                        isVisible = shouldShowDialog.value,
-                        titleTextRes = R.string.new_list_dialog_title_text,
-                        iconRes = R.drawable.docs_add_on,
-                        primaryButtonTextRes = R.string.cancel_general_text ,
-                        secondaryButtonTextRes = R.string.new_list_dialog_create_button_text,
-                        textEditLabelRes = R.string.new_list_label_text,
-                        textEditText = "????",
-                        interactionSource = interactionSource,
-                        onConfirm = { shouldShowDialog.value = false },
-                        onDismiss = { shouldShowDialog.value = false },
-                        onTextChange = { },
-                        onKeyboardDone = { keyboardController?.hide() }
-                    )
+                    if (dialog!= null) {
+                        CustomLayoutDialog(
+                            titleTextRes = R.string.new_list_dialog_title_text,
+                            iconRes = R.drawable.docs_add_on,
+                            primaryButtonTextRes = R.string.cancel_general_text,
+                            secondaryButtonTextRes = R.string.new_list_dialog_create_button_text,
+                            textEditLabelRes = R.string.new_list_label_text,
+                            textEditText = dialog.name,
+                            interactionSource = interactionSource,
+                            onConfirm = { onIntent(MainIntent.ConfirmCreateList) },
+                            onDismiss = { onIntent(MainIntent.DismissCreateListDialog) },
+                            onTextChange = { onIntent(MainIntent.CreateListNameChanged(it)) },
+                            onKeyboardDone = { keyboardController?.hide() },
+                        )
+                    }
                 }
             }
 

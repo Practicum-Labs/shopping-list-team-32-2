@@ -30,7 +30,6 @@ import com.practicum.list.core.components.CustomTextEdit
 
 @Composable
 fun CustomLayoutDialog(
-    isVisible: Boolean,
     titleTextRes: Int,
     iconRes: Int,
     textEditLabelRes: Int,
@@ -44,8 +43,6 @@ fun CustomLayoutDialog(
     onTextChange: (String) -> Unit,
     onKeyboardDone: () -> Unit,
 ) {
-
-    if (isVisible) {
         Dialog(onDismissRequest = onDismiss) {
             Card(
                 modifier = modifier,
@@ -92,7 +89,6 @@ fun CustomLayoutDialog(
                 }
             }
         }
-    }
 }
 
 @Composable
