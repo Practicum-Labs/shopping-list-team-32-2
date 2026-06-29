@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="placeholder_empty_title">У вас пока нет списков</string>
+    <string name="placeholder_empty_message">Нажмите на кнопку + ниже, чтобы создать свой первый список</string>
+</resources>

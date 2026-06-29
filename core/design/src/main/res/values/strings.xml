@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="title_my_lists">Мои списки</string>
     <string name="action_navigate_back">назад</string>
     <string name="action_search">поиск</string>
     <string name="action_delete">удалить</string>
