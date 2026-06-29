@@ -14,7 +14,9 @@ import androidx.compose.foundation.gestures.AnchoredDraggableState
 import androidx.compose.foundation.gestures.DraggableAnchors
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.anchoredDraggable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -68,7 +70,7 @@ fun SwipeableListItem(
     ) {
         ShoppingListActions(
             modifier = Modifier
-                .align(Alignment.CenterEnd)
+                .align(Alignment.TopEnd)
                 .graphicsLayer {
                     alpha = (-state.requireOffset() / actionWidthPx).coerceIn(0f, 1f)
                 },
@@ -95,7 +97,7 @@ fun ShoppingListCell(
     state: AnchoredDraggableState<DragAnchors>,
 ) {
     ListItem(
-        modifier = Modifier
+        modifier = modifier
             .offset { IntOffset(state.requireOffset().roundToInt(), 0) }
             .anchoredDraggable(state, Orientation.Horizontal)
             .padding(start = 16.dp)
@@ -105,16 +107,27 @@ fun ShoppingListCell(
                 elevation = 2.dp,
                 shape = RoundedCornerShape(12.dp),
             ),
-        leadingContent = {
-            RoundIconButton(
-                resId = iconResId,
-                onClick = onClick,
-                contentColor = MaterialTheme.colorScheme.primaryContainer,
-                containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                enabled = false
-            )
+        headlineContent = {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                RoundIconButton(
+                    resId = iconResId,
+                    onClick = onClick,
+                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    enabled = false
+                )
+                Text(
+                    maxLines = 1,
+                    text = text,
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                )
+            }
         },
-        headlineContent = {Text(text)},
         overlineContent = {},
         colors = ListItemColors(
             containerColor = MaterialTheme.colorScheme.inverseOnSurface,
