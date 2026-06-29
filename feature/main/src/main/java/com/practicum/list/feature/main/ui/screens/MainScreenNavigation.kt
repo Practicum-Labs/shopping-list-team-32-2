@@ -42,9 +42,9 @@ fun NavGraphBuilder.mainScreenNavigation(
         }
     ) {
         MainScreen(
-            itemsList
-        ) {
-            navController.navigate(ListScreenRoute(id = it))
-        }
+            itemsList,
+            onItemTap ={ navController.navigate(ListScreenRoute(id = it)) },
+            onAddClick = {}
+        )
     }
 }

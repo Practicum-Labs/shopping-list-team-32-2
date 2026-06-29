@@ -12,7 +12,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.practicum.list.core.common.domain.ShoppingList
 import com.practicum.list.core.theme.R
-import com.practicum.list.core.theme.ui.CustomLayoutDialog
 import com.practicum.list.core.theme.ui.SwipeableListItem
 
 @Composable
@@ -39,20 +38,6 @@ fun MainScreen(
                         { onItemTap(item.id) }, {}, {}, {}
                     )
                 }
-
-            CustomLayoutDialog(
-                isVisible = shouldShowDialog.value,
-                titleTextRes = R.string.new_list_dialog_title_text,
-                iconRes = R.drawable.docs_add_on,
-                primaryButtonTextRes = R.string.cancel_general_text ,
-                secondaryButtonTextRes = R.string.new_list_dialog_create_button_text,
-                textEditLabelRes = R.string.new_list_label_text,
-                textEditPlaceholderTextRes = R.string.new_list_placeholder_text,
-                textEditText = "????",
-                onConfirm = { shouldShowDialog.value = false },
-                onDismiss = { shouldShowDialog.value = false },
-                onTextChange = { }
-            )
 
             Button(
                 {
