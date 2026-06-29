@@ -1,4 +1,4 @@
-package com.practicum.list.core.theme.ui
+package com.practicum.list.core.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource

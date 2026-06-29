@@ -1,4 +1,4 @@
-package com.practicum.list.core.theme.ui
+package com.practicum.list.core.components.dialogs
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -26,6 +26,7 @@ import androidx.compose.ui.window.Dialog
 import com.practicum.list.core.theme.Dimens.DialogHorizontalPadding
 import com.practicum.list.core.theme.Dimens.DialogIconDimension
 import com.practicum.list.core.theme.Dimens.DialogVerticalPadding
+import com.practicum.list.core.components.CustomTextEdit
 
 @Composable
 fun CustomLayoutDialog(

@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.practicum.list.core.components.cards.SwipeableListItem
 import com.practicum.list.feature.main.presentation.MainIntent
 import com.practicum.list.feature.main.presentation.MainState
-import com.practicum.list.core.theme.ui.CustomLayoutDialog
+import com.practicum.list.core.components.dialogs.CustomLayoutDialog
 
 @Composable
 fun MainScreen(
@@ -42,18 +42,29 @@ fun MainScreen(
             state.isEmpty -> {
                 Column(modifier = Modifier.align(Alignment.Center)) {
                     Text("Нет списков покупок")
-                    Text("Временный пример айтема")
-                    SwipeableListItem(
-                        text = "Первый элемент",
-                        iconResId = com.practicum.list.core.theme.R.drawable.ic_list_cart,
-                        onClick = { },
-                        onDeleteClick = { },
-                        onEditClick = { },
-                        onCopyClick = { }
-                    )
-                    Button(onClick = { onIntent(MainIntent.CreateListClicked) }) {
+                    Button(
+                        onClick = {
+                        onIntent(MainIntent.CreateListClicked)
+                            shouldShowDialog.value = true
+                        }
+                    ) {
                         Text("Создать список")
                     }
+
+                    CustomLayoutDialog(
+                        isVisible = shouldShowDialog.value,
+                        titleTextRes = R.string.new_list_dialog_title_text,
+                        iconRes = R.drawable.docs_add_on,
+                        primaryButtonTextRes = R.string.cancel_general_text ,
+                        secondaryButtonTextRes = R.string.new_list_dialog_create_button_text,
+                        textEditLabelRes = R.string.new_list_label_text,
+                        textEditText = "????",
+                        interactionSource = interactionSource,
+                        onConfirm = { shouldShowDialog.value = false },
+                        onDismiss = { shouldShowDialog.value = false },
+                        onTextChange = { },
+                        onKeyboardDone = { keyboardController?.hide() }
+                    )
                 }
             }
 
@@ -74,31 +85,6 @@ fun MainScreen(
                         )
                     }
                 }
-            }
-
-            CustomLayoutDialog(
-                isVisible = shouldShowDialog.value,
-                titleTextRes = R.string.new_list_dialog_title_text,
-                iconRes = R.drawable.docs_add_on,
-                primaryButtonTextRes = R.string.cancel_general_text ,
-                secondaryButtonTextRes = R.string.new_list_dialog_create_button_text,
-                textEditLabelRes = R.string.new_list_label_text,
-                textEditText = "????",
-                interactionSource = interactionSource,
-                onConfirm = { shouldShowDialog.value = false },
-                onDismiss = { shouldShowDialog.value = false },
-                onTextChange = { },
-                onKeyboardDone = { keyboardController?.hide() }
-            )
-
-            Button(
-                {
-                    onAddClick()
-                    shouldShowDialog.value = true
-                },
-                enabled = true,
-            ) {
-                Text("Добавить")
             }
         }
     }
