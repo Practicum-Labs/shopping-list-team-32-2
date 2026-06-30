@@ -20,7 +20,6 @@ fun ShoppingListActions(
     onCopyClick: () -> Unit,
     onEditClick: () -> Unit,
 ) {
-
     val containerColor = MaterialTheme.colorScheme.surfaceContainerHighest
     val contentColor = MaterialTheme.colorScheme.tertiary
     Row(
@@ -30,7 +29,7 @@ fun ShoppingListActions(
             .width(144.dp)
     ) {
         IconBox(
-           resId = R.drawable.ic_pencil,
+            resId = R.drawable.ic_pencil,
             enabled = true,
             containerColor,
             contentColor,
@@ -61,8 +60,7 @@ fun IconBox(
     contentColor: Color,
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
-
-    ) {
+) {
     Box(
         modifier = Modifier
             .height(48.dp)

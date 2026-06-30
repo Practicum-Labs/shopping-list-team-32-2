@@ -36,8 +36,8 @@ fun RoundIconButton(
         colors = IconButtonColors(
             containerColor = containerColor,
             contentColor = contentColor,
-            disabledContainerColor = disabledContainerColor?:containerColor,
-            disabledContentColor = disabledContentColor?:contentColor
+            disabledContainerColor = disabledContainerColor ?: containerColor,
+            disabledContentColor = disabledContentColor ?: contentColor
         )
     ) {
         Icon(

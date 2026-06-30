@@ -4,5 +4,5 @@ import androidx.compose.ui.unit.dp
 
 object Dimens {
     val ListItemHeight = 56.dp
-    val AnimationDuration = 300
+    const val AnimationDuration = 300
 }

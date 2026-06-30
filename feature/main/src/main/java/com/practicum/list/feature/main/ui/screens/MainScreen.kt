@@ -34,12 +34,12 @@ fun MainScreen(
                     Text("Нет списков покупок")
                     Text("Временный пример айтема")
                     SwipeableListItem(
-                            text = "Первый элемент",
-                            iconResId = com.practicum.list.core.theme.R.drawable.ic_list_cart,
-                            onClick = {  },
-                            onDeleteClick = {  },
-                            onEditClick = {  },
-                            onCopyClick = {  }
+                        text = "Первый элемент",
+                        iconResId = com.practicum.list.core.theme.R.drawable.ic_list_cart,
+                        onClick = { },
+                        onDeleteClick = { },
+                        onEditClick = { },
+                        onCopyClick = { }
                     )
                     Button(onClick = { onIntent(MainIntent.CreateListClicked) }) {
                         Text("Создать список")
