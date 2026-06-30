@@ -8,8 +8,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.AnchoredDraggableDefaults
 import androidx.compose.foundation.gestures.AnchoredDraggableState
 import androidx.compose.foundation.gestures.DraggableAnchors
 import androidx.compose.foundation.gestures.Orientation
@@ -30,6 +33,8 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
 import com.practicum.list.core.components.buttons.RoundIconButton
 import com.practicum.list.core.components.buttons.ShoppingListActions
+import com.practicum.list.core.theme.Dimens.AnimationDuration
+import com.practicum.list.core.theme.Dimens.ListItemHeight
 import kotlin.math.roundToInt
 
 enum class DragAnchors {
@@ -47,8 +52,7 @@ fun SwipeableListItem(
     onEditClick: () -> Unit,
     onCopyClick: () -> Unit
 ) {
-    val density = LocalDensity.current
-    val actionWidthPx = with(density) { 160.dp.toPx() }
+    val actionWidthPx = with(LocalDensity.current) { 160.dp.toPx() }
 
     val state = remember {
         AnchoredDraggableState(
@@ -67,7 +71,7 @@ fun SwipeableListItem(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 16.dp)
-            .height(56.dp)
+            .height(ListItemHeight)
             .background(MaterialTheme.colorScheme.background)
     ) {
         ShoppingListActions(
@@ -98,12 +102,17 @@ fun ShoppingListCell(
     onClick: () -> Unit,
     state: AnchoredDraggableState<DragAnchors>,
 ) {
+    val flingBehavior = AnchoredDraggableDefaults.flingBehavior(
+        state = state,
+        animationSpec = tween(durationMillis = AnimationDuration, easing = FastOutSlowInEasing),
+    )
+
     ListItem(
         modifier = modifier
             .offset { IntOffset(state.requireOffset().roundToInt(), 0) }
-            .anchoredDraggable(state, Orientation.Horizontal)
+            .anchoredDraggable(state, Orientation.Horizontal, flingBehavior = flingBehavior)
             .padding(start = 16.dp)
-            .height(56.dp)
+            .height(ListItemHeight)
             .width(380.dp)
             .shadow(
                 elevation = 2.dp,
