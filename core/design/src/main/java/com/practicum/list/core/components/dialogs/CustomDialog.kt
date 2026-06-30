@@ -24,10 +24,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.practicum.list.core.components.CustomTextEdit
 import com.practicum.list.core.theme.Dimens.DialogHorizontalPadding
 import com.practicum.list.core.theme.Dimens.DialogIconDimension
 import com.practicum.list.core.theme.Dimens.DialogVerticalPadding
-import com.practicum.list.core.components.CustomTextEdit
 
 @Composable
 fun CustomLayoutDialog(
@@ -44,52 +44,52 @@ fun CustomLayoutDialog(
     onTextChange: (String) -> Unit,
     onKeyboardDone: () -> Unit,
 ) {
-        Dialog(onDismissRequest = onDismiss) {
-            Card(
-                modifier = modifier,
-                shape = RoundedCornerShape(28.dp)
+    Dialog(onDismissRequest = onDismiss) {
+        Card(
+            modifier = modifier,
+            shape = RoundedCornerShape(28.dp)
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
+                DialogIcon(
+                    iconRes,
+                    modifier = Modifier.padding(top = DialogVerticalPadding)
+                )
+                Text(
+                    text = stringResource(titleTextRes),
+                    style = MaterialTheme.typography.headlineLarge
+                        .copy(color = MaterialTheme.colorScheme.surfaceBright),
+                    modifier = Modifier.padding(
+                        vertical = 16.dp,
+                        horizontal = DialogVerticalPadding
+                    )
+                )
+                CustomTextEdit(
+                    modifier = Modifier
+                        .padding(
+                            vertical = DialogVerticalPadding,
+                            horizontal = DialogHorizontalPadding
+                        ),
+                    labelTextRes = textEditLabelRes,
+                    textString = textEditText,
+                    interactionSource = interactionSource,
+                    onKeyboardDone = { onKeyboardDone() },
+                    onTextChange = { onTextChange(it) }
+                )
+                Row(
+                    horizontalArrangement = Arrangement.End,
+                    modifier = Modifier.fillMaxWidth().padding(bottom = DialogVerticalPadding)
                 ) {
-                    DialogIcon(
-                        iconRes,
-                        modifier = Modifier.padding(top = DialogVerticalPadding)
-                    )
-                    Text(
-                        text = stringResource(titleTextRes),
-                        style = MaterialTheme.typography.headlineLarge
-                            .copy(color = MaterialTheme.colorScheme.surfaceBright),
-                        modifier = Modifier.padding(
-                            vertical = 16.dp,
-                            horizontal = DialogVerticalPadding
-                        )
-                    )
-                    CustomTextEdit(
-                        modifier = Modifier
-                            .padding(
-                                vertical = DialogVerticalPadding,
-                                horizontal = DialogHorizontalPadding
-                            ),
-                        labelTextRes = textEditLabelRes,
-                        textString = textEditText,
-                        interactionSource = interactionSource,
-                        onKeyboardDone = { onKeyboardDone() },
-                        onTextChange = { onTextChange(it) }
-                    )
-                    Row(
-                        horizontalArrangement = Arrangement.End,
-                        modifier = Modifier.fillMaxWidth().padding(bottom = DialogVerticalPadding)
-                    ) {
-                        DialogButton( primaryButtonTextRes ) { onConfirm() }
-                        DialogButton(
-                            secondaryButtonTextRes,
-                            Modifier.padding(start = 8.dp, end = 24.dp)
-                        ) { onDismiss() }
-                    }
+                    DialogButton(primaryButtonTextRes) { onConfirm() }
+                    DialogButton(
+                        secondaryButtonTextRes,
+                        Modifier.padding(start = 8.dp, end = 24.dp)
+                    ) { onDismiss() }
                 }
             }
         }
+    }
 }
 
 @Composable
@@ -129,4 +129,3 @@ fun DialogIcon(
         )
     }
 }
-

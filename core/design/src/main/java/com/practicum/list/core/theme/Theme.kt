@@ -60,7 +60,6 @@ private val LightColorScheme = lightColorScheme(
     outline = OutlineLight,
     outlineVariant = OutlineVariantLight,
     surfaceBright = SurfaceBrightLight
-
 )
 
 @Composable
