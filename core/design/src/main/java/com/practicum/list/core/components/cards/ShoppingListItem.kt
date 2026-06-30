@@ -1,4 +1,4 @@
-package com.practicum.list.core.theme.ui
+package com.practicum.list.core.components.cards
 
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.ListItem
@@ -28,6 +28,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
+import com.practicum.list.core.components.buttons.RoundIconButton
+import com.practicum.list.core.components.buttons.ShoppingListActions
 import kotlin.math.roundToInt
 
 enum class DragAnchors {

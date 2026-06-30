@@ -1,4 +1,4 @@
-package com.practicum.list.core.theme.ui
+package com.practicum.list.core.components.buttons
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.practicum.list.core.theme.R
 
 @Composable
 fun ShoppingListActions(
@@ -29,21 +30,21 @@ fun ShoppingListActions(
             .width(144.dp)
     ) {
         IconBox(
-           resId = com.practicum.list.core.theme.R.drawable.ic_pencil,
+           resId = R.drawable.ic_pencil,
             enabled = true,
             containerColor,
             contentColor,
             onClick = onEditClick
         )
         IconBox(
-            resId = com.practicum.list.core.theme.R.drawable.ic_copy,
+            resId = R.drawable.ic_copy,
             enabled = true,
             containerColor,
             contentColor,
             onClick = onCopyClick
         )
         IconBox(
-            resId = com.practicum.list.core.theme.R.drawable.ic_delete,
+            resId = R.drawable.ic_delete,
             enabled = true,
             containerColor,
             contentColor,

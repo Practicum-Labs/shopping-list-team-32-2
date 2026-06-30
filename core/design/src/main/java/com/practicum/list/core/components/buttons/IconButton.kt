@@ -1,4 +1,4 @@
-package com.practicum.list.core.theme.ui
+package com.practicum.list.core.components.buttons
 
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.practicum.list.core.theme.R
 
 @Composable
 fun RoundIconButton(
@@ -49,7 +50,7 @@ fun RoundIconButton(
 @Preview
 @Composable
 fun PawIcon() = RoundIconButton(
-    com.practicum.list.core.theme.R.drawable.ic_list_cart,
+    R.drawable.ic_list_cart,
     {},
     contentColor = MaterialTheme.colorScheme.primaryContainer,
     containerColor = MaterialTheme.colorScheme.secondaryContainer,
