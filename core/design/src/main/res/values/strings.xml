@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="new_list_label_text">Название списка</string>
+    <string name="new_list_placeholder_text">Новый список</string>
+    <string name="new_list_dialog_title_text">Добавление списка</string>
+    <string name="cancel_general_text">Отмена</string>
+    <string name="new_list_dialog_create_button_text">Создать</string>
+</resources>

@@ -71,8 +71,6 @@ private fun MainScreenRouteContent(navController: NavController) {
                 is MainEffect.NavigateToList ->
                     navController.navigate(ListScreenRoute(id = effect.id))
 
-                is MainEffect.NavigateToCreateList -> Unit
-
                 is MainEffect.ShowDeleteConfirmation -> Unit
 
                 is MainEffect.ShowRenameDialog -> Unit
