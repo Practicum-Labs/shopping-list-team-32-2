@@ -42,6 +42,14 @@ fun MainScreen(
             state.isEmpty -> {
                 Column(modifier = Modifier.align(Alignment.Center)) {
                     Text("Нет списков покупок")
+                    SwipeableListItem(
+                        text = "Тестовый айтем",
+                        iconResId = R.drawable.ic_list_cart,
+                        onClick = { },
+                        onDeleteClick = { },
+                        onEditClick = { },
+                        onCopyClick = { }
+                    )
                     Button(onClick = { onIntent(MainIntent.CreateListClicked) }) {
                         Text("Создать список")
                     }
