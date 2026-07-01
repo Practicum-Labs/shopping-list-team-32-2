@@ -54,7 +54,7 @@ class RetrofitNetworkClient(
         return when (dto) {
             is RegisterRequest -> when {
                 dto.password.isPasswordWeak(MIN_PASSWORD_LENGTH)
-                    -> Response(data = AuthError.WeakPassword, resultCode = BAD_REQUEST_ERROR)
+                -> Response(data = AuthError.WeakPassword, resultCode = BAD_REQUEST_ERROR)
 
                 !dto.email.isEmailValid() ->
                     Response(data = AuthError.InvalidEmail, resultCode = BAD_REQUEST_ERROR)
