@@ -38,6 +38,7 @@ dependencies {
     implementation(libs.okhttp.logging)
     implementation(libs.moshi)
     implementation(libs.moshi.kotlin)
+    implementation(libs.kotlinx.coroutines.core)
 
     implementation(libs.hilt)
     ksp(libs.hilt.compiler)
