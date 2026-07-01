@@ -54,6 +54,9 @@ dependencies {
     implementation(project(":core:navigation"))
     implementation(project(":core:data"))
 
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.compose.foundation)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
