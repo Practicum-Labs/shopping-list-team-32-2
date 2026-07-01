@@ -48,6 +48,7 @@ android {
 dependencies {
     implementation(project(":feature:main"))
     implementation(project(":feature:product"))
+    implementation(project(":feature:auth"))
 
     implementation(project(":core:common"))
     implementation(project(":core:design"))
