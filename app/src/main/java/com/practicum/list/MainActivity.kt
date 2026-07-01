@@ -8,7 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.practicum.list.core.navigation.MainScreenRoute
 import com.practicum.list.core.theme.ShoppingListTheme
-import com.practicum.list.feature.auth.ui.screens.authNavigation
+import com.practicum.list.feature.auth.ui.screens.authScreenNavigation
 import com.practicum.list.feature.main.ui.screens.mainScreenNavigation
 import com.practicum.list.feature.product.ui.screens.listScreenNavigation
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,7 +28,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     mainScreenNavigation(navController)
                     listScreenNavigation(navController)
-                    authNavigation(navController)
+                    authScreenNavigation(navController)
                 }
             }
         }

@@ -11,7 +11,7 @@ import com.practicum.list.core.navigation.anim.defaultExitTransition
 import com.practicum.list.core.navigation.anim.defaultPopEnterTransition
 import com.practicum.list.core.navigation.anim.defaultPopExitTransition
 
-fun NavGraphBuilder.authNavigation(navController: NavController) {
+fun NavGraphBuilder.authScreenNavigation(navController: NavController) {
     composable<LoginRoute>(
         enterTransition = defaultEnterTransition,
         exitTransition = defaultExitTransition,
