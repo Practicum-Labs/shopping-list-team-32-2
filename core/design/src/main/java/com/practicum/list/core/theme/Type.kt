@@ -55,4 +55,11 @@ val Typography = Typography(
         lineHeight = 20.sp,
         letterSpacing = 0.1.sp,
     ),
+    labelMedium = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Medium,
+        fontSize = 12.sp,
+        lineHeight = 18.sp,
+        letterSpacing = 0.1.sp,
+    ),
 )

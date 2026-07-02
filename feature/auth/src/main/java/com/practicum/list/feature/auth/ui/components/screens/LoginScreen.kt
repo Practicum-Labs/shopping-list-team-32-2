@@ -79,7 +79,8 @@ fun LoginScreen(
             LoginTextButton(
                 modifier = Modifier,
                 onClick = onNavigateRecovery,
-                buttonText = stringResource(R.string.forgot_password_question)
+                buttonText = stringResource(R.string.forgot_password_question),
+                buttonStyle = MaterialTheme.typography.labelMedium
             )
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
