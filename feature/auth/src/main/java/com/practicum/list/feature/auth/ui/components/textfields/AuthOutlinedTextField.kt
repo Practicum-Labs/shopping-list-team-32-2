@@ -1,4 +1,4 @@
-package com.practicum.list.feature.auth.ui.components
+package com.practicum.list.feature.auth.ui.components.textfields
 
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility

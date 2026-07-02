@@ -24,7 +24,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.practicum.list.core.components.CustomTextEdit
+import com.practicum.list.core.components.textedits.CustomTextEdit
 import com.practicum.list.core.theme.Dimens.DialogHorizontalPadding
 import com.practicum.list.core.theme.Dimens.DialogIconDimension
 import com.practicum.list.core.theme.Dimens.DialogVerticalPadding

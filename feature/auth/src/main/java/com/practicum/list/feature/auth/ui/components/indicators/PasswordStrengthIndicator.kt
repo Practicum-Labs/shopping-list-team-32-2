@@ -1,4 +1,4 @@
-package com.practicum.list.feature.auth.ui.components
+package com.practicum.list.feature.auth.ui.components.indicators
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
@@ -21,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.practicum.list.core.theme.ShoppingListTheme
 import com.practicum.list.feature.auth.R
+import com.practicum.list.feature.auth.ui.components.indicators.PasswordStrengthLevel
 
 private const val STRENGTH_SEGMENT_COUNT = 3
 
@@ -62,7 +63,7 @@ fun PasswordStrengthIndicator(
     modifier: Modifier = Modifier,
 ) {
     PasswordStrengthIndicator(
-        level = PasswordStrengthLevel.fromInt(level),
+        level = PasswordStrengthLevel.Companion.fromInt(level),
         modifier = modifier,
     )
 }

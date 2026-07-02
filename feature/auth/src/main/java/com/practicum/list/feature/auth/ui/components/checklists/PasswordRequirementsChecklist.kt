@@ -1,4 +1,4 @@
-package com.practicum.list.feature.auth.ui.components
+package com.practicum.list.feature.auth.ui.components.checklists
 
 import android.content.res.Configuration
 import androidx.compose.foundation.border
