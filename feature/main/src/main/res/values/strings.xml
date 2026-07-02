@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="title_my_lists">Мои списки</string>
-    <string name="action_navigate_back">назад</string>
-    <string name="action_search">поиск</string>
-    <string name="action_delete">удалить</string>
-    <string name="action_theme">тема</string>
-    <string name="action_options">опции</string>
-    <string name="action_add">добавить список</string>
+    <string name="placeholder_empty_title">У вас пока нет списков</string>
+    <string name="placeholder_empty_message">Нажмите на кнопку + ниже, чтобы создать свой первый список</string>
     <string name="new_list_label_text">Название списка</string>
     <string name="new_list_placeholder_text">Новый список</string>
     <string name="new_list_dialog_title_text">Добавление списка</string>

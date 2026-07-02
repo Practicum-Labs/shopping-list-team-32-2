@@ -12,12 +12,15 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import com.practicum.list.core.components.topbar.TopBar
 import com.practicum.list.core.navigation.ListScreenRoute
 import com.practicum.list.core.navigation.MainScreenRoute
+import com.practicum.list.core.theme.R.string
 import com.practicum.list.feature.main.presentation.MainEffect
 import com.practicum.list.feature.main.presentation.MainIntent
 import com.practicum.list.feature.main.presentation.MainViewModel
@@ -85,6 +88,14 @@ private fun MainScreenRouteContent(navController: NavController) {
 
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+        topBar = {
+            TopBar(
+                title = stringResource(string.title_my_lists),
+                onSearchClick = {},
+                onDeleteClick = {},
+                onThemeClick = {},
+            )
+        },
     ) { paddingValues ->
         MainScreen(
             state = state,
