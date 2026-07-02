@@ -22,10 +22,11 @@ shopping-list-team-32-2/
 │   ├── design/       # Compose-тема (Kotlin only)
 │   ├── mvi/          # MVI-база
 │   └── navigation/ # NavGraph (Compose Navigation)
-├── docs/             # BRANCHING.md, PROJECT_AUDIT.md
+├── docs/             # BRANCHING.md, PROJECT_AUDIT.md, AUTH.md
 ├── feature/
 │   ├── main/         # главный экран
-│   └── product/      # экран списка / товаров
+│   ├── product/      # экран списка / товаров
+│   └── auth/         # auth UI-компоненты и экраны (Epic 2)
 ├── gradle/
 ├── build.gradle.kts
 ├── settings.gradle.kts
@@ -46,6 +47,7 @@ Gradle modules:
 - :core:navigation
 - :feature:main
 - :feature:product
+- :feature:auth
 
 Build system:
 - Kotlin DSL (все *.gradle.kts)
@@ -94,7 +96,7 @@ core/mvi/src/main/java/
 
 core/data/       — Room, Retrofit, DatabaseModule, NetworkModule
 core/common/     — domain-модели (ShoppingList, Product, …)
-core/navigation/ — type-safe маршруты (MainScreenRoute, ListScreenRoute)
+core/navigation/ — type-safe маршруты (MainScreenRoute, ListScreenRoute; auth: LoginRoute, RegisterRoute, ResetPasswordRoute — #42)
 
 feature/main/
 ├── presentation/  — MainState, MainIntent, MainEffect, MainViewModel
@@ -107,6 +109,10 @@ feature/main/
 └── ui/screens/    — MainScreen, mainScreenNavigation
 
 feature/product/   — ListScreen, listScreenNavigation
+
+feature/auth/
+└── ui/components/ — AuthOutlinedTextField, PasswordTextField, PrimaryAuthButton, … (#43)
+    ui/screens/    — authScreenNavigation (#42, в merge)
 ```
 
 **`:core:design` не содержит `src/main/res/`** — палитра и типографика только в Kotlin (drawable иконок списков — в `:core:design`).
@@ -141,7 +147,7 @@ feature/product/   — ListScreen, listScreenNavigation
 | Detekt | все модули + CI | `config/detekt/detekt.yml` |
 | Room | :core:data | ShoppingDatabase, DAOs, миграции |
 | Hilt | :app, :core:data, :feature:main | `@InstallIn(SingletonComponent)`, `@HiltViewModel` |
-| Retrofit / OkHttp | :core:data | ProductApi (base URL-заглушка) |
+| Retrofit / OkHttp | :core:data | `AuthApi` (Railway), `ProductApi` (заглушка) |
 
 **Тема:** Compose-only по требованию заказчика — без XML attrs/colors в `:core:design`.
 
@@ -244,8 +250,11 @@ Type-safe маршруты в `:core:navigation` (`@Serializable`):
 
 - `MainScreenRoute` — главный экран
 - `ListScreenRoute(id: Long)` — экран списка / товаров
+- `LoginRoute`, `RegisterRoute`, `ResetPasswordRoute` — auth-флоу (#42)
 
-Feature-модули регистрируют destination через extension (`mainScreenNavigation`, `listScreenNavigation`). `:app` собирает `NavHost`.
+Feature-модули регистрируют destination через extension (`mainScreenNavigation`, `listScreenNavigation`, `authScreenNavigation`). `:app` собирает `NavHost`.
+
+Auth back stack: login → register/reset через `navigate()`; обратно на login — `popBackStack()`. Подробнее — [`AUTH.md`](AUTH.md).
 
 Передача аргументов — через type-safe routes (`ListScreenRoute(id = …)`), не hardcoded path.
 
@@ -255,9 +264,11 @@ Feature-модули регистрируют destination через extension (
 
 | Компонент | Где | Статус |
 |-----------|-----|--------|
-| **Room** | `:core:data` | `ShoppingDatabase` v2, `ShoppingListDao`, `ProductDao`, миграция `icon_res_id` |
+| **Room** | `:core:data` | `ShoppingDatabase` v3, `ShoppingListDao`, `ProductDao`; `shopping_lists.user_id` |
+| **UserSession** | `:core:data` | DataStore: `user_id`, токены; миграция legacy-списков при логине |
 | **Hilt** | `:app`, `:core:data`, `:feature:*` | `DatabaseModule`, `NetworkModule`, `AppModule`, feature `@Binds`-модули |
-| **Retrofit** | `:core:data` | `ProductApi`, base URL-заглушка |
+| **Retrofit** | `:core:data` | `AuthApi` → Railway; `ProductApi` — заглушка |
+| **Auth** | `:core:data`, `:feature:auth` | DTO, `AuthError`, UI-компоненты; см. [`AUTH.md`](AUTH.md) |
 | **Repository** | `:feature:main/data` | `ShoppingListRepository` + impl, маппер в `:core:data` |
 | **UseCase** | `:feature:main/domain/usecase` | Observe / Upsert / Delete / Duplicate |
 
