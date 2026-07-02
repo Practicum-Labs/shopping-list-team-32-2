@@ -1,4 +1,4 @@
-package com.practicum.list.feature.auth.data
+package com.practicum.list.core.data.session
 
 import javax.crypto.Cipher
 import javax.crypto.spec.IvParameterSpec
@@ -37,7 +37,8 @@ object CryptoHelper {
         return byteArrayOf(iv.size.toByte()) + iv + encryptedBytes
     }
 
-    fun decryptBytes(encryptedBytes: ByteArray): String {
+    fun decryptBytes(encryptedBytes: ByteArray?): String? {
+        if (encryptedBytes == null) { return null }
         val ivSize = encryptedBytes[0].toInt()
         val iv = encryptedBytes.copyOfRange(1, 1 + ivSize)
         val ciphertext = encryptedBytes.copyOfRange(1 + ivSize, encryptedBytes.size)
