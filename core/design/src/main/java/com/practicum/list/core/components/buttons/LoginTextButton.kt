@@ -2,7 +2,6 @@ package com.practicum.list.core.components.buttons
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -30,17 +29,20 @@ fun LoginTextButton(
     } else {
         MaterialTheme.colorScheme.primary
     }
+
+
     TextButton(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier,
         onClick = onClick,
         enabled = true,
         interactionSource = interactionSource,
         colors = ButtonDefaults.textButtonColors(
             containerColor = Color.Transparent,
             contentColor = textColor,
+            disabledContainerColor = Color.Transparent,
         ),
     ) {
-        Text(text = buttonText)
+        Text(text = buttonText, style = MaterialTheme.typography.labelLarge)
     }
 }
 
