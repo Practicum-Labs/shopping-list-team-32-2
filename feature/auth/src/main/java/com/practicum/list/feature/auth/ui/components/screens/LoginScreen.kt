@@ -2,6 +2,7 @@ package com.practicum.list.feature.auth.ui.components.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -34,7 +35,7 @@ fun LoginScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(start = 16.dp, top = 52.dp, end = 16.dp, bottom = 12.dp),
+            .padding(start = 16.dp, top = 52.dp, end = 16.dp, bottom = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
@@ -52,14 +53,14 @@ fun LoginScreen(
                 style = MaterialTheme.typography.bodyLarge
             )
             AuthOutlinedTextField(
-                modifier = Modifier.padding(top = 44.dp),
+                modifier = Modifier.padding(top = 48.dp),
                 value = "vanya123",
                 onValueChange = onEmailChange,
                 label = "Email",
                 isError = false,
             )
             PasswordTextField(
-                modifier = Modifier.padding(top = 16.dp),
+                modifier = Modifier.padding(top = 20.dp),
                 value = "123",
                 onValueChange = onPasswordChange,
                 label = "Пароль",
@@ -70,7 +71,7 @@ fun LoginScreen(
 
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             PrimaryAuthButton(
-                text = stringResource(R.string.action_enter),
+                text = stringResource(R.string.auth_button_login),
                 onClick = onLogin,
                 enabled = true,
                 isLoading = false
@@ -80,6 +81,18 @@ fun LoginScreen(
                 onClick = onNavigateRecovery,
                 buttonText = stringResource(R.string.forgot_password_question)
             )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = stringResource(R.string.no_account_question),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    style = MaterialTheme.typography.labelLarge
+                )
+                LoginTextButton(
+                    modifier = Modifier,
+                    onClick = onNavigateRegistration,
+                    buttonText = stringResource(R.string.auth_button_register)
+                )
+            }
         }
 
     }

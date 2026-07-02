@@ -15,10 +15,8 @@
     <string name="auth_toggle_password_hide">Скрыть пароль</string>
     <string name="headline_welcome">Добро пожаловать</string>
     <string name="login_required_message">Войдите, чтобы продолжить</string>
-    <string name="label_email">Email</string>
-    <string name="label_password">Пароль</string>
-    <string name="action_enter">Войти</string>
     <string name="forgot_password_question">Забыли пароль?</string>
+    <string name="no_account_question">Нет аккаунта?</string>
     <string name="auth_label_confirm_password">Подтвердите пароль</string>
     <string name="auth_title_register">Регистрация</string>
     <string name="auth_title_reset_password">Восстановление пароля</string>
