@@ -8,6 +8,7 @@ import com.practicum.list.core.data.network.dto.RegisterResponse
 import com.practicum.list.core.data.network.dto.Response
 import com.practicum.list.core.data.network.dto.UserAuthRequest
 import com.practicum.list.core.data.network.dto.UserAuthResponse
+import okhttp3.ResponseBody
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -37,5 +38,5 @@ interface AuthApi {
     @POST("auth/recovery")
     suspend fun recoverPassword(
         @Header("email") email: String
-    ): Response<Unit>
+    ): Response<ResponseBody>
 }
