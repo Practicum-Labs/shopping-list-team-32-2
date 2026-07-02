@@ -10,7 +10,7 @@ import com.practicum.list.core.data.network.codes.BAD_REQUEST_ERROR
 import com.practicum.list.core.data.network.codes.DEFAULT_ERROR
 import com.practicum.list.core.data.network.codes.OK
 import com.practicum.list.core.data.network.dto.CheckTokenRequest
-import com.practicum.list.core.data.network.dto.NetworkClient
+import com.practicum.list.core.data.network.NetworkClient
 import com.practicum.list.core.data.network.dto.RecoverPasswordRequest
 import com.practicum.list.core.data.network.dto.RefreshTokenRequest
 import com.practicum.list.core.data.network.dto.RegisterRequest

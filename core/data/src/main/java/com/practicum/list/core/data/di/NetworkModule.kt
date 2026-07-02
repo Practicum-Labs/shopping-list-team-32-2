@@ -1,11 +1,18 @@
 ﻿package com.practicum.list.core.data.di
 
+import android.content.Context
+import com.practicum.list.core.common.utils.NetworkConnectionChecker
+import com.practicum.list.core.common.utils.NetworkConnectionCheckerImpl
+import com.practicum.list.core.data.network.NetworkClient
+import com.practicum.list.core.data.network.api.AuthApi
+import com.practicum.list.core.data.network.client.RetrofitNetworkClient
 import com.practicum.list.core.data.remote.api.ProductApi
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -51,4 +58,19 @@ object NetworkModule {
     @Singleton
     fun provideProductApi(retrofit: Retrofit): ProductApi =
         retrofit.create(ProductApi::class.java)
+
+    @Provides @Singleton
+    fun provideAuthApi(retrofit: Retrofit): AuthApi =
+        retrofit.create(AuthApi::class.java)
+
+    @Provides @Singleton
+    fun provideNetworkConnectionChecker(
+        @ApplicationContext context: Context,
+    ): NetworkConnectionChecker = NetworkConnectionCheckerImpl(context)
+
+    @Provides @Singleton
+    fun provideNetworkClient(
+        authApi: AuthApi,
+        networkConnectionChecker: NetworkConnectionChecker,
+    ): NetworkClient = RetrofitNetworkClient(authApi, networkConnectionChecker)
 }
