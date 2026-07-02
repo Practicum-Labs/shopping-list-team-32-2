@@ -8,6 +8,9 @@ import com.practicum.list.core.data.network.codes.CREATED
 import com.practicum.list.core.data.network.codes.DEFAULT_ERROR
 import com.practicum.list.core.data.network.codes.OK
 import com.practicum.list.core.data.network.codes.SERVER_ERROR
+import com.practicum.list.core.data.network.dto.CheckResponse
+import com.practicum.list.core.data.network.dto.CheckTokenRequest
+import com.practicum.list.core.data.network.dto.RecoverPasswordRequest
 import com.practicum.list.core.data.network.dto.RefreshTokenRequest
 import com.practicum.list.core.data.network.dto.RefreshTokenResponse
 import com.practicum.list.core.data.network.dto.RegisterRequest
@@ -17,8 +20,10 @@ import com.practicum.list.core.data.network.dto.UserAuthResponse
 import com.practicum.list.feature.auth.data.toDomain
 import com.practicum.list.feature.auth.domain.AuthRepository
 import com.practicum.list.feature.auth.domain.models.AuthResult
+import com.practicum.list.feature.auth.domain.models.RecoverResult
 import com.practicum.list.feature.auth.domain.models.RefreshResult
 import com.practicum.list.feature.auth.domain.models.RegisterResult
+import com.practicum.list.feature.auth.domain.models.TokenValidResult
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
@@ -53,14 +58,14 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     override suspend fun refreshToken(): RefreshResult {
-        val refreshToken = userSession.getRefreshToken() ?: return
+        val refreshToken = userSession.getRefreshToken()?: return RefreshResult.Error("Пустой рефреш токен")
         val userId = userSession.getUserId()
         val response = networkClient.doRequest(RefreshTokenRequest(refreshToken))
         return when (response.resultCode) {
             DEFAULT_ERROR -> RefreshResult.NoInternet
             OK -> {
                 val data = response.data as? RefreshTokenResponse
-                if (data == null)  RefreshResult.Error
+                if (data == null)  RefreshResult.Error("С сервера пришел пустой ответ")
                 else  {
                     val session = data.toDomain()
                     userSession.saveSession(
@@ -72,16 +77,37 @@ class AuthRepositoryImpl @Inject constructor(
                 }
             }
             SERVER_ERROR ->  RefreshResult.ServerError
-            else ->  RefreshResult.Error
+            else ->  RefreshResult.Error("Неизвестная ошибка")
         }
     }
 
-    override suspend fun checkTokenIsValid(token: String) {
-        TODO("Not yet implemented")
+    override suspend fun checkTokenIsValid(token: String) : TokenValidResult {
+        val response = networkClient.doRequest(CheckTokenRequest(token))
+        return when (response.resultCode) {
+            DEFAULT_ERROR -> TokenValidResult.NoInternet
+            OK -> {
+                val data = response.data as? CheckResponse
+                if (data == null)  TokenValidResult.Error("С сервера пришел пустой ответ")
+                else  {
+                    val validResponse = data.toDomain()
+
+                    //добавить действия если невалиден и валиден
+                    TokenValidResult.Success(validResponse.isValid)
+                }
+            }
+            SERVER_ERROR ->  TokenValidResult.ServerError
+            else ->  TokenValidResult.Error("Неизвестная ошибка")
+        }
     }
 
-    override suspend fun recoverPassword(email: String) {
-        TODO("Not yet implemented")
+    override suspend fun recoverPassword(email: String): RecoverResult {
+        val response = networkClient.doRequest(RecoverPasswordRequest(email))
+        return when (response.resultCode) {
+            DEFAULT_ERROR -> RecoverResult.NoInternet
+            OK -> RecoverResult.Success // добавить действия 
+            SERVER_ERROR ->  RecoverResult.ServerError
+            else ->  RecoverResult.Error("Неизвестная ошибка")
+        }
     }
 
     override suspend fun registerUser(email: String, password: String) : RegisterResult {
