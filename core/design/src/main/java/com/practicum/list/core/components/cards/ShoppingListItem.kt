@@ -2,9 +2,9 @@ package com.practicum.list.core.components.cards
 
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.AnchoredDraggableDefaults
 import androidx.compose.foundation.gestures.AnchoredDraggableState
 import androidx.compose.foundation.gestures.DraggableAnchors
 import androidx.compose.foundation.gestures.Orientation
@@ -45,21 +45,25 @@ fun SwipeableListItem(
     onClick: () -> Unit,
     onDeleteClick: () -> Unit,
     onEditClick: () -> Unit,
-    onCopyClick: () -> Unit
+    onCopyClick: () -> Unit,
 ) {
-    val actionWidthPx = with(LocalDensity.current) { 160.dp.toPx() }
+    val density = LocalDensity.current
+    val actionWidthPx = with(density) { 160.dp.toPx() }
+    val velocityThresholdPx = with(density) { 100.dp.toPx() }
+    val decayAnimationSpec = rememberSplineBasedDecay<Float>()
 
-    val state = remember {
+    val state = remember(actionWidthPx) {
         AnchoredDraggableState(
             initialValue = DragAnchors.MenuClosed,
-        ).apply {
-            updateAnchors(
-                DraggableAnchors {
-                    DragAnchors.MenuClosed at 0f
-                    DragAnchors.MenuShown at -actionWidthPx
-                }
-            )
-        }
+            anchors = DraggableAnchors {
+                DragAnchors.MenuClosed at 0f
+                DragAnchors.MenuShown at -actionWidthPx
+            },
+            positionalThreshold = { distance -> distance * 0.5f },
+            velocityThreshold = { velocityThresholdPx },
+            snapAnimationSpec = tween(durationMillis = AnimationDuration, easing = FastOutSlowInEasing),
+            decayAnimationSpec = decayAnimationSpec,
+        )
     }
 
     Box(
@@ -67,7 +71,7 @@ fun SwipeableListItem(
             .fillMaxWidth()
             .padding(top = 16.dp)
             .height(ListItemHeight)
-            .background(MaterialTheme.colorScheme.background)
+            .background(MaterialTheme.colorScheme.background),
     ) {
         ShoppingListActions(
             modifier = Modifier
@@ -77,18 +81,19 @@ fun SwipeableListItem(
                 },
             onDeleteClick = onDeleteClick,
             onCopyClick = onCopyClick,
-            onEditClick = onEditClick
+            onEditClick = onEditClick,
         )
         ShoppingListCell(
             text = text,
             iconResId = iconResId,
             modifier = Modifier,
             onClick = onClick,
-            state = state
+            state = state,
         )
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ShoppingListCell(
     text: String,
@@ -97,15 +102,10 @@ fun ShoppingListCell(
     onClick: () -> Unit,
     state: AnchoredDraggableState<DragAnchors>,
 ) {
-    val flingBehavior = AnchoredDraggableDefaults.flingBehavior(
-        state = state,
-        animationSpec = tween(durationMillis = AnimationDuration, easing = FastOutSlowInEasing),
-    )
-
     ListItem(
         modifier = modifier
             .offset { IntOffset(state.requireOffset().roundToInt(), 0) }
-            .anchoredDraggable(state, Orientation.Horizontal, flingBehavior = flingBehavior)
+            .anchoredDraggable(state, Orientation.Horizontal)
             .padding(start = 16.dp)
             .height(ListItemHeight)
             .width(380.dp)
@@ -116,21 +116,21 @@ fun ShoppingListCell(
         headlineContent = {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 RoundIconButton(
                     resId = iconResId,
                     onClick = onClick,
                     contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
                     containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                    enabled = false
+                    enabled = false,
                 )
                 Text(
                     maxLines = 1,
                     text = text,
                     style = MaterialTheme.typography.bodyLarge.copy(
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
+                        color = MaterialTheme.colorScheme.onSurface,
+                    ),
                 )
             }
         },
@@ -144,8 +144,7 @@ fun ShoppingListCell(
             trailingIconColor = MaterialTheme.colorScheme.background,
             disabledHeadlineColor = MaterialTheme.colorScheme.background,
             disabledLeadingIconColor = MaterialTheme.colorScheme.background,
-            disabledTrailingIconColor = MaterialTheme.colorScheme.background
+            disabledTrailingIconColor = MaterialTheme.colorScheme.background,
         ),
     )
-
 }

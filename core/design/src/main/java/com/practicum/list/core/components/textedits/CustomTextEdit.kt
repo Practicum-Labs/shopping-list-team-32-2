@@ -1,4 +1,4 @@
-package com.practicum.list.core.components
+package com.practicum.list.core.components.textedits
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
