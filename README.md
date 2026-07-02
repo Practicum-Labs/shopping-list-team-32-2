@@ -34,6 +34,8 @@
 
 Согласованные расхождения UI-ТЗ ↔ Swagger (пароль ≥ 7, registration 200, `auth/check` boolean и т.д.) — в [`docs/AUTH.md`](docs/AUTH.md).
 
+Списки покупок в Room привязаны к `user_id` из auth-сессии (см. `UserSession` в `:core:data`).
+
 Точка входа в приложение и проверка сессии — в работе ([#45](https://github.com/Practicum-Labs/shopping-list-team-32-2/issues/45)); после логина — `MainScreenRoute`.
 
 ## Слои feature-модуля

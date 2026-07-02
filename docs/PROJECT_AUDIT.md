@@ -264,7 +264,8 @@ Auth back stack: login → register/reset через `navigate()`; обратн�
 
 | Компонент | Где | Статус |
 |-----------|-----|--------|
-| **Room** | `:core:data` | `ShoppingDatabase` v2, `ShoppingListDao`, `ProductDao`, миграция `icon_res_id` |
+| **Room** | `:core:data` | `ShoppingDatabase` v3, `ShoppingListDao`, `ProductDao`; `shopping_lists.user_id` |
+| **UserSession** | `:core:data` | DataStore: `user_id`, токены; миграция legacy-списков при логине |
 | **Hilt** | `:app`, `:core:data`, `:feature:*` | `DatabaseModule`, `NetworkModule`, `AppModule`, feature `@Binds`-модули |
 | **Retrofit** | `:core:data` | `AuthApi` → Railway; `ProductApi` — заглушка |
 | **Auth** | `:core:data`, `:feature:auth` | DTO, `AuthError`, UI-компоненты; см. [`AUTH.md`](AUTH.md) |

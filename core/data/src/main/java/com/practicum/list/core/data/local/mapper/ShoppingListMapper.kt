@@ -10,9 +10,10 @@ fun ShoppingListEntity.toDomain(defaultIconResId: Int): ShoppingList =
         iconResId = iconResId.takeIf { it != 0 } ?: defaultIconResId,
     )
 
-fun ShoppingList.toEntity(): ShoppingListEntity =
+fun ShoppingList.toEntity(userId: Long): ShoppingListEntity =
     ShoppingListEntity(
         id = id,
+        userId = userId,
         name = name,
         iconResId = iconResId,
     )

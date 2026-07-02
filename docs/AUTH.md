@@ -149,6 +149,22 @@ DTO: snake_case в JSON → `@field:Json(name = "access_token")` и т.д.
 
 Точка входа и проверка сессии — issue [#45](https://github.com/Practicum-Labs/shopping-list-team-32-2/issues/45).
 
+### Связь пользователя и списков покупок (Room)
+
+Backend не хранит списки — только auth. Локально списки привязаны к `user_id` из API.
+
+| Компонент | Роль |
+|-----------|------|
+| `shopping_lists.user_id` | владелец списка; товары наследуют через `list_id` |
+| `UserSession` / `UserSessionStore` | DataStore: `user_id`, `access_token`, `refresh_token` |
+| `UserSessionDefaults.LEGACY_LOCAL_USER_ID` (`0`) | списки до первого логина / без сессии |
+
+**Поведение:**
+- CRUD списков фильтруется по текущему `userId` из `UserSession`
+- При первом `saveSession` после логина списки с `user_id = 0` перепривязываются к `user_id` пользователя
+- Logout очищает сессию; данные в Room остаются (мультиаккаунт на одном устройстве)
+- `LoginUseCase` / #44 вызывает `UserSession.saveSession(userId, accessToken, refreshToken)` после успешного API
+
 ### Модули
 
 | Модуль | Роль |
@@ -183,3 +199,4 @@ DTO: snake_case в JSON → `@field:Json(name = "access_token")` и т.д.
 - [ ] `auth/recovery`: header `email`, ответ — text/plain
 - [ ] Без Firebase
 - [ ] DTO: snake_case через Moshi `@Json`
+- [ ] Списки покупок: `shopping_lists.user_id` + фильтрация через `UserSession`
