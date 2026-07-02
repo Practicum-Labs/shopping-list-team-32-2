@@ -11,15 +11,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import com.practicum.list.core.theme.R
 import com.practicum.list.core.theme.ShoppingListTheme
+
 
 @Composable
 fun LoginTextButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
-    buttonText: String
+    buttonText: String,
+    buttonStyle: TextStyle = MaterialTheme.typography.labelLarge
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed = interactionSource.collectIsPressedAsState().value
@@ -42,7 +45,7 @@ fun LoginTextButton(
             disabledContainerColor = Color.Transparent,
         ),
     ) {
-        Text(text = buttonText, style = MaterialTheme.typography.labelLarge)
+        Text(text = buttonText, style = buttonStyle)
     }
 }
 
