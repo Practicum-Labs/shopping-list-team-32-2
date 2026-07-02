@@ -36,9 +36,10 @@ class AuthRepositoryImpl @Inject constructor(
         val response = networkClient.doRequest(UserAuthRequest(email,password))
         return when (response.resultCode) {
             DEFAULT_ERROR -> AuthResult.NoInternet
-            BAD_REQUEST_ERROR ->
+            BAD_REQUEST_ERROR -> {
                 if (password.length <= 7) AuthResult.WeakPassword
-                else   AuthResult.IncorrectEmail
+                else AuthResult.IncorrectEmail
+            }
             OK -> {
                 val data = response.data as? UserAuthResponse
                 if (data == null)  AuthResult.Error
@@ -90,8 +91,9 @@ class AuthRepositoryImpl @Inject constructor(
                 if (data == null)  TokenValidResult.Error("С сервера пришел пустой ответ")
                 else  {
                     val validResponse = data.toDomain()
-
-                    //добавить действия если невалиден и валиден
+                    if (!validResponse.isValid) {
+                        userSession.clearSession()
+                    }
                     TokenValidResult.Success(validResponse.isValid)
                 }
             }
@@ -104,7 +106,7 @@ class AuthRepositoryImpl @Inject constructor(
         val response = networkClient.doRequest(RecoverPasswordRequest(email))
         return when (response.resultCode) {
             DEFAULT_ERROR -> RecoverResult.NoInternet
-            OK -> RecoverResult.Success // добавить действия 
+            OK -> RecoverResult.Success // добавить действия
             SERVER_ERROR ->  RecoverResult.ServerError
             else ->  RecoverResult.Error("Неизвестная ошибка")
         }
