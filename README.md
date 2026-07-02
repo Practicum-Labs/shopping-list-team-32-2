@@ -11,7 +11,7 @@
 | Навигация | Navigation Compose | type-safe маршруты между feature-модулями |
 | DI | Hilt + KSP | граф зависимостей, `@HiltViewModel` для ViewModel |
 | БД | Room | офлайн-хранение списков и товаров |
-| Сеть | Retrofit + OkHttp + Moshi | API популярных товаров для подсказок |
+| Сеть | Retrofit + OkHttp + Moshi | auth API (Railway) + заглушка ProductApi |
 | Качество кода | Detekt | статический анализ в CI |
 
 ## Модули
@@ -25,7 +25,16 @@
 :core:navigation  — type-safe маршруты
 :feature:main     — главный экран (presentation / domain / data)
 :feature:product  — экран списка / товаров
+:feature:auth     — auth design system, экраны login / register / recovery (Epic 2)
 ```
+
+## Auth (Epic 2)
+
+Три экрана: **login → register / reset password**. Backend — [Railway REST API](https://practicumopbackend-production.up.railway.app/swagger-ui/index.html), не Firebase.
+
+Согласованные расхождения UI-ТЗ ↔ Swagger (пароль ≥ 7, registration 200, `auth/check` boolean и т.д.) — в [`docs/AUTH.md`](docs/AUTH.md).
+
+Точка входа в приложение и проверка сессии — в работе ([#45](https://github.com/Practicum-Labs/shopping-list-team-32-2/issues/45)); после логина — `MainScreenRoute`.
 
 ## Слои feature-модуля
 
