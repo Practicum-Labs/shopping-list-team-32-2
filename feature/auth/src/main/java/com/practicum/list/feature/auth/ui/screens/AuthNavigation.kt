@@ -38,4 +38,16 @@ fun NavGraphBuilder.authScreenNavigation(navController: NavController) {
     ) {
         // экран сброса пароля
     }
+
+    fun NavController.navigateToRegister() {
+        navigate(RegisterRoute)
+    }
+
+    fun NavController.navigateToResetPassword() {
+        navigate(ResetPasswordRoute)
+    }
+
+    fun NavController.navigateToLogin() {
+        popBackStack(LoginRoute, inclusive = false)
+    }
 }
