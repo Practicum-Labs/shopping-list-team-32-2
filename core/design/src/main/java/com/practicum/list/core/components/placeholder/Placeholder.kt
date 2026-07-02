@@ -17,7 +17,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.practicum.list.core.theme.R
-
 import com.practicum.list.core.theme.ShoppingListTheme
 
 @Composable

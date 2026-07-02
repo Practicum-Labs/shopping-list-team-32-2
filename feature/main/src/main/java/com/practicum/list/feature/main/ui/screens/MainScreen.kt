@@ -19,9 +19,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.practicum.list.core.common.domain.ShoppingList
 import com.practicum.list.core.components.cards.SwipeableListItem
+import com.practicum.list.core.components.dialogs.CustomLayoutDialog
 import com.practicum.list.core.components.fab.AddFab
 import com.practicum.list.core.components.placeholder.PlaceholderLayout
-import com.practicum.list.core.theme.R
 import com.practicum.list.core.theme.ShoppingListTheme
 import com.practicum.list.feature.main.R
 import com.practicum.list.feature.main.presentation.MainIntent
@@ -77,16 +77,34 @@ fun MainScreen(
 
             }
         }
+        if (dialog != null) {
+            CustomLayoutDialog(
+                titleTextRes = R.string.new_list_dialog_title_text,
+                iconRes = R.drawable.ic_docs_add_on,
+                primaryButtonTextRes = R.string.cancel_general_text,
+                secondaryButtonTextRes = R.string.new_list_dialog_create_button_text,
+                textEditLabelRes = R.string.new_list_label_text,
+                textEditText = dialog.name,
+                interactionSource = interactionSource,
+                onConfirm = { onIntent(MainIntent.ConfirmCreateList) },
+                onDismiss = { onIntent(MainIntent.DismissCreateListDialog) },
+                onTextChange = { onIntent(MainIntent.CreateListNameChanged(it)) },
+                onKeyboardDone = { keyboardController?.hide() },
+            )
+        }
+
         if (!state.isLoading) {
             AddFab(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .padding(bottom = 16.dp)
-                    .zIndex(1f), onClick = {
+                    .zIndex(1f),
+                onClick = {
                     onIntent(
                         MainIntent.CreateListClicked
                     )
-                })
+                }
+            )
         }
     }
 }

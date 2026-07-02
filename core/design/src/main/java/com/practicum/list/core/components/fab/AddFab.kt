@@ -36,7 +36,7 @@ fun AddFab(modifier: Modifier = Modifier, onClick: () -> Unit) {
 
 @Preview
 @Composable
-private fun AddFabPreview(){
+private fun AddFabPreview() {
     ShoppingListTheme {
         AddFab(
             onClick = {}

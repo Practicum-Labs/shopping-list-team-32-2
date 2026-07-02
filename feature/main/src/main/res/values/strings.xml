@@ -2,4 +2,9 @@
 <resources>
     <string name="placeholder_empty_title">У вас пока нет списков</string>
     <string name="placeholder_empty_message">Нажмите на кнопку + ниже, чтобы создать свой первый список</string>
+    <string name="new_list_label_text">Название списка</string>
+    <string name="new_list_placeholder_text">Новый список</string>
+    <string name="new_list_dialog_title_text">Добавление списка</string>
+    <string name="cancel_general_text">Отмена</string>
+    <string name="new_list_dialog_create_button_text">Создать</string>
 </resources>
