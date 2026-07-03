@@ -1,8 +1,11 @@
 package com.practicum.list.core.data.network
 
-import android.content.Context
-import android.content.Intent
+import com.practicum.list.core.data.SessionEvents
 import com.practicum.list.core.common.domain.UserSession
+import com.practicum.list.core.data.di.RefreshAuthApi
+import com.practicum.list.core.data.network.api.AuthApi
+import com.practicum.list.core.data.network.dto.RefreshTokenRequest
+import kotlinx.coroutines.runBlocking
 import okhttp3.Authenticator
 import okhttp3.Request
 import okhttp3.Response
@@ -13,35 +16,34 @@ import javax.inject.Singleton
 
 @Singleton
 class TokenAuthenticator @Inject constructor(
-    val context: Context,
-    val userSession: UserSession
-): Authenticator {
+    private val userSession: UserSession,
+    @RefreshAuthApi private val refreshAuthApi: AuthApi,
+    private val sessionEvents: SessionEvents,
+) : Authenticator {
     override fun authenticate(route: Route?, response: Response): Request? {
+        if (response.priorResponse != null) return null // уже ретраили — стоп
         synchronized(this) {
-            val refreshToken = userSession.getRefreshToken() ?: return null
-
-            // 1. Attempt to refresh the access token via a synchronous API call
-            val newToken = userSession. //refreshAccessTokenSync(refreshToken)
-
-            if (newToken != null) {
-                // Success: Update new tokens in local storage
-                userSession.saveSession(newToken.accessToken, ) saveTokens(newToken.accessToken, newToken.refreshToken)
-
-                // Retry the original failed request with the new token
-                return response.request.newBuilder()
-                    .header("Authorization", "Bearer ${newToken.accessToken}")
-                    .build()
+            val refreshToken = runBlocking { userSession.getRefreshToken() }
+                ?: return forceLogout()
+            val tokens = runBlocking {
+                try {
+                    refreshAuthApi.refreshToken(RefreshTokenRequest(refreshToken))
+                } catch (_: Exception) {
+                    null
+                }
+            } ?: return forceLogout()
+            val userId = runBlocking { userSession.getUserId() }
+            runBlocking {
+                userSession.saveSession(userId, tokens.accessToken, tokens.refreshToken)
             }
-
-            // 2. Failure: Refresh token is also invalid. Force logout.
-            userSession.clearSession()
-            triggerLoginFlow()
-            return null
+            return response.request.newBuilder()
+                .header("Authorization", "Bearer ${tokens.accessToken}")
+                .build()
         }
     }
-
-    private fun triggerLoginFlow() {
-        val intent = Intent("ACTION_FORCE_LOGOUT")
-        LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
+    private fun forceLogout(): Request? {
+        runBlocking { userSession.clearSession() }
+        sessionEvents.notifySessionExpired()
+        return null
     }
 }

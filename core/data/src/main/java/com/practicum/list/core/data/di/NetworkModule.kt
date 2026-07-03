@@ -1,8 +1,10 @@
 ﻿package com.practicum.list.core.data.di
 
 import android.content.Context
+import com.practicum.list.core.common.domain.UserSession
 import com.practicum.list.core.common.utils.NetworkConnectionChecker
 import com.practicum.list.core.common.utils.NetworkConnectionCheckerImpl
+import com.practicum.list.core.data.SessionEvents
 import com.practicum.list.core.data.network.AuthInterceptor
 import com.practicum.list.core.data.network.NetworkClient
 import com.practicum.list.core.data.network.TokenAuthenticator
@@ -38,13 +40,14 @@ object NetworkModule {
     @Singleton
     fun provideOkHttpClient(
         authInterceptor: AuthInterceptor,
+        tokenAuthenticator: TokenAuthenticator
     ): OkHttpClient {
         val logging = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BASIC
         }
         return OkHttpClient.Builder()
             .addInterceptor(authInterceptor)
-            .authenticator(TokenAuthenticator(context, userSession))
+            .authenticator(tokenAuthenticator)
             .addInterceptor(logging)
             .build()
     }
@@ -57,6 +60,20 @@ object NetworkModule {
     ): Retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .client(okHttpClient)
+        .addConverterFactory(MoshiConverterFactory.create(moshi))
+        .build()
+
+    @Provides @Singleton
+    @RefreshAuthApi
+    fun provideRefreshAuthApi(
+        @RefreshRetrofit retrofit: Retrofit,
+    ): AuthApi = retrofit.create(AuthApi::class.java)
+
+    @Provides @Singleton
+    @RefreshRetrofit
+    fun provideRefreshRetrofit(moshi: Moshi): Retrofit = Retrofit.Builder()
+        .baseUrl(BASE_URL)
+        .client(OkHttpClient.Builder().build())
         .addConverterFactory(MoshiConverterFactory.create(moshi))
         .build()
 
