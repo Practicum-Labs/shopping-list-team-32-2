@@ -62,7 +62,9 @@ fun MainScreen(
 
             else -> {
                 val lists = state.lists
-                LazyColumn {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                ) {
                     items(items = lists, key = { list -> list.id }) { list ->
                         SwipeableListItem(
                             text = list.name,
@@ -81,12 +83,12 @@ fun MainScreen(
             CustomLayoutDialog(
                 titleTextRes = R.string.new_list_dialog_title_text,
                 iconRes = R.drawable.ic_docs_add_on,
-                primaryButtonTextRes = R.string.cancel_general_text,
-                secondaryButtonTextRes = R.string.new_list_dialog_create_button_text,
+                primaryButtonTextRes = R.string.new_list_dialog_create_button_text,
+                secondaryButtonTextRes = R.string.cancel_general_text,
                 textEditLabelRes = R.string.new_list_label_text,
                 textEditText = dialog.name,
                 interactionSource = interactionSource,
-                onConfirm = { onIntent(MainIntent.ConfirmCreateList) },
+                onConfirm = { onIntent(MainIntent.ConfirmCreateList(dialog.name)) },
                 onDismiss = { onIntent(MainIntent.DismissCreateListDialog) },
                 onTextChange = { onIntent(MainIntent.CreateListNameChanged(it)) },
                 onKeyboardDone = { keyboardController?.hide() },

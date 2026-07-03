@@ -1,6 +1,4 @@
-﻿package com.practicum.list.core.data.local
-
-import androidx.room.Database
+﻿package com.practicum.list.core.data.local import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.practicum.list.core.data.local.dao.ProductDao
 import com.practicum.list.core.data.local.dao.ShoppingListDao

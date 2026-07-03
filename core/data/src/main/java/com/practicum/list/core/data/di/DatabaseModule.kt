@@ -1,6 +1,4 @@
-﻿package com.practicum.list.core.data.di
-
-import android.content.Context
+﻿package com.practicum.list.core.data.di import android.content.Context
 import androidx.room.Room
 import com.practicum.list.core.data.local.MIGRATION_1_2
 import com.practicum.list.core.data.local.MIGRATION_2_3

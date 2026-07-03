@@ -3,9 +3,9 @@ package com.practicum.list.core.data.session
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.byteArrayPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
-import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.practicum.list.core.common.domain.UserSession
 import com.practicum.list.core.common.domain.UserSessionDefaults
@@ -25,6 +25,7 @@ private val Context.authSessionDataStore: DataStore<Preferences> by preferencesD
 class UserSessionStore @Inject constructor(
     @ApplicationContext private val context: Context,
     private val shoppingListDao: ShoppingListDao,
+    private val cryptoHelper: CryptoHelper
 ) : UserSession {
 
     override val userId: Flow<Long> = context.authSessionDataStore.data.map { preferences ->
@@ -36,17 +37,21 @@ class UserSessionStore @Inject constructor(
             ?: UserSessionDefaults.LEGACY_LOCAL_USER_ID
 
     override suspend fun getAccessToken(): String? =
-        context.authSessionDataStore.data.first()[KEY_ACCESS_TOKEN]
+        cryptoHelper.decryptBytes(
+            context.authSessionDataStore.data.first()[KEY_ACCESS_TOKEN]
+        )
 
     override suspend fun getRefreshToken(): String? =
-        context.authSessionDataStore.data.first()[KEY_REFRESH_TOKEN]
+        cryptoHelper.decryptBytes(
+            context.authSessionDataStore.data.first()[KEY_REFRESH_TOKEN]
+        )
 
     override suspend fun saveSession(userId: Long, accessToken: String, refreshToken: String) {
         val previousUserId = getUserId()
         context.authSessionDataStore.edit { preferences ->
             preferences[KEY_USER_ID] = userId
-            preferences[KEY_ACCESS_TOKEN] = accessToken
-            preferences[KEY_REFRESH_TOKEN] = refreshToken
+            preferences[KEY_ACCESS_TOKEN] = cryptoHelper.encryptBytes(accessToken)
+            preferences[KEY_REFRESH_TOKEN] = cryptoHelper.encryptBytes(refreshToken)
         }
         if (
             previousUserId == UserSessionDefaults.LEGACY_LOCAL_USER_ID &&
@@ -69,7 +74,7 @@ class UserSessionStore @Inject constructor(
 
     private companion object {
         val KEY_USER_ID = longPreferencesKey("user_id")
-        val KEY_ACCESS_TOKEN = stringPreferencesKey("access_token")
-        val KEY_REFRESH_TOKEN = stringPreferencesKey("refresh_token")
+        val KEY_ACCESS_TOKEN = byteArrayPreferencesKey("access_token")
+        val KEY_REFRESH_TOKEN = byteArrayPreferencesKey("refresh_token")
     }
 }

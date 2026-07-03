@@ -50,8 +50,8 @@ class MainViewModel @Inject constructor(
             is MainIntent.ConfirmRenameList -> confirmRename(intent.id, intent.newName)
             is MainIntent.DuplicateList -> duplicateList(intent.id)
             is MainIntent.ConfirmCreateList -> {
-                val name = state.value.createListDialog?.name?.trim()
-                if (!name.isNullOrBlank()) {
+                val name = intent.name.trim()
+                if (name.isNotBlank()) {
                     createList(name)
                 }
             }
@@ -87,6 +87,7 @@ class MainViewModel @Inject constructor(
         val newList = ShoppingList(id = 0L, name = name, iconResId = resorces.drawable.ic_list_cart)
         runCatching { upsertShoppingListUseCase(newList) }
             .onFailure { emitEffect(MainEffect.ShowError(it.message ?: ERROR_CREATE_LIST)) }
+
     }
 
     private suspend fun confirmRename(id: Long, newName: String) {

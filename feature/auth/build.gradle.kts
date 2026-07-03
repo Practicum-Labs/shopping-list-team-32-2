@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.detekt)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
 }
 
 android {
@@ -32,10 +34,19 @@ android {
 dependencies {
     implementation(project(":core:design"))
     implementation(project(":core:navigation"))
+    implementation(project(":core:common"))
+    implementation(project(":core:data"))
+    implementation(project(":core:mvi"))
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.animation)
+    implementation("androidx.security:security-crypto:1.1.0")
+    implementation("androidx.datastore:datastore:1.1.1")
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter)
+    implementation(libs.kotlinx.serialization.core)
+    implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
@@ -43,6 +54,9 @@ dependencies {
     implementation(libs.androidx.compose.material.icons.extended)
     implementation(libs.androidx.navigation.compose)
     detektPlugins(libs.detekt.formatting)
+    implementation(libs.hilt)
+    implementation(libs.hilt.compose)
+    ksp(libs.hilt.compiler)
 }
 
 detekt {
