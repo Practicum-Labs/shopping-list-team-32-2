@@ -105,7 +105,7 @@ class AuthRepositoryImpl @Inject constructor(
         val response = networkClient.doRequest(RecoverPasswordRequest(email))
         return when (response.resultCode) {
             DEFAULT_ERROR -> RecoverResult.NoInternet
-            OK -> RecoverResult.Success // добавить действия
+            OK -> RecoverResult.Success
             SERVER_ERROR ->  RecoverResult.ServerError
             else ->  RecoverResult.Error("Неизвестная ошибка")
         }

@@ -5,6 +5,7 @@ import com.practicum.list.core.common.utils.NetworkConnectionChecker
 import com.practicum.list.core.common.utils.NetworkConnectionCheckerImpl
 import com.practicum.list.core.data.network.AuthInterceptor
 import com.practicum.list.core.data.network.NetworkClient
+import com.practicum.list.core.data.network.TokenAuthenticator
 import com.practicum.list.core.data.network.api.AuthApi
 import com.practicum.list.core.data.network.client.RetrofitNetworkClient
 import com.practicum.list.core.data.remote.api.ProductApi
@@ -43,6 +44,7 @@ object NetworkModule {
         }
         return OkHttpClient.Builder()
             .addInterceptor(authInterceptor)
+            .authenticator(TokenAuthenticator(context, userSession))
             .addInterceptor(logging)
             .build()
     }
