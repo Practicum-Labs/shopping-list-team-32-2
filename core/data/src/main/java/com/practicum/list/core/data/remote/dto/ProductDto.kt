@@ -1,5 +1,3 @@
-﻿package com.practicum.list.core.data.remote.dto
-
-data class ProductDto(
+﻿package com.practicum.list.core.data.remote.dto data class ProductDto(
     val name: String,
 )

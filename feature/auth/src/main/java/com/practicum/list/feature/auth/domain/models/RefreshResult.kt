@@ -7,5 +7,5 @@ sealed interface RefreshResult {
 
     data object ServerError : RefreshResult
 
-    data class Error(val text: String): RefreshResult
+    data class Error(val text: String) : RefreshResult
 }

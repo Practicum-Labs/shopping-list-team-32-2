@@ -13,5 +13,5 @@ sealed interface RegisterResult {
 
     data object AlreadyExists : RegisterResult
 
-    data object Error: RegisterResult
+    data object Error : RegisterResult
 }

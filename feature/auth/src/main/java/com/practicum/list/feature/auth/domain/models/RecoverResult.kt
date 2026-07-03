@@ -7,5 +7,5 @@ sealed interface RecoverResult {
 
     data object ServerError : RecoverResult
 
-    data class Error(val text: String):RecoverResult
+    data class Error(val text: String) : RecoverResult
 }

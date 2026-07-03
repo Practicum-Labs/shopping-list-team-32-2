@@ -7,7 +7,6 @@ import com.practicum.list.core.data.network.dto.UserAuthResponse
 import com.practicum.list.feature.auth.domain.models.UserSession
 import com.practicum.list.feature.auth.domain.models.ValidResult
 
-
 fun RegisterResponse.toDomain(): UserSession = UserSession(
     userId = userId.toInt(),
     accessToken = accessToken,

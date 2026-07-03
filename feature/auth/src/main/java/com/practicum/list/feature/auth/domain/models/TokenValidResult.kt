@@ -7,5 +7,5 @@ sealed interface TokenValidResult {
 
     data object ServerError : TokenValidResult
 
-    data class Error(val text: String): TokenValidResult
+    data class Error(val text: String) : TokenValidResult
 }

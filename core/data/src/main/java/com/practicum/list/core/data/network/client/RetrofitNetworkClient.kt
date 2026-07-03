@@ -5,12 +5,12 @@ import com.practicum.list.core.common.domain.AuthError
 import com.practicum.list.core.common.utils.NetworkConnectionChecker
 import com.practicum.list.core.common.utils.isEmailValid
 import com.practicum.list.core.common.utils.isPasswordWeak
+import com.practicum.list.core.data.network.NetworkClient
 import com.practicum.list.core.data.network.api.AuthApi
 import com.practicum.list.core.data.network.codes.BAD_REQUEST_ERROR
 import com.practicum.list.core.data.network.codes.DEFAULT_ERROR
 import com.practicum.list.core.data.network.codes.OK
 import com.practicum.list.core.data.network.dto.CheckTokenRequest
-import com.practicum.list.core.data.network.NetworkClient
 import com.practicum.list.core.data.network.dto.RecoverPasswordRequest
 import com.practicum.list.core.data.network.dto.RefreshTokenRequest
 import com.practicum.list.core.data.network.dto.RegisterRequest

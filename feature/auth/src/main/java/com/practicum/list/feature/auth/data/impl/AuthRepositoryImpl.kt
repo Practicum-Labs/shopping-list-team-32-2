@@ -1,6 +1,7 @@
 package com.practicum.list.feature.auth.data.impl
 
 import com.practicum.list.core.common.domain.UserSession
+import com.practicum.list.core.common.utils.isPasswordWeak
 import com.practicum.list.core.data.network.NetworkClient
 import com.practicum.list.core.data.network.codes.BAD_REQUEST_ERROR
 import com.practicum.list.core.data.network.codes.CONFLICT_ERROR
@@ -31,63 +32,69 @@ class AuthRepositoryImpl @Inject constructor(
 ) : AuthRepository {
 
     override suspend fun loginUser(email: String, password: String): AuthResult {
-        val response = networkClient.doRequest(UserAuthRequest(email,password))
+        val response = networkClient.doRequest(UserAuthRequest(email, password))
         return when (response.resultCode) {
             DEFAULT_ERROR -> AuthResult.NoInternet
             BAD_REQUEST_ERROR -> {
-                if (password.length <= 7) AuthResult.WeakPassword
-                else AuthResult.IncorrectEmail
+                if (password.isPasswordWeak(MIN_PASSWORD_LENGTH)) {
+                    AuthResult.WeakPassword
+                } else {
+                    AuthResult.IncorrectEmail
+                }
             }
             OK -> {
                 val data = response.data as? UserAuthResponse
-                if (data == null)  AuthResult.Error
-                else  {
+                if (data == null) {
+                    AuthResult.Error
+                } else {
                     val session = data.toDomain()
                     userSession.saveSession(
                         session.userId.toLong(),
                         session.accessToken,
-                        session.refreshToken
+                        session.refreshToken,
                     )
                     AuthResult.Success(session)
                 }
             }
-            SERVER_ERROR ->  AuthResult.ServerError
-            else ->  AuthResult.Error
+            SERVER_ERROR -> AuthResult.ServerError
+            else -> AuthResult.Error
         }
     }
 
     override suspend fun refreshToken(): RefreshResult {
-        val refreshToken = userSession.getRefreshToken()?: return RefreshResult.Error("Пустой рефреш токен")
+        val refreshToken = userSession.getRefreshToken() ?: return RefreshResult.Error("Пустой рефреш токен")
         val userId = userSession.getUserId()
         val response = networkClient.doRequest(RefreshTokenRequest(refreshToken))
         return when (response.resultCode) {
             DEFAULT_ERROR -> RefreshResult.NoInternet
             OK -> {
                 val data = response.data as? RefreshTokenResponse
-                if (data == null)  RefreshResult.Error("С сервера пришел пустой ответ")
-                else  {
+                if (data == null) {
+                    RefreshResult.Error(EMPTY_RESPONSE_MESSAGE)
+                } else {
                     val session = data.toDomain()
                     userSession.saveSession(
                         userId,
                         session.accessToken,
-                        session.refreshToken
+                        session.refreshToken,
                     )
                     RefreshResult.Success(session)
                 }
             }
-            SERVER_ERROR ->  RefreshResult.ServerError
-            else ->  RefreshResult.Error("Неизвестная ошибка")
+            SERVER_ERROR -> RefreshResult.ServerError
+            else -> RefreshResult.Error(UNKNOWN_ERROR_MESSAGE)
         }
     }
 
-    override suspend fun checkTokenIsValid(token: String) : TokenValidResult {
+    override suspend fun checkTokenIsValid(token: String): TokenValidResult {
         val response = networkClient.doRequest(CheckTokenRequest(token))
         return when (response.resultCode) {
             DEFAULT_ERROR -> TokenValidResult.NoInternet
             OK -> {
                 val data = response.data as? CheckResponse
-                if (data == null)  TokenValidResult.Error("С сервера пришел пустой ответ")
-                else  {
+                if (data == null) {
+                    TokenValidResult.Error(EMPTY_RESPONSE_MESSAGE)
+                } else {
                     val validResponse = data.toDomain()
                     if (!validResponse.isValid) {
                         userSession.clearSession()
@@ -95,8 +102,8 @@ class AuthRepositoryImpl @Inject constructor(
                     TokenValidResult.Success(validResponse.isValid)
                 }
             }
-            SERVER_ERROR ->  TokenValidResult.ServerError
-            else ->  TokenValidResult.Error("Неизвестная ошибка")
+            SERVER_ERROR -> TokenValidResult.ServerError
+            else -> TokenValidResult.Error(UNKNOWN_ERROR_MESSAGE)
         }
     }
 
@@ -105,32 +112,33 @@ class AuthRepositoryImpl @Inject constructor(
         return when (response.resultCode) {
             DEFAULT_ERROR -> RecoverResult.NoInternet
             OK -> RecoverResult.Success
-            SERVER_ERROR ->  RecoverResult.ServerError
-            else ->  RecoverResult.Error("Неизвестная ошибка")
+            SERVER_ERROR -> RecoverResult.ServerError
+            else -> RecoverResult.Error(UNKNOWN_ERROR_MESSAGE)
         }
     }
 
-    override suspend fun registerUser(email: String, password: String) : RegisterResult {
+    override suspend fun registerUser(email: String, password: String): RegisterResult {
         val userId = userSession.getUserId()
-        val response = networkClient.doRequest(RegisterRequest(email,password))
+        val response = networkClient.doRequest(RegisterRequest(email, password))
         return when (response.resultCode) {
             DEFAULT_ERROR -> RegisterResult.NoInternet
             BAD_REQUEST_ERROR ->
-                if (password.length <= 7) RegisterResult.WeakPassword
-                else  RegisterResult.IncorrectEmail
+                if (password.isPasswordWeak(MIN_PASSWORD_LENGTH)) {
+                    RegisterResult.WeakPassword
+                } else {
+                    RegisterResult.IncorrectEmail
+                }
             CONFLICT_ERROR -> RegisterResult.AlreadyExists
             OK -> {
-                // в тз это CREATED (код 201) но мы СОЗНАТЕЛЬНО решили
-                // на уровне нетворк клиента обрабатывать это как 200 успех
-                // потому что разницы особой нету
                 val data = response.data as? RegisterResponse
-                if (data == null) RegisterResult.Error
-                else  {
+                if (data == null) {
+                    RegisterResult.Error
+                } else {
                     val session = data.toDomain()
                     userSession.saveSession(
                         userId,
                         session.accessToken,
-                        session.refreshToken
+                        session.refreshToken,
                     )
                     RegisterResult.Success(session)
                 }
@@ -138,5 +146,11 @@ class AuthRepositoryImpl @Inject constructor(
             SERVER_ERROR -> RegisterResult.ServerError
             else -> RegisterResult.Error
         }
+    }
+
+    private companion object {
+        const val MIN_PASSWORD_LENGTH = 7
+        const val UNKNOWN_ERROR_MESSAGE = "Неизвестная ошибка"
+        const val EMPTY_RESPONSE_MESSAGE = "С сервера пришел пустой ответ"
     }
 }

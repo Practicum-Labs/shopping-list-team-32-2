@@ -11,5 +11,5 @@ sealed interface AuthResult {
 
     data object IncorrectEmail : AuthResult
 
-    data object Error: AuthResult
+    data object Error : AuthResult
 }
