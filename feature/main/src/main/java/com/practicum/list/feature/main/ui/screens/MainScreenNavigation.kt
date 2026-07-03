@@ -1,7 +1,5 @@
 package com.practicum.list.feature.main.ui.screens
 
-import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -20,39 +18,21 @@ import androidx.navigation.compose.composable
 import com.practicum.list.core.components.topbar.TopBar
 import com.practicum.list.core.navigation.ListScreenRoute
 import com.practicum.list.core.navigation.MainScreenRoute
+import com.practicum.list.core.navigation.anim.defaultEnterTransition
+import com.practicum.list.core.navigation.anim.defaultExitTransition
+import com.practicum.list.core.navigation.anim.defaultPopEnterTransition
+import com.practicum.list.core.navigation.anim.defaultPopExitTransition
 import com.practicum.list.core.theme.R.string
 import com.practicum.list.feature.main.presentation.MainEffect
 import com.practicum.list.feature.main.presentation.MainIntent
 import com.practicum.list.feature.main.presentation.MainViewModel
 
-private const val DURATION_MILLIS = 300
-
 fun NavGraphBuilder.mainScreenNavigation(navController: NavController) {
     composable<MainScreenRoute>(
-        enterTransition = {
-            slideIntoContainer(
-                AnimatedContentTransitionScope.SlideDirection.Start,
-                tween(DURATION_MILLIS),
-            )
-        },
-        exitTransition = {
-            slideOutOfContainer(
-                AnimatedContentTransitionScope.SlideDirection.Start,
-                tween(DURATION_MILLIS),
-            )
-        },
-        popEnterTransition = {
-            slideIntoContainer(
-                AnimatedContentTransitionScope.SlideDirection.End,
-                tween(DURATION_MILLIS),
-            )
-        },
-        popExitTransition = {
-            slideOutOfContainer(
-                AnimatedContentTransitionScope.SlideDirection.End,
-                tween(DURATION_MILLIS),
-            )
-        },
+        enterTransition = defaultEnterTransition,
+        exitTransition = defaultExitTransition,
+        popEnterTransition = defaultPopEnterTransition,
+        popExitTransition = defaultPopExitTransition
     ) {
         MainScreenRouteContent(navController = navController)
     }
