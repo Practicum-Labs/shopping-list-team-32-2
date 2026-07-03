@@ -8,6 +8,7 @@ import com.practicum.list.core.data.network.codes.CONFLICT_ERROR
 import com.practicum.list.core.data.network.codes.DEFAULT_ERROR
 import com.practicum.list.core.data.network.codes.OK
 import com.practicum.list.core.data.network.codes.SERVER_ERROR
+import com.practicum.list.core.data.network.codes.UNAUTHORIZED_ERROR
 import com.practicum.list.core.data.network.dto.CheckResponse
 import com.practicum.list.core.data.network.dto.CheckTokenRequest
 import com.practicum.list.core.data.network.dto.RecoverPasswordRequest
@@ -56,6 +57,7 @@ class AuthRepositoryImpl @Inject constructor(
                     AuthResult.Success(session)
                 }
             }
+            UNAUTHORIZED_ERROR -> AuthResult.IncorrectCredentials
             SERVER_ERROR -> AuthResult.ServerError
             else -> AuthResult.Error
         }
