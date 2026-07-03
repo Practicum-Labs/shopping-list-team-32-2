@@ -27,7 +27,8 @@ class MainActivity : ComponentActivity() {
 
         lifecycleScope.launch {
             sessionEvents.sessionExpired.collect {
-                // navController.navigate(LoginRoute)
+            // navController.navigate(LoginRoute) - реализовать когда появится логин рут
+            // или вынести в RootViewModel
             }
         }
 

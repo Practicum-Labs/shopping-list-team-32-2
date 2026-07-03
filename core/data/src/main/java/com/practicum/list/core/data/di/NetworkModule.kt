@@ -1,10 +1,8 @@
 ﻿package com.practicum.list.core.data.di
 
 import android.content.Context
-import com.practicum.list.core.common.domain.UserSession
 import com.practicum.list.core.common.utils.NetworkConnectionChecker
 import com.practicum.list.core.common.utils.NetworkConnectionCheckerImpl
-import com.practicum.list.core.data.SessionEvents
 import com.practicum.list.core.data.network.AuthInterceptor
 import com.practicum.list.core.data.network.NetworkClient
 import com.practicum.list.core.data.network.TokenAuthenticator

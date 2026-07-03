@@ -4,7 +4,6 @@ import com.practicum.list.core.common.domain.UserSession
 import com.practicum.list.core.data.network.NetworkClient
 import com.practicum.list.core.data.network.codes.BAD_REQUEST_ERROR
 import com.practicum.list.core.data.network.codes.CONFLICT_ERROR
-import com.practicum.list.core.data.network.codes.CREATED
 import com.practicum.list.core.data.network.codes.DEFAULT_ERROR
 import com.practicum.list.core.data.network.codes.OK
 import com.practicum.list.core.data.network.codes.SERVER_ERROR
@@ -120,7 +119,10 @@ class AuthRepositoryImpl @Inject constructor(
                 if (password.length <= 7) RegisterResult.WeakPassword
                 else  RegisterResult.IncorrectEmail
             CONFLICT_ERROR -> RegisterResult.AlreadyExists
-            CREATED -> {
+            OK -> {
+                // в тз это CREATED (код 201) но мы СОЗНАТЕЛЬНО решили
+                // на уровне нетворк клиента обрабатывать это как 200 успех
+                // потому что разницы особой нету
                 val data = response.data as? RegisterResponse
                 if (data == null) RegisterResult.Error
                 else  {

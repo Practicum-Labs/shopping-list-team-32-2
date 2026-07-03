@@ -21,10 +21,23 @@ class TokenAuthenticator @Inject constructor(
     private val sessionEvents: SessionEvents,
 ) : Authenticator {
     override fun authenticate(route: Route?, response: Response): Request? {
-        if (response.priorResponse != null) return null // уже ретраили — стоп
+        if (response.priorResponse != null) return null
+
         synchronized(this) {
+
+            val currentAccessToken = runBlocking { userSession.getAccessToken() }
+            val failedAccessToken = response.request.header("Authorization")
+                ?.removePrefix("Bearer ")
+                ?.trim()
+            if (currentAccessToken != null && currentAccessToken != failedAccessToken) {
+                return response.request.newBuilder()
+                    .header("Authorization", "Bearer $currentAccessToken")
+                    .build()
+            }
+
             val refreshToken = runBlocking { userSession.getRefreshToken() }
                 ?: return forceLogout()
+
             val tokens = runBlocking {
                 try {
                     refreshAuthApi.refreshToken(RefreshTokenRequest(refreshToken))
@@ -32,6 +45,7 @@ class TokenAuthenticator @Inject constructor(
                     null
                 }
             } ?: return forceLogout()
+
             val userId = runBlocking { userSession.getUserId() }
             runBlocking {
                 userSession.saveSession(userId, tokens.accessToken, tokens.refreshToken)
