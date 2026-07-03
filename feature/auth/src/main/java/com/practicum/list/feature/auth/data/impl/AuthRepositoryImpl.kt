@@ -32,7 +32,6 @@ class AuthRepositoryImpl @Inject constructor(
 ) : AuthRepository {
 
     override suspend fun loginUser(email: String, password: String): AuthResult {
-        val userId = userSession.getUserId()
         val response = networkClient.doRequest(UserAuthRequest(email,password))
         return when (response.resultCode) {
             DEFAULT_ERROR -> AuthResult.NoInternet
@@ -46,7 +45,7 @@ class AuthRepositoryImpl @Inject constructor(
                 else  {
                     val session = data.toDomain()
                     userSession.saveSession(
-                        userId,
+                        session.userId.toLong(),
                         session.accessToken,
                         session.refreshToken
                     )

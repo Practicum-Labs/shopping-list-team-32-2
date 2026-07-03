@@ -7,11 +7,14 @@ import android.security.keystore.KeyProperties
 import java.security.KeyStore
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
+import javax.inject.Inject
+import javax.inject.Singleton
 
-object CryptoHelper {
-    private const val TRANSFORMATION = "AES/CBC/PKCS7Padding"
-    private const val KEY_ALIAS = "my_datastore_key"
-    private const val ANDROID_KEYSTORE = "AndroidKeyStore"
+@Singleton
+class CryptoHelper @Inject constructor() {
+    private val TRANSFORMATION = "AES/CBC/PKCS7Padding"
+    private val KEY_ALIAS = "my_datastore_key"
+    private val ANDROID_KEYSTORE = "AndroidKeyStore"
 
     private fun getOrCreateSecretKey(): SecretKey {
         val keyStore = KeyStore.getInstance(ANDROID_KEYSTORE).apply { load(null) }

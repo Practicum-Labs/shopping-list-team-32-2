@@ -3,6 +3,7 @@
 import android.content.Context
 import com.practicum.list.core.common.utils.NetworkConnectionChecker
 import com.practicum.list.core.common.utils.NetworkConnectionCheckerImpl
+import com.practicum.list.core.data.network.AuthInterceptor
 import com.practicum.list.core.data.network.NetworkClient
 import com.practicum.list.core.data.network.api.AuthApi
 import com.practicum.list.core.data.network.client.RetrofitNetworkClient
@@ -34,11 +35,14 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(): OkHttpClient {
+    fun provideOkHttpClient(
+        authInterceptor: AuthInterceptor,
+    ): OkHttpClient {
         val logging = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BASIC
         }
         return OkHttpClient.Builder()
+            .addInterceptor(authInterceptor)
             .addInterceptor(logging)
             .build()
     }
