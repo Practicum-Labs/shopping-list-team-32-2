@@ -70,7 +70,6 @@ fun SwipeableListItem(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 16.dp)
-            .height(ListItemHeight)
             .background(MaterialTheme.colorScheme.background),
     ) {
         ShoppingListActions(

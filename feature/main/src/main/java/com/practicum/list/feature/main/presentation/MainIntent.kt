@@ -12,6 +12,6 @@ sealed class MainIntent : MviIntent {
     data class DuplicateList(val id: Long) : MainIntent()
     data object CreateListClicked : MainIntent()
     data class CreateListNameChanged(val name: String) : MainIntent()
-    data object ConfirmCreateList : MainIntent()
+    data class ConfirmCreateList(val name: String) : MainIntent()
     data object DismissCreateListDialog : MainIntent()
 }
