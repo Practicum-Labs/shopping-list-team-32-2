@@ -63,27 +63,27 @@ class RegisterViewModel @Inject constructor(
             return
         }
 
-        when (registerUserAuthUseCase(email, password)) {
+        when (val result = registerUserAuthUseCase(email, password)) {
             is RegisterResult.Success -> {
                 updateState { it.copy(isLoading = false) }
                 emitEffect(RegisterEffect.NavigateToMain)
             }
 
-            RegisterResult.AlreadyExists -> updateState {
+            is RegisterResult.AlreadyExists -> updateState {
                 it.copy(isLoading = false, emailError = ERROR_ALREADY_EXISTS)
             }
 
-            RegisterResult.NoInternet -> finishWithError(ERROR_NO_INTERNET)
-            RegisterResult.ServerError -> finishWithError(ERROR_SERVER)
-            RegisterResult.WeakPassword -> updateState {
+            is RegisterResult.NoInternet -> finishWithError(result.message)
+            is RegisterResult.ServerError -> finishWithError(result.message)
+            is RegisterResult.WeakPassword -> updateState {
                 it.copy(isLoading = false, passwordError = AuthValidation.passwordFieldError(password))
             }
 
-            RegisterResult.IncorrectEmail -> updateState {
+            is RegisterResult.IncorrectEmail -> updateState {
                 it.copy(isLoading = false, emailError = AuthValidation.emailFieldError(email))
             }
 
-            RegisterResult.Error -> finishWithError(ERROR_UNKNOWN)
+            is RegisterResult.Error -> finishWithError(result.message)
         }
     }
 
@@ -94,8 +94,5 @@ class RegisterViewModel @Inject constructor(
 
     private companion object {
         const val ERROR_ALREADY_EXISTS = "Аккаунт с таким email уже зарегистрирован"
-        const val ERROR_NO_INTERNET = "Нет соединения. Попробуйте ещё раз"
-        const val ERROR_SERVER = "Ошибка сервера. Попробуйте позже"
-        const val ERROR_UNKNOWN = "Не удалось зарегистрироваться. Попробуйте ещё раз"
     }
 }

@@ -56,8 +56,8 @@ class ResetPasswordViewModel @Inject constructor(
                 it.copy(isLoading = false, isEmailSent = true, generalError = null)
             }
 
-            RecoverResult.NoInternet -> finishWithError(ERROR_NO_INTERNET)
-            RecoverResult.ServerError -> finishWithError(ERROR_SERVER)
+            is RecoverResult.NoInternet -> finishWithError(result.text)
+            is RecoverResult.ServerError -> finishWithError(result.text)
             is RecoverResult.Error -> finishWithError(result.text)
         }
     }
@@ -65,10 +65,5 @@ class ResetPasswordViewModel @Inject constructor(
     private suspend fun finishWithError(message: String) {
         updateState { it.copy(isLoading = false, generalError = message) }
         emitEffect(ResetPasswordEffect.ShowError(message))
-    }
-
-    private companion object {
-        const val ERROR_NO_INTERNET = "Нет соединения. Попробуйте ещё раз"
-        const val ERROR_SERVER = "Ошибка сервера. Попробуйте позже"
     }
 }

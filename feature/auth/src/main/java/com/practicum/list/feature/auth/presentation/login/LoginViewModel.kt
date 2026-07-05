@@ -55,36 +55,29 @@ class LoginViewModel @Inject constructor(
             return
         }
 
-        when (loginUserAuthUseCase(email, password)) {
+        when (val result = loginUserAuthUseCase(email, password)) {
             is AuthResult.Success -> {
                 updateState { it.copy(isLoading = false) }
                 emitEffect(LoginEffect.NavigateToMain)
             }
 
-            AuthResult.NoInternet -> finishWithGeneralError(ERROR_NO_INTERNET)
-            AuthResult.ServerError -> finishWithGeneralError(ERROR_SERVER)
-            AuthResult.IncorrectCredentials -> finishWithGeneralError(ERROR_INVALID_CREDENTIALS)
-            AuthResult.WeakPassword -> updateState {
+            is AuthResult.NoInternet -> finishWithGeneralError(result.text)
+            is AuthResult.ServerError -> finishWithGeneralError(result.text)
+            is AuthResult.IncorrectCredentials -> finishWithGeneralError(result.text)
+            is AuthResult.WeakPassword -> updateState {
                 it.copy(isLoading = false, passwordError = AuthValidation.passwordFieldError(password))
             }
 
-            AuthResult.IncorrectEmail -> updateState {
+            is AuthResult.IncorrectEmail -> updateState {
                 it.copy(isLoading = false, emailError = AuthValidation.emailFieldError(email))
             }
 
-            AuthResult.Error -> finishWithGeneralError(ERROR_UNKNOWN)
+            is AuthResult.Error -> finishWithGeneralError(result.text)
         }
     }
 
     private suspend fun finishWithGeneralError(message: String) {
         updateState { it.copy(isLoading = false, generalError = message) }
         emitEffect(LoginEffect.ShowError(message))
-    }
-
-    private companion object {
-        const val ERROR_INVALID_CREDENTIALS = "Неверный email или пароль"
-        const val ERROR_NO_INTERNET = "Нет соединения. Проверьте интернет и попробуйте снова"
-        const val ERROR_SERVER = "Ошибка сервера. Попробуйте позже"
-        const val ERROR_UNKNOWN = "Не удалось войти. Попробуйте ещё раз"
     }
 }

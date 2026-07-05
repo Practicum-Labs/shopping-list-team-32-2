@@ -3,15 +3,15 @@ package com.practicum.list.feature.auth.domain.models
 sealed interface AuthResult {
     data class Success(val session: UserSession) : AuthResult
 
-    data object NoInternet : AuthResult
+    data class NoInternet(val text: String) : AuthResult
 
-    data object ServerError : AuthResult
+    data class ServerError(val text: String) : AuthResult
 
-    data object WeakPassword : AuthResult
+    data class WeakPassword(val text: String) : AuthResult
 
-    data object IncorrectEmail : AuthResult
+    data class IncorrectEmail(val text: String) : AuthResult
 
-    data object IncorrectCredentials : AuthResult
+    data class IncorrectCredentials(val text: String) : AuthResult
 
-    data object Error : AuthResult
+    data class Error(val text: String) : AuthResult
 }

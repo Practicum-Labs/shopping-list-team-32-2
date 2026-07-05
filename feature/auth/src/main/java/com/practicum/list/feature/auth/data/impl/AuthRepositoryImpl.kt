@@ -35,18 +35,18 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun loginUser(email: String, password: String): AuthResult {
         val response = networkClient.doRequest(UserAuthRequest(email, password))
         return when (response.resultCode) {
-            DEFAULT_ERROR -> AuthResult.NoInternet
+            DEFAULT_ERROR -> AuthResult.NoInternet(NO_INTERNET_ERROR)
             BAD_REQUEST_ERROR -> {
                 if (password.isPasswordWeak(MIN_PASSWORD_LENGTH)) {
-                    AuthResult.WeakPassword
+                    AuthResult.WeakPassword(WEAK_PASSWORD)
                 } else {
-                    AuthResult.IncorrectEmail
+                    AuthResult.IncorrectEmail(INCORRECT_EMAIL_ERROR)
                 }
             }
             OK -> {
                 val data = response.data as? UserAuthResponse
                 if (data == null) {
-                    AuthResult.Error
+                    AuthResult.Error(UNKNOWN_ERROR_MESSAGE)
                 } else {
                     val session = data.toDomain()
                     userSession.saveSession(
@@ -57,18 +57,19 @@ class AuthRepositoryImpl @Inject constructor(
                     AuthResult.Success(session)
                 }
             }
-            UNAUTHORIZED_ERROR -> AuthResult.IncorrectCredentials
-            SERVER_ERROR -> AuthResult.ServerError
-            else -> AuthResult.Error
+            UNAUTHORIZED_ERROR -> AuthResult.IncorrectCredentials(INCORRECT_CREDENTIALS)
+            SERVER_ERROR -> AuthResult.ServerError(SERVER_ERROR_MESSAGE)
+            else -> AuthResult.Error(UNKNOWN_ERROR_MESSAGE)
         }
     }
 
     override suspend fun refreshToken(): RefreshResult {
-        val refreshToken = userSession.getRefreshToken() ?: return RefreshResult.Error("Пустой рефреш токен")
+        val refreshToken = userSession.getRefreshToken() ?:
+        return RefreshResult.Error(EMPTY_TOKEN_ERROR)
         val userId = userSession.getUserId()
         val response = networkClient.doRequest(RefreshTokenRequest(refreshToken))
         return when (response.resultCode) {
-            DEFAULT_ERROR -> RefreshResult.NoInternet
+            DEFAULT_ERROR -> RefreshResult.NoInternet(NO_INTERNET_ERROR)
             OK -> {
                 val data = response.data as? RefreshTokenResponse
                 if (data == null) {
@@ -83,7 +84,7 @@ class AuthRepositoryImpl @Inject constructor(
                     RefreshResult.Success(session)
                 }
             }
-            SERVER_ERROR -> RefreshResult.ServerError
+            SERVER_ERROR -> RefreshResult.ServerError(SERVER_ERROR_MESSAGE)
             else -> RefreshResult.Error(UNKNOWN_ERROR_MESSAGE)
         }
     }
@@ -91,7 +92,7 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun checkTokenIsValid(token: String): TokenValidResult {
         val response = networkClient.doRequest(CheckTokenRequest(token))
         return when (response.resultCode) {
-            DEFAULT_ERROR -> TokenValidResult.NoInternet
+            DEFAULT_ERROR -> TokenValidResult.NoInternet(NO_INTERNET_ERROR)
             OK -> {
                 val data = response.data as? CheckResponse
                 if (data == null) {
@@ -104,7 +105,7 @@ class AuthRepositoryImpl @Inject constructor(
                     TokenValidResult.Success(validResponse.isValid)
                 }
             }
-            SERVER_ERROR -> TokenValidResult.ServerError
+            SERVER_ERROR -> TokenValidResult.ServerError(SERVER_ERROR_MESSAGE)
             else -> TokenValidResult.Error(UNKNOWN_ERROR_MESSAGE)
         }
     }
@@ -112,9 +113,9 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun recoverPassword(email: String): RecoverResult {
         val response = networkClient.doRequest(RecoverPasswordRequest(email))
         return when (response.resultCode) {
-            DEFAULT_ERROR -> RecoverResult.NoInternet
+            DEFAULT_ERROR -> RecoverResult.NoInternet(NO_INTERNET_ERROR)
             OK -> RecoverResult.Success
-            SERVER_ERROR -> RecoverResult.ServerError
+            SERVER_ERROR -> RecoverResult.ServerError(SERVER_ERROR_MESSAGE)
             else -> RecoverResult.Error(UNKNOWN_ERROR_MESSAGE)
         }
     }
@@ -122,18 +123,18 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun registerUser(email: String, password: String): RegisterResult {
         val response = networkClient.doRequest(RegisterRequest(email, password))
         return when (response.resultCode) {
-            DEFAULT_ERROR -> RegisterResult.NoInternet
+            DEFAULT_ERROR -> RegisterResult.NoInternet(NO_INTERNET_ERROR)
             BAD_REQUEST_ERROR ->
                 if (password.isPasswordWeak(MIN_PASSWORD_LENGTH)) {
-                    RegisterResult.WeakPassword
+                    RegisterResult.WeakPassword(WEAK_PASSWORD)
                 } else {
-                    RegisterResult.IncorrectEmail
+                    RegisterResult.IncorrectEmail(INCORRECT_EMAIL_ERROR)
                 }
-            CONFLICT_ERROR -> RegisterResult.AlreadyExists
+            CONFLICT_ERROR -> RegisterResult.AlreadyExists(ALREADY_EXISTS_ERROR)
             OK -> {
                 val data = response.data as? RegisterResponse
                 if (data == null) {
-                    RegisterResult.Error
+                    RegisterResult.Error(UNKNOWN_ERROR_MESSAGE)
                 } else {
                     val session = data.toDomain()
                     userSession.saveSession(
@@ -144,8 +145,8 @@ class AuthRepositoryImpl @Inject constructor(
                     RegisterResult.Success(session)
                 }
             }
-            SERVER_ERROR -> RegisterResult.ServerError
-            else -> RegisterResult.Error
+            SERVER_ERROR -> RegisterResult.ServerError(SERVER_ERROR_MESSAGE)
+            else -> RegisterResult.Error(UNKNOWN_ERROR_MESSAGE)
         }
     }
 
@@ -153,5 +154,19 @@ class AuthRepositoryImpl @Inject constructor(
         const val MIN_PASSWORD_LENGTH = 7
         const val UNKNOWN_ERROR_MESSAGE = "Неизвестная ошибка"
         const val EMPTY_RESPONSE_MESSAGE = "С сервера пришел пустой ответ"
+
+        const val NO_INTERNET_ERROR = "Нет интернета"
+
+        const val INCORRECT_EMAIL_ERROR = "Некорректный email"
+
+        const val SERVER_ERROR_MESSAGE = "Сервер недоступен"
+
+        const val ALREADY_EXISTS_ERROR = "Пользователь уже существует"
+
+        const val WEAK_PASSWORD = "Пароль не соответствует требованиям безопасности, вас взломают!"
+
+        const val EMPTY_TOKEN_ERROR = "Пустой рефреш токен"
+
+        const val INCORRECT_CREDENTIALS = "Не совпадают email и пароль"
     }
 }

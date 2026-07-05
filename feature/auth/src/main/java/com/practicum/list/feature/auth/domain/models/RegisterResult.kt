@@ -3,15 +3,15 @@ package com.practicum.list.feature.auth.domain.models
 sealed interface RegisterResult {
     data class Success(val session: UserSession) : RegisterResult
 
-    data object NoInternet : RegisterResult
+    data class NoInternet(val message: String) : RegisterResult
 
-    data object ServerError : RegisterResult
+    data class ServerError(val message: String) : RegisterResult
 
-    data object WeakPassword : RegisterResult
+    data class WeakPassword(val text: String) : RegisterResult
 
-    data object IncorrectEmail : RegisterResult
+    data class IncorrectEmail(val text: String) : RegisterResult
 
-    data object AlreadyExists : RegisterResult
+    data class AlreadyExists(val text: String) : RegisterResult
 
-    data object Error : RegisterResult
+    data class Error(val message: String) : RegisterResult
 }
