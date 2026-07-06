@@ -47,7 +47,7 @@ private fun ResetPasswordScreenRouteContent(navController: NavController) {
         viewModel.effects.collect { effect ->
             when (effect) {
                 ResetPasswordEffect.NavigateBack -> navController.popBackStack()
-                is ResetPasswordEffect.ShowError -> snackbarHostState.showSnackbar(effect.message)
+                is ResetPasswordEffect.ShowBubble -> snackbarHostState.showSnackbar(effect.message)
             }
         }
     }

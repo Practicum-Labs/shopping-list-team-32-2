@@ -1,5 +1,6 @@
 package com.practicum.list.feature.auth.presentation.recovery
 
+import com.practicum.list.core.common.utils.isEmailValid
 import com.practicum.list.core.mvi.MviViewModel
 import com.practicum.list.feature.auth.domain.models.RecoverResult
 import com.practicum.list.feature.auth.domain.usecase.RecoverPasswordAuthUseCase
@@ -16,13 +17,12 @@ class ResetPasswordViewModel @Inject constructor(
         when (intent) {
             is ResetPasswordIntent.EmailChanged -> current.copy(
                 email = intent.email,
-                emailError = AuthValidation.emailFieldError(intent.email),
-                generalError = null,
+                emailError = AuthValidation.emailFieldError(intent.email)
             )
 
             ResetPasswordIntent.SubmitClicked,
             ResetPasswordIntent.RetryClicked,
-            -> current.copy(isLoading = true, generalError = null)
+            -> current.copy(isLoading = true)
 
             ResetPasswordIntent.BackClicked,
             ResetPasswordIntent.ReturnToLoginClicked,
@@ -46,14 +46,17 @@ class ResetPasswordViewModel @Inject constructor(
     private suspend fun submitRecovery() {
         val email = state.value.email.trim()
 
-        if (!AuthValidation.isRecoveryFormValid(email)) {
+        if (!email.isEmailValid()) {
             updateState { it.copy(isLoading = false) }
             return
         }
 
         when (val result = recoverPasswordAuthUseCase(email)) {
-            RecoverResult.Success -> updateState {
-                it.copy(isLoading = false, isEmailSent = true, generalError = null)
+            RecoverResult.Success -> {
+                updateState {
+                    it.copy(isLoading = false)
+                }
+                emitEffect(ResetPasswordEffect.ShowBubble(message = "Письмо отправлено"))
             }
 
             is RecoverResult.NoInternet -> finishWithError(result.text)
@@ -63,7 +66,7 @@ class ResetPasswordViewModel @Inject constructor(
     }
 
     private suspend fun finishWithError(message: String) {
-        updateState { it.copy(isLoading = false, generalError = message) }
-        emitEffect(ResetPasswordEffect.ShowError(message))
+        updateState { it.copy(isLoading = false) }
+        emitEffect(ResetPasswordEffect.ShowBubble(message))
     }
 }
