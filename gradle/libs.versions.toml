@@ -78,7 +78,7 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3",
 navigation-common-ktx = { group = "androidx.navigation", name = "navigation-common-ktx", version.ref = "navigationCommonKtxVersion" }
 navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigationRuntimeKtxVersion" }
 retrofit-converter = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
-security-crypto = { group = "androidx.security", name = "security-crypto", version = "securityCrypto" }
+security-crypto = { group = "androidx.security", name = "security-crypto", version.ref = "securityCrypto" }
 datastore = { group = "androidx.datastore", name = "datastore", version.ref = "datastore" }
 
 #DI
