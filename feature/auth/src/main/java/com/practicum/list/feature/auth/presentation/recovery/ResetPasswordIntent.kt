@@ -6,6 +6,4 @@ sealed class ResetPasswordIntent : MviIntent {
     data class EmailChanged(val email: String) : ResetPasswordIntent()
     data object SubmitClicked : ResetPasswordIntent()
     data object BackClicked : ResetPasswordIntent()
-    data object ReturnToLoginClicked : ResetPasswordIntent()
-    data object RetryClicked : ResetPasswordIntent()
 }

@@ -60,12 +60,7 @@ fun ResetPasswordScreen(
                 onClick = { onIntent(ResetPasswordIntent.SubmitClicked) },
                 enabled = state.isSubmitEnabled,
                 isLoading = state.isLoading,
-            )
-            PrimaryAuthButton(
-                text = stringResource(R.string.auth_link_back_to_login),
-                onClick = { onIntent(ResetPasswordIntent.ReturnToLoginClicked) },
-                enabled = true,
-                modifier = Modifier.padding(bottom = 24.dp),
+                modifier = Modifier.padding(bottom = 24.dp)
             )
         }
     }

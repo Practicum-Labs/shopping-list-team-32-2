@@ -19,25 +19,14 @@ class ResetPasswordViewModel @Inject constructor(
                 email = intent.email,
                 emailError = AuthValidation.emailFieldError(intent.email)
             )
-
-            ResetPasswordIntent.SubmitClicked,
-            ResetPasswordIntent.RetryClicked,
-            -> current.copy(isLoading = true)
-
-            ResetPasswordIntent.BackClicked,
-            ResetPasswordIntent.ReturnToLoginClicked,
-            -> current
+            ResetPasswordIntent.SubmitClicked -> current.copy(isLoading = true)
+            ResetPasswordIntent.BackClicked -> current
         }
 
     override suspend fun handleIntent(intent: ResetPasswordIntent) {
         when (intent) {
-            ResetPasswordIntent.BackClicked,
-            ResetPasswordIntent.ReturnToLoginClicked,
-            -> emitEffect(ResetPasswordEffect.NavigateBack)
-
-            ResetPasswordIntent.SubmitClicked,
-            ResetPasswordIntent.RetryClicked,
-            -> submitRecovery()
+            ResetPasswordIntent.BackClicked -> emitEffect(ResetPasswordEffect.NavigateBack)
+            ResetPasswordIntent.SubmitClicked -> submitRecovery()
 
             else -> Unit
         }
