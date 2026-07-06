@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">Shopping list</string>
+    <string name="no_internet"> Интернет куда-то спрятался</string>
+    <string name="something_wrong"> Что-то пошло не так</string>
+    <string name="check_settings_and_wi_fi">Мы потеряли связь с миром. Проверьте Wi-Fi или сотовые данные — мы подождем здесь</string>
+    <string name="cannot_find_profile">Мы не смогли распознать ваш профиль. Похоже на временный сбой, давайте попробуем войти снова?</string>
+    <string name="server_error_description">На сервере произошел временный сбой. Мы уже знаем о проблеме и восстанавливаем работу</string>
+    <string name="server_error">Ошибка на сервере</string>
+    <string name="check_again">Проверить снова</string>
+    <string name="renew_session">Обновить сессию</string>
+    <string name="welcome_to_shopping_list">Добро пожаловать в Список покупок!</string>
+    <string name="welcome_message">Создавайте списки, добавляйте товары, отмечайте, что уже куплено</string>
 </resources>

@@ -6,6 +6,9 @@ import kotlinx.serialization.Serializable
 data object MainScreenRoute
 
 @Serializable
+data object RootScreenRoute
+
+@Serializable
 data class ListScreenRoute(val id: Long)
 
 @Serializable
