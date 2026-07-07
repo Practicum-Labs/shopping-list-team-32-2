@@ -25,6 +25,8 @@ val OutlineVariantLight = Color(ColorHex.OUTLINE_VARIANT_LIGHT_HEX)
 val SurfaceContainerHighestLight = Color(ColorHex.SURFACE_CONTAINER_HIGHEST_LIGHT_HEX)
 val SurfaceBrightLight = Color(ColorHex.SURFACE_BRIGHT_LIGHT_HEX)
 
+val OnSecondaryLight = Color(ColorHex.ON_SECONDARY_LIGHT)
+
 val PrimaryDark = Color(ColorHex.PRIMARY_DARK_HEX)
 val OnPrimaryDark = Color(ColorHex.ON_PRIMARY_DARK_HEX)
 val PrimaryContainerDark = Color(ColorHex.PRIMARY_CONTAINER_DARK_HEX)
@@ -47,3 +49,4 @@ val OutlineDark = Color(ColorHex.OUTLINE_DARK_HEX)
 val OutlineVariantDark = Color(ColorHex.OUTLINE_VARIANT_DARK_HEX)
 val SurfaceContainerHighestDark = Color(ColorHex.SURFACE_CONTAINER_HIGHEST_DARK_HEX)
 val SurfaceBrightDark = Color(ColorHex.SURFACE_BRIGHT_DARK_HEX)
+val OnSecondaryDark = Color(ColorHex.ON_SECONDARY_DARK)
