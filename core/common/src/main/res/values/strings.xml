@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="unit_piece">шт.</string>
+    <string name="unit_kg">кг</string>
+    <string name="unit_mg">мг</string>
+    <string name="unit_pkg">уп.</string>
+    <string name="unit_l">л</string>
+</resources>

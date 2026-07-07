@@ -2,6 +2,7 @@
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.practicum.list.core.common.domain.MeasureUnit
 
 @Entity(
     tableName = "products",
@@ -21,4 +22,5 @@ data class ProductEntity(
     val name: String,
     val quantity: Int = 1,
     val isChecked: Boolean = false,
+    val unit: MeasureUnit
 )

@@ -10,14 +10,16 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface ProductDao {
     @Query("SELECT * FROM products WHERE listId = :listId ORDER BY id")
-    fun observeByListId(listId: Long): Flow<List<ProductEntity>>
+    fun observeByListId(listId: Long): Flow<List<ProductEntity>>?
+
+    fun getByListId(listId: Long): List<ProductEntity>?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(entity: ProductEntity): Long
 
-    @Query("SELECT * FROM products WHERE listId = :listId ORDER BY id")
-    suspend fun getByListId(listId: Long): List<ProductEntity>
+    suspend fun delete(entity: ProductEntity, listId: Long): Long
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(productEntities: List<ProductEntity>)
+    suspend fun deleteAllByListId(listId: Long)
+
+    suspend fun deleteAllCheckedByListId(listId: Long)
 }
