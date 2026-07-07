@@ -2,6 +2,8 @@ package com.practicum.list.feature.auth.ui.components.textfields
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -11,6 +13,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.autofill.ContentType
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -32,16 +35,20 @@ fun PasswordTextField(
     modifier: Modifier = Modifier,
     isError: Boolean = false,
     errorText: String? = null,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
 ) {
     var isPasswordVisible by remember { mutableStateOf(false) }
 
     AuthOutlinedTextField(
+        modifier = modifier,
         value = value,
         onValueChange = onValueChange,
         label = label,
-        modifier = modifier,
         isError = isError,
         errorText = errorText,
+        keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions,
         visualTransformation = if (isPasswordVisible) {
             VisualTransformation.None
         } else {
@@ -53,6 +60,7 @@ fun PasswordTextField(
                 onToggle = { isPasswordVisible = !isPasswordVisible },
             )
         },
+        content = ContentType.Password
     )
 }
 
