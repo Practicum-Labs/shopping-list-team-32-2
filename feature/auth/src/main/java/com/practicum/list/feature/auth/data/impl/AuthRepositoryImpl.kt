@@ -65,7 +65,7 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun refreshToken(): RefreshResult {
         val refreshToken = userSession.getRefreshToken() ?:
-        return RefreshResult.Error(EMPTY_TOKEN_ERROR)
+            return RefreshResult.Error(EMPTY_TOKEN_ERROR)
         val userId = userSession.getUserId()
         val response = networkClient.doRequest(RefreshTokenRequest(refreshToken))
         return when (response.resultCode) {

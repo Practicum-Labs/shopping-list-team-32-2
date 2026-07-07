@@ -10,4 +10,6 @@ object Dimens {
     val DialogHorizontalPadding = 24.dp
     val DialogIconDimension = 24.dp
     val ScreenHorizontalPadding = 16.dp
+
+    val LoginVerticalPadding = 24.dp
 }

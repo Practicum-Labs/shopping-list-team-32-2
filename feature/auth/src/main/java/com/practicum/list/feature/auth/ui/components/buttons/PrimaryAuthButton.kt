@@ -33,16 +33,16 @@ fun PrimaryAuthButton(
             .height(48.dp),
         enabled = enabled && !isLoading,
         colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onPrimary,
+            containerColor = MaterialTheme.colorScheme.secondary,
+            contentColor = MaterialTheme.colorScheme.onSecondary,
             disabledContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
-            disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            disabledContentColor = MaterialTheme.colorScheme.onSecondary,
         ),
     ) {
         if (isLoading) {
             CircularProgressIndicator(
                 modifier = Modifier.size(24.dp),
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = MaterialTheme.colorScheme.onSecondary,
                 strokeWidth = 2.dp,
             )
         } else {
@@ -91,10 +91,36 @@ private fun PrimaryAuthButtonLightDisabledPreview() {
     }
 }
 
+@Preview(name = "Dark disabled", showBackground = true)
+@Composable
+private fun PrimaryAuthButtonDarkDisabledPreview() {
+    ShoppingListTheme(darkTheme = false) {
+        PrimaryAuthButton(
+            text = stringResource(R.string.auth_button_login),
+            onClick = {},
+            enabled = false,
+            modifier = Modifier.padding(16.dp),
+        )
+    }
+}
+
 @Preview(name = "Dark loading", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun PrimaryAuthButtonDarkLoadingPreview() {
     ShoppingListTheme(darkTheme = true) {
+        PrimaryAuthButton(
+            text = stringResource(R.string.auth_button_login),
+            onClick = {},
+            isLoading = true,
+            modifier = Modifier.padding(16.dp),
+        )
+    }
+}
+
+@Preview(name = "Dark loading", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun PrimaryAuthButtonLightLoadingPreview() {
+    ShoppingListTheme(darkTheme = false) {
         PrimaryAuthButton(
             text = stringResource(R.string.auth_button_login),
             onClick = {},

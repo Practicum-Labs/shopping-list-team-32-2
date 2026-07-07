@@ -1,5 +1,6 @@
 package com.practicum.list.feature.auth.ui.screens.recovery
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -11,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -21,9 +23,11 @@ import com.practicum.list.core.navigation.anim.defaultEnterTransition
 import com.practicum.list.core.navigation.anim.defaultExitTransition
 import com.practicum.list.core.navigation.anim.defaultPopEnterTransition
 import com.practicum.list.core.navigation.anim.defaultPopExitTransition
+import com.practicum.list.core.theme.ShoppingListTheme
 import com.practicum.list.feature.auth.R
 import com.practicum.list.feature.auth.presentation.recovery.ResetPasswordEffect
 import com.practicum.list.feature.auth.presentation.recovery.ResetPasswordIntent
+import com.practicum.list.feature.auth.presentation.recovery.ResetPasswordState
 import com.practicum.list.feature.auth.presentation.recovery.ResetPasswordViewModel
 
 fun NavGraphBuilder.resetPasswordScreenNavigation(navController: NavController) {
@@ -67,4 +71,70 @@ private fun ResetPasswordScreenRouteContent(navController: NavController) {
             modifier = Modifier.padding(paddingValues),
         )
     }
+}
+
+@Composable
+private fun ResetPasswordScreenPreview(
+    darkTheme: Boolean,
+    state: ResetPasswordState,
+) {
+    ShoppingListTheme(darkTheme = darkTheme) {
+        Scaffold(
+            topBar = {
+                TopBar(
+                    title = stringResource(R.string.auth_title_reset_password),
+                    onNavigateBack = {},
+                )
+            },
+        ) { paddingValues ->
+            ResetPasswordScreen(
+                state = state,
+                onIntent = {},
+                modifier = Modifier.padding(paddingValues),
+            )
+        }
+    }
+}
+
+@Preview(name = "Light — empty, button disabled", showBackground = true)
+@Composable
+private fun ResetPasswordEmptyLightPreview() {
+    ResetPasswordScreenPreview(
+        darkTheme = false,
+        state = ResetPasswordState(),
+    )
+}
+
+@Preview(
+    name = "Dark — empty, button disabled",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+)
+@Composable
+private fun ResetPasswordEmptyDarkPreview() {
+    ResetPasswordScreenPreview(
+        darkTheme = true,
+        state = ResetPasswordState(),
+    )
+}
+
+@Preview(name = "Valid email — button enabled", showBackground = true)
+@Composable
+private fun ResetPasswordValidEmailPreview() {
+    ResetPasswordScreenPreview(
+        darkTheme = false,
+        state = ResetPasswordState(email = "user@example.com"),
+    )
+}
+
+@Preview(name = "Validation error", showBackground = true)
+@Composable
+private fun ResetPasswordValidationErrorPreview() {
+    ResetPasswordScreenPreview(
+        darkTheme = false,
+        state = ResetPasswordState(
+            email = "not-an-email",
+            emailError = stringResource(R.string.auth_error_invalid_email),
+        ),
+    )
 }
