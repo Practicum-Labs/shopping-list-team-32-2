@@ -16,7 +16,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.practicum.list.core.theme.R
 import com.practicum.list.core.theme.ShoppingListTheme
 
-
 @Composable
 fun LoginTextButton(
     modifier: Modifier = Modifier,
@@ -33,7 +32,6 @@ fun LoginTextButton(
         MaterialTheme.colorScheme.primary
     }
 
-
     TextButton(
         modifier = modifier,
         onClick = onClick,
@@ -48,7 +46,6 @@ fun LoginTextButton(
         Text(text = buttonText, style = buttonStyle)
     }
 }
-
 
 @Preview(showSystemUi = true)
 @Composable

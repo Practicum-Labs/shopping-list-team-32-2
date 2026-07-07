@@ -9,4 +9,6 @@ sealed class LoginIntent : MviIntent {
     data object RegisterClicked : LoginIntent()
     data object ResetPasswordClicked : LoginIntent()
     data object RetryClicked : LoginIntent()
+    data class SubmitEmailClicked(val email: String) : LoginIntent()
+    data class SubmitPasswordClicked(val password: String) : LoginIntent()
 }
