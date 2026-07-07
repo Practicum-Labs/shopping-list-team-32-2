@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -30,7 +31,7 @@ fun RegisterScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(horizontal = 16.dp, vertical = 16.dp),
+            .padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.Top,
     ) {
         AuthOutlinedTextField(
@@ -39,6 +40,7 @@ fun RegisterScreen(
             label = stringResource(R.string.auth_label_email),
             isError = state.emailError != null,
             errorText = state.emailError,
+            modifier = Modifier.fillMaxWidth(),
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -49,16 +51,18 @@ fun RegisterScreen(
             label = stringResource(R.string.auth_label_password),
             isError = state.passwordError != null,
             errorText = state.passwordError,
+            modifier = Modifier.fillMaxWidth(),
         )
 
         if (state.password.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             PasswordStrengthIndicator(level = state.passwordStrengthLevel)
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             PasswordRequirementsChecklist(
                 requirements = listOf(
                     stringResource(R.string.auth_requirement_min_length) to state.passwordRequirements.hasMinLength,
                     stringResource(R.string.auth_requirement_has_digit) to state.passwordRequirements.hasDigit,
+                    stringResource(R.string.auth_requirement_has_uppercase) to state.passwordRequirements.hasUppercase,
                 ),
             )
         }
@@ -71,24 +75,17 @@ fun RegisterScreen(
             label = stringResource(R.string.auth_label_confirm_password),
             isError = state.confirmPasswordError != null,
             errorText = state.confirmPasswordError,
+            modifier = Modifier.fillMaxWidth(),
         )
 
-        state.generalError?.let { error ->
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = error,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.error,
-            )
-        }
-
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.weight(1f))
 
         PrimaryAuthButton(
             text = stringResource(R.string.auth_button_register),
             onClick = { onIntent(RegisterIntent.SubmitClicked) },
             enabled = state.isSubmitEnabled,
             isLoading = state.isLoading,
+            modifier = Modifier.padding(bottom = 24.dp),
         )
     }
 }

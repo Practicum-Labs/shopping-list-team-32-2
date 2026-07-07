@@ -11,6 +11,7 @@
     <string name="auth_error_invalid_email">Некорректный email</string>
     <string name="auth_requirement_min_length">Не менее 7 символов</string>
     <string name="auth_requirement_has_digit">Содержит цифру</string>
+    <string name="auth_requirement_has_uppercase">Заглавная буква</string>
     <string name="auth_toggle_password_visibility">Показать пароль</string>
     <string name="auth_toggle_password_hide">Скрыть пароль</string>
     <string name="auth_label_confirm_password">Подтвердите пароль</string>
