@@ -15,13 +15,13 @@ class LoginViewModel @Inject constructor(
     override fun reduce(intent: LoginIntent, current: LoginState): LoginState = when (intent) {
         is LoginIntent.EmailChanged -> current.copy(
             email = intent.email,
-            emailError = AuthValidation.emailFieldError(intent.email),
+            emailError = null,
             generalError = null,
         )
 
         is LoginIntent.PasswordChanged -> current.copy(
             password = intent.password,
-            passwordError = AuthValidation.passwordFieldError(intent.password),
+            passwordError = null,
             generalError = null,
         )
 
@@ -32,6 +32,16 @@ class LoginViewModel @Inject constructor(
         LoginIntent.RegisterClicked,
         LoginIntent.ResetPasswordClicked,
         -> current
+        is LoginIntent.SubmitEmailClicked -> current.copy(
+            email = intent.email,
+            emailError = AuthValidation.emailFieldError(intent.email),
+            generalError = null,
+        )
+        is LoginIntent.SubmitPasswordClicked -> current.copy(
+            password = intent.password,
+            passwordError = AuthValidation.passwordFieldError(intent.password),
+            generalError = null,
+        )
     }
 
     override suspend fun handleIntent(intent: LoginIntent) {
