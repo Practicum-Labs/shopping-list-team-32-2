@@ -14,7 +14,7 @@
     <string name="auth_requirement_has_uppercase">Заглавная буква</string>
     <string name="auth_toggle_password_visibility">Показать пароль</string>
     <string name="auth_toggle_password_hide">Скрыть пароль</string>
-    <string name="auth_label_confirm_password">Подтвердите пароль</string>
+    <string name="auth_label_confirm_password">Повторите пароль</string>
     <string name="auth_title_register">Регистрация</string>
     <string name="auth_title_reset_password">Восстановление пароля</string>
     <string name="auth_button_forgot_password">Восстановить пароль</string>
