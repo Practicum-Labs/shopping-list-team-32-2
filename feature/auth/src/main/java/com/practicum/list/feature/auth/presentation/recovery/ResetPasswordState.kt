@@ -6,8 +6,10 @@ import com.practicum.list.core.mvi.MviState
 data class ResetPasswordState(
     val email: String = "",
     val emailError: String? = null,
-    val isLoading: Boolean = false
+    val generalError: String? = null,
+    val isLoading: Boolean = false,
+    val isEmailSent: Boolean = false,
 ) : MviState {
     val isSubmitEnabled: Boolean
-        get() = email.isEmailValid() && !isLoading
+        get() = email.isEmailValid() && !isLoading && !isEmailSent
 }

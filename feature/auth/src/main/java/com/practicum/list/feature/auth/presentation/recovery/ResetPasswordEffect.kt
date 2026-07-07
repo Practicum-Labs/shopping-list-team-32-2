@@ -4,5 +4,5 @@ import com.practicum.list.core.mvi.MviEffect
 
 sealed class ResetPasswordEffect : MviEffect {
     data object NavigateBack : ResetPasswordEffect()
-    data class ShowBubble(val message: String) : ResetPasswordEffect()
+    data class ShowError(val message: String) : ResetPasswordEffect()
 }
