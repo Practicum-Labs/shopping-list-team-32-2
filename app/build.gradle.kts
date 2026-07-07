@@ -53,6 +53,7 @@ dependencies {
     implementation(project(":core:common"))
     implementation(project(":core:design"))
     implementation(project(":core:navigation"))
+    implementation(project(":core:mvi"))
     implementation(project(":core:data"))
 
     implementation(platform(libs.androidx.compose.bom))
@@ -65,15 +66,15 @@ dependencies {
 
     implementation(libs.hilt)
     ksp(libs.hilt.compiler)
-
+    implementation(libs.hilt.compose)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.compose.material3)
     implementation(libs.moshi)
     implementation(libs.moshi.kotlin)
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging)
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter.moshi)
-
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
