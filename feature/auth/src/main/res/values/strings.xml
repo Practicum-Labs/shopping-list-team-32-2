@@ -21,7 +21,9 @@
     <string name="auth_title_register">Регистрация</string>
     <string name="auth_title_reset_password">Восстановление пароля</string>
     <string name="auth_button_forgot_password">Восстановить пароль</string>
-    <string name="auth_button_reset_password">Отправить письмо</string>
     <string name="password_restoration_subtitle">Введите email, указанный при регистрации\n - мы отправим письмо со ссылкой\nдля сброса пароля</string>
-    <string name="password_restoration_title">Восстановление пароля</string>
+    <string name="auth_button_reset_password">Отправить письмо</string>
+    <string name="auth_link_back_to_login">Вернуться ко входу</string>
+    <string name="auth_reset_success_title">Письмо отправлено</string>
+    <string name="auth_reset_success_message">Проверьте почту — мы отправили инструкцию по восстановлению пароля.</string>
 </resources>
