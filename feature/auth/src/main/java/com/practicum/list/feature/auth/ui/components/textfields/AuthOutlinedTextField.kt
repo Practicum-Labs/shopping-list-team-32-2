@@ -42,14 +42,14 @@ fun AuthOutlinedTextField(
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     trailingIcon: @Composable (() -> Unit)? = null,
     singleLine: Boolean = true,
+    content: ContentType = ContentType.EmailAddress
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
             modifier = Modifier
-                .fillMaxWidth()
-                .semantics { contentType = ContentType.EmailAddress },
+                .fillMaxWidth().semantics { contentType = content },
             label = { Text(label) },
             isError = isError,
             singleLine = singleLine,
