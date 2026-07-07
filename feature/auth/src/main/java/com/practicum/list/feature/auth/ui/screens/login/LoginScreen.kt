@@ -85,7 +85,7 @@ fun LoginScreen(
                 )
 
                 PasswordTextField(
-                    modifier = Modifier.offset(y = 84.dp),
+                    modifier = Modifier.offset(y = 90.dp),
                     value = state.password,
                     onValueChange = { onIntent(LoginIntent.PasswordChanged(it)) },
                     label = stringResource(R.string.auth_label_password),
@@ -104,7 +104,7 @@ fun LoginScreen(
                 )
                 state.generalError?.let { error ->
                     Text(
-                        modifier = Modifier.offset(y = 168.dp),
+                        modifier = Modifier.offset(y = 170.dp),
                         text = error,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.error,
