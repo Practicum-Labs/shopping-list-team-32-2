@@ -2,6 +2,7 @@ package com.practicum.list.feature.list.ui.screens
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -10,7 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -22,6 +23,7 @@ import com.practicum.list.core.navigation.anim.defaultPopEnterTransition
 import com.practicum.list.core.navigation.anim.defaultPopExitTransition
 import com.practicum.list.feature.list.R
 import com.practicum.list.feature.list.presentation.ListEffect
+import com.practicum.list.feature.list.presentation.ListIntent
 import com.practicum.list.feature.list.presentation.ListViewModel
 
 fun NavGraphBuilder.listScreenNavigation(navController: NavController) {
@@ -53,8 +55,15 @@ private fun ListScreenRouteContent(navController: NavController) {
     }
 
     Scaffold(topBar = {
-        TopBar(title = state.listTitle.ifEmpty { stringResource(R.string.list) })
-    }) { paddingValues ->
+        TopBar(
+            title = state.listTitle.ifEmpty { stringResource(R.string.list) },
+            onNavigateBack = {
+                viewModel.dispatch(
+                    ListIntent.BackClicked
+                )
+            },
+        )
+    }, snackbarHost = { SnackbarHost(hostState = snackbarHostState) }) { paddingValues ->
         ListScreen(
             modifier = Modifier.padding(paddingValues),
             state = state,

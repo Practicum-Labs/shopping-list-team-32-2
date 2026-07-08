@@ -1,6 +1,5 @@
 package com.practicum.list.feature.main.ui.screens
 
-import android.util.Log
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -72,7 +71,6 @@ fun MainScreen(
                             iconResId = list.iconResId,
                             onClick = {
                                 onIntent(MainIntent.OpenList(list.id))
-                                Log.d("NAVIGATE", "${list.id}")
                             },
                             onDeleteClick = { onIntent(MainIntent.DeleteList(list.id)) },
                             onEditClick = { onIntent(MainIntent.RenameList(list.id)) },
