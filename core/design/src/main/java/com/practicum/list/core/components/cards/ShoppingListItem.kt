@@ -5,6 +5,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.AnchoredDraggableState
 import androidx.compose.foundation.gestures.DraggableAnchors
 import androidx.compose.foundation.gestures.Orientation
@@ -111,7 +112,8 @@ fun ShoppingListCell(
             .shadow(
                 elevation = 2.dp,
                 shape = RoundedCornerShape(12.dp),
-            ),
+            )
+            .clickable(onClick = onClick),
         headlineContent = {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -119,7 +121,7 @@ fun ShoppingListCell(
             ) {
                 RoundIconButton(
                     resId = iconResId,
-                    onClick = onClick,
+                    onClick = {},
                     contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
                     containerColor = MaterialTheme.colorScheme.secondaryContainer,
                     enabled = false,
