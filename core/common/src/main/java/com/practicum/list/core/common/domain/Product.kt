@@ -5,6 +5,6 @@ data class Product (
     val name: String,
     val isChecked: Boolean,
     val listId: Long,
-    val quantity: Int,
+    val quantity: Float,
     val unit: MeasureUnit
 )
