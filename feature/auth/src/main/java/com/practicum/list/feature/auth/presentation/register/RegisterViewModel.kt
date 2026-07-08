@@ -15,7 +15,7 @@ class RegisterViewModel @Inject constructor(
     override fun reduce(intent: RegisterIntent, current: RegisterState): RegisterState = when (intent) {
         is RegisterIntent.EmailChanged -> current.copy(
             email = intent.email,
-            emailError = AuthValidation.emailFieldError(intent.email),
+            emailError = null,
             generalError = null,
         )
 
@@ -37,6 +37,12 @@ class RegisterViewModel @Inject constructor(
                 current.password,
                 intent.confirmPassword,
             ),
+            generalError = null,
+        )
+
+        is RegisterIntent.SubmitEmailClicked -> current.copy(
+            email = intent.email,
+            emailError = AuthValidation.emailFieldError(intent.email),
             generalError = null,
         )
 
