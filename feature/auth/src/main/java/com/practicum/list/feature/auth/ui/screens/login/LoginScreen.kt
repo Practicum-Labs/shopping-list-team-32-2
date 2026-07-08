@@ -1,11 +1,9 @@
 package com.practicum.list.feature.auth.ui.screens.login
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -61,7 +59,7 @@ fun LoginScreen(
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.bodyLarge
             )
-            Box(
+            Column(
                 modifier = Modifier.padding(top = 48.dp),
             ) {
                 AuthOutlinedTextField(
@@ -85,7 +83,6 @@ fun LoginScreen(
                 )
 
                 PasswordTextField(
-                    modifier = Modifier.offset(y = 90.dp),
                     value = state.password,
                     onValueChange = { onIntent(LoginIntent.PasswordChanged(it)) },
                     label = stringResource(R.string.auth_label_password),
@@ -104,7 +101,6 @@ fun LoginScreen(
                 )
                 state.generalError?.let { error ->
                     Text(
-                        modifier = Modifier.offset(y = 170.dp),
                         text = error,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.error,

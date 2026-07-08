@@ -9,7 +9,7 @@ data object MainScreenRoute
 data object RootScreenRoute
 
 @Serializable
-data class ListScreenRoute(val id: Long)
+data class ListScreenRoute(val listId: Long)
 
 @Serializable
 data object LoginRoute

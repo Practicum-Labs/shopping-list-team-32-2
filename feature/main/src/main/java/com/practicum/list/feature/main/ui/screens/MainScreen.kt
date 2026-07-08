@@ -69,7 +69,9 @@ fun MainScreen(
                         SwipeableListItem(
                             text = list.name,
                             iconResId = list.iconResId,
-                            onClick = { onIntent(MainIntent.OpenList(list.id)) },
+                            onClick = {
+                                onIntent(MainIntent.OpenList(list.id))
+                            },
                             onDeleteClick = { onIntent(MainIntent.DeleteList(list.id)) },
                             onEditClick = { onIntent(MainIntent.RenameList(list.id)) },
                             onCopyClick = { onIntent(MainIntent.DuplicateList(list.id)) }
@@ -124,12 +126,14 @@ private val mainStateContent = MainState(
         ShoppingList(
             id = 1,
             name = "Продукты",
-            iconResId = com.practicum.list.core.theme.R.drawable.ic_list_cart
+            iconResId = com.practicum.list.core.theme.R.drawable.ic_list_cart,
+            products = listOf()
         ),
         ShoppingList(
             id = 2,
             name = "Для дачи",
-            iconResId = com.practicum.list.core.theme.R.drawable.ic_list_cart
+            iconResId = com.practicum.list.core.theme.R.drawable.ic_list_cart,
+            products = listOf()
         )
     ),
     isLoading = true

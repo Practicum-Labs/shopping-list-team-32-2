@@ -1,4 +1,4 @@
-package com.practicum.list.feature.main.ui.screens
+package com.practicum.list.feature.list.ui.screens
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -17,70 +17,57 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.practicum.list.core.components.topbar.TopBar
 import com.practicum.list.core.navigation.ListScreenRoute
-import com.practicum.list.core.navigation.MainScreenRoute
 import com.practicum.list.core.navigation.anim.defaultEnterTransition
 import com.practicum.list.core.navigation.anim.defaultExitTransition
 import com.practicum.list.core.navigation.anim.defaultPopEnterTransition
 import com.practicum.list.core.navigation.anim.defaultPopExitTransition
-import com.practicum.list.core.theme.R.string
-import com.practicum.list.feature.main.presentation.MainEffect
-import com.practicum.list.feature.main.presentation.MainIntent
-import com.practicum.list.feature.main.presentation.MainViewModel
+import com.practicum.list.feature.list.R
+import com.practicum.list.feature.list.presentation.ListEffect
+import com.practicum.list.feature.list.presentation.ListIntent
+import com.practicum.list.feature.list.presentation.ListViewModel
 
-fun NavGraphBuilder.mainScreenNavigation(navController: NavController) {
-    composable<MainScreenRoute>(
+fun NavGraphBuilder.listScreenNavigation(navController: NavController) {
+    composable<ListScreenRoute>(
         enterTransition = defaultEnterTransition,
         exitTransition = defaultExitTransition,
         popEnterTransition = defaultPopEnterTransition,
         popExitTransition = defaultPopExitTransition
     ) {
-        MainScreenRouteContent(navController = navController)
+        ListScreenRouteContent(
+            navController = navController
+        )
     }
 }
 
 @Composable
-private fun MainScreenRouteContent(navController: NavController) {
-    val viewModel: MainViewModel = hiltViewModel()
+private fun ListScreenRouteContent(navController: NavController) {
+    val viewModel: ListViewModel = hiltViewModel()
     val state by viewModel.state.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(viewModel) {
-        viewModel.dispatch(MainIntent.LoadLists)
-    }
-
-    LaunchedEffect(viewModel) {
         viewModel.effects.collect { effect ->
             when (effect) {
-                is MainEffect.NavigateToList ->
-                    navController.navigate(ListScreenRoute(listId = effect.id))
-
-                is MainEffect.ShowDeleteConfirmation -> Unit
-
-                is MainEffect.ShowRenameDialog -> Unit
-
-                is MainEffect.ShowCategoryPicker -> Unit
-
-                is MainEffect.ShowError ->
-                    snackbarHostState.showSnackbar(effect.message)
+                ListEffect.NavigateToMain -> navController.popBackStack()
+                is ListEffect.ShowError -> snackbarHostState.showSnackbar(effect.message)
             }
         }
     }
 
-    Scaffold(
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
-        topBar = {
-            TopBar(
-                title = stringResource(string.title_my_lists),
-                onSearchClick = {},
-                onDeleteClick = {},
-                onThemeClick = {},
-            )
-        },
-    ) { paddingValues ->
-        MainScreen(
+    Scaffold(topBar = {
+        TopBar(
+            title = state.listTitle.ifEmpty { stringResource(R.string.list) },
+            onNavigateBack = {
+                viewModel.dispatch(
+                    ListIntent.BackClicked
+                )
+            },
+        )
+    }, snackbarHost = { SnackbarHost(hostState = snackbarHostState) }) { paddingValues ->
+        ListScreen(
+            modifier = Modifier.padding(paddingValues),
             state = state,
             onIntent = viewModel::dispatch,
-            modifier = Modifier.padding(paddingValues),
         )
     }
 }

@@ -17,7 +17,7 @@ class RootViewModel @Inject constructor(
     private val userSessionStore: UserSessionStore,
     private val checkTokenUseCase: CheckTokenUseCase,
     private val refreshTokenUseCase: RefreshTokenUseCase,
-    private val sessionEvents: SessionEvents
+    private val sessionEvents: SessionEvents,
 ) :
     MviViewModel<RootIntent, RootState, RootEffect>(RootState()) {
     private var isAnimationFinished = false

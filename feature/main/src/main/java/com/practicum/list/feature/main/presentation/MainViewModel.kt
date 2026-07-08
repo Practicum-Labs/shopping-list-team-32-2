@@ -35,6 +35,7 @@ class MainViewModel @Inject constructor(
             is MainIntent.CreateListNameChanged -> current.copy(
                 createListDialog = current.createListDialog?.copy(name = intent.name),
             )
+
             is MainIntent.DismissCreateListDialog -> current.copy(createListDialog = null)
             is MainIntent.ConfirmCreateList -> current.copy(createListDialog = null)
             else -> current
@@ -55,6 +56,7 @@ class MainViewModel @Inject constructor(
                     createList(name)
                 }
             }
+
             else -> Unit
         }
     }
@@ -84,7 +86,12 @@ class MainViewModel @Inject constructor(
 
     private suspend fun createList(name: String) {
         if (name.isBlank()) return
-        val newList = ShoppingList(id = 0L, name = name, iconResId = resorces.drawable.ic_list_cart)
+        val newList = ShoppingList(
+            id = 0L,
+            name = name,
+            iconResId = resorces.drawable.ic_list_cart,
+            products = listOf()
+        )
         runCatching { upsertShoppingListUseCase(newList) }
             .onFailure { emitEffect(MainEffect.ShowError(it.message ?: ERROR_CREATE_LIST)) }
 
