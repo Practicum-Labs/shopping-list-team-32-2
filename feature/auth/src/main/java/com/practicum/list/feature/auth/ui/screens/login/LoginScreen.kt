@@ -1,5 +1,4 @@
 package com.practicum.list.feature.auth.ui.screens.login
-
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -111,8 +110,8 @@ fun LoginScreen(
                     )
                 }
             }
-
         }
+
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             PrimaryAuthButton(
                 text = stringResource(R.string.auth_button_login),

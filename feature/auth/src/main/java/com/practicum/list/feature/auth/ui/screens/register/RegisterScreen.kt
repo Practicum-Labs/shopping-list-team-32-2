@@ -1,11 +1,11 @@
 package com.practicum.list.feature.auth.ui.screens.register
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -42,74 +42,83 @@ fun RegisterScreen(
         modifier = modifier
             .fillMaxSize()
             .padding(horizontal = 22.dp),
-        verticalArrangement = Arrangement.Top,
+        verticalArrangement = Arrangement.SpaceBetween,
     ) {
-
-        AuthOutlinedTextField(
-            value = state.email,
-            onValueChange = { onIntent(RegisterIntent.EmailChanged(it)) },
-            label = stringResource(R.string.auth_label_email),
-            isError = state.emailError != null,
-            errorText = state.emailError,
-            modifier = Modifier.fillMaxWidth(),
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Email,
-                imeAction = ImeAction.Done
-            ),
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    onIntent(RegisterIntent.SubmitEmailClicked(email = state.email))
-                    keyboardController?.hide()
-                }
-            )
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        PasswordTextField(
-            value = state.password,
-            onValueChange = { onIntent(RegisterIntent.PasswordChanged(it)) },
-            label = stringResource(R.string.auth_label_password),
-            isError = state.passwordError != null,
-            errorText = state.passwordError,
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        if (state.password.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(14.dp))
-
-            PasswordStrengthIndicator(level = state.passwordStrengthLevel)
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            PasswordRequirementsChecklist(
-                requirements = listOf(
-                    stringResource(R.string.auth_requirement_min_length) to state.passwordRequirements.hasMinLength,
-                    stringResource(R.string.auth_requirement_has_digit) to state.passwordRequirements.hasDigit,
-                    stringResource(R.string.auth_requirement_has_uppercase) to state.passwordRequirements.hasUppercase,
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+        ) {
+            AuthOutlinedTextField(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                value = state.email,
+                onValueChange = { onIntent(RegisterIntent.EmailChanged(it)) },
+                label = stringResource(R.string.auth_label_email),
+                isError = state.emailError != null,
+                errorText = state.emailError,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Email,
+                    imeAction = ImeAction.Done
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        onIntent(RegisterIntent.SubmitEmailClicked(email = state.email))
+                        keyboardController?.hide()
+                    }
                 )
+            )
+
+            PasswordTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .offset(y = 90.dp),
+                value = state.password,
+                onValueChange = { onIntent(RegisterIntent.PasswordChanged(it)) },
+                label = stringResource(R.string.auth_label_password),
+                isError = state.passwordError != null,
+                errorText = state.passwordError
+            )
+
+            if (state.password.isNotEmpty()) {
+                PasswordStrengthIndicator(
+                    modifier = Modifier.offset(y = 180.dp),
+                    level = state.passwordStrengthLevel
+                )
+
+                // Для детекта, он ругается на длинные строки кода
+                val minLengthText = stringResource(R.string.auth_requirement_min_length)
+                val hasDigitText = stringResource(R.string.auth_requirement_has_digit)
+                val hasUppercaseText = stringResource(R.string.auth_requirement_has_uppercase)
+
+                PasswordRequirementsChecklist(
+                    modifier = Modifier.offset(y = 220.dp),
+                    requirements = listOf(
+                        minLengthText to state.passwordRequirements.hasMinLength,
+                        hasDigitText to state.passwordRequirements.hasDigit,
+                        hasUppercaseText to state.passwordRequirements.hasUppercase
+                    )
+                )
+            }
+
+            PasswordTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .offset(y = 310.dp),
+                value = state.confirmPassword,
+                onValueChange = { onIntent(RegisterIntent.ConfirmPasswordChanged(it)) },
+                label = stringResource(R.string.auth_label_confirm_password),
+                isError = state.confirmPasswordError != null,
+                errorText = state.confirmPasswordError
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        PasswordTextField(
-            value = state.confirmPassword,
-            onValueChange = { onIntent(RegisterIntent.ConfirmPasswordChanged(it)) },
-            label = stringResource(R.string.auth_label_confirm_password),
-            isError = state.confirmPasswordError != null,
-            errorText = state.confirmPasswordError,
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.weight(1f))
-
         PrimaryAuthButton(
+            modifier = Modifier.padding(bottom = 24.dp),
             text = stringResource(R.string.auth_button_register),
             onClick = { onIntent(RegisterIntent.SubmitClicked) },
             enabled = state.isSubmitEnabled,
-            isLoading = state.isLoading,
-            modifier = Modifier.padding(bottom = 24.dp)
+            isLoading = state.isLoading
         )
     }
 }
