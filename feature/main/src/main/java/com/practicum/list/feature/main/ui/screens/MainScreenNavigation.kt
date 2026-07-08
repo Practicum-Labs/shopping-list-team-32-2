@@ -24,7 +24,6 @@ import com.practicum.list.core.navigation.anim.defaultPopEnterTransition
 import com.practicum.list.core.navigation.anim.defaultPopExitTransition
 import com.practicum.list.core.theme.R.string
 import com.practicum.list.feature.main.presentation.MainEffect
-import com.practicum.list.feature.main.presentation.MainIntent
 import com.practicum.list.feature.main.presentation.MainViewModel
 
 fun NavGraphBuilder.mainScreenNavigation(navController: NavController) {
@@ -43,10 +42,6 @@ private fun MainScreenRouteContent(navController: NavController) {
     val viewModel: MainViewModel = hiltViewModel()
     val state by viewModel.state.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
-
-    LaunchedEffect(viewModel) {
-        viewModel.dispatch(MainIntent.LoadLists)
-    }
 
     LaunchedEffect(viewModel) {
         viewModel.effects.collect { effect ->

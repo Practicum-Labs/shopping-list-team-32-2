@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="list">Список</string>
+    <string name="product_checkbox_content_description">Отметить товар как купленный</string>
+    <string name="product_delete_content_description">Удалить товар</string>
+    <string name="product_quantity_decrease_content_description">Уменьшить количество</string>
+    <string name="product_quantity_increase_content_description">Увеличить количество</string>
 </resources>
