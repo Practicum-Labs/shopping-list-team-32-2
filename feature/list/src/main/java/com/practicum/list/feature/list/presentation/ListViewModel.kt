@@ -15,8 +15,9 @@ class ListViewModel @Inject constructor(savedStateHandle: SavedStateHandle) :
         )
     ) {
     private val listId: Long = savedStateHandle.toRoute<ListScreenRoute>().listId
-    override fun reduce(intent: ListIntent, current: ListState): ListState {
-        TODO("Not yet implemented")
+
+    override fun reduce(intent: ListIntent, current: ListState): ListState = when (intent) {
+        ListIntent.BackClicked -> current
     }
 
     override suspend fun handleIntent(intent: ListIntent) {

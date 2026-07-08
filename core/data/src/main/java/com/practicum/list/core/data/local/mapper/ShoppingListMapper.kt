@@ -8,6 +8,7 @@ fun ShoppingListEntity.toDomain(defaultIconResId: Int): ShoppingList =
         id = id,
         name = name,
         iconResId = iconResId.takeIf { it != 0 } ?: defaultIconResId,
+        products = listOf()
     )
 
 fun ShoppingList.toEntity(userId: Long): ShoppingListEntity =

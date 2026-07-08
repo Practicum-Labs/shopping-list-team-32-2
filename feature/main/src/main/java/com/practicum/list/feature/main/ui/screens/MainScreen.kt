@@ -128,12 +128,14 @@ private val mainStateContent = MainState(
         ShoppingList(
             id = 1,
             name = "Продукты",
-            iconResId = com.practicum.list.core.theme.R.drawable.ic_list_cart
+            iconResId = com.practicum.list.core.theme.R.drawable.ic_list_cart,
+            products = listOf()
         ),
         ShoppingList(
             id = 2,
             name = "Для дачи",
-            iconResId = com.practicum.list.core.theme.R.drawable.ic_list_cart
+            iconResId = com.practicum.list.core.theme.R.drawable.ic_list_cart,
+            products = listOf()
         )
     ),
     isLoading = true

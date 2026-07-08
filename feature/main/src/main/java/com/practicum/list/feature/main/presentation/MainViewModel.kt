@@ -84,7 +84,7 @@ class MainViewModel @Inject constructor(
 
     private suspend fun createList(name: String) {
         if (name.isBlank()) return
-        val newList = ShoppingList(id = 0L, name = name, iconResId = resorces.drawable.ic_list_cart)
+        val newList = ShoppingList(id = 0L, name = name, iconResId = resorces.drawable.ic_list_cart, products = listOf())
         runCatching { upsertShoppingListUseCase(newList) }
             .onFailure { emitEffect(MainEffect.ShowError(it.message ?: ERROR_CREATE_LIST)) }
 
