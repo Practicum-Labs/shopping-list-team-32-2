@@ -20,9 +20,9 @@ import com.practicum.list.core.navigation.anim.defaultEnterTransition
 import com.practicum.list.core.navigation.anim.defaultExitTransition
 import com.practicum.list.core.navigation.anim.defaultPopEnterTransition
 import com.practicum.list.core.navigation.anim.defaultPopExitTransition
+import com.practicum.list.feature.list.R
 import com.practicum.list.feature.list.presentation.ListEffect
 import com.practicum.list.feature.list.presentation.ListViewModel
-import com.practicum.list.feature.list.R
 
 fun NavGraphBuilder.listScreenNavigation(navController: NavController) {
     composable<ListScreenRoute>(

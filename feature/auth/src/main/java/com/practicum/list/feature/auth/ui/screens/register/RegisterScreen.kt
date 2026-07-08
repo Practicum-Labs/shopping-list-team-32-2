@@ -18,7 +18,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.practicum.list.feature.auth.R
-import com.practicum.list.feature.auth.presentation.login.LoginIntent
 import com.practicum.list.feature.auth.presentation.register.RegisterIntent
 import com.practicum.list.feature.auth.presentation.register.RegisterState
 import com.practicum.list.feature.auth.ui.components.buttons.PrimaryAuthButton

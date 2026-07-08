@@ -33,9 +33,9 @@ fun PrimaryAuthButton(
             .height(48.dp),
         enabled = enabled && !isLoading,
         colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.secondary,
-            contentColor = MaterialTheme.colorScheme.onSecondary,
-            disabledContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary,
+            disabledContainerColor = MaterialTheme.colorScheme.secondary,
             disabledContentColor = MaterialTheme.colorScheme.onSecondary,
         ),
     ) {

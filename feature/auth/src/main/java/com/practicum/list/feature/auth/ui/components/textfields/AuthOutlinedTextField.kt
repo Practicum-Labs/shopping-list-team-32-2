@@ -1,13 +1,14 @@
 package com.practicum.list.feature.auth.ui.components.textfields
 
 import android.content.res.Configuration
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -49,7 +50,8 @@ fun AuthOutlinedTextField(
             value = value,
             onValueChange = onValueChange,
             modifier = Modifier
-                .fillMaxWidth().semantics { contentType = content },
+                .fillMaxWidth()
+                .semantics { contentType = content },
             label = { Text(label) },
             isError = isError,
             singleLine = singleLine,
@@ -59,18 +61,21 @@ fun AuthOutlinedTextField(
             trailingIcon = trailingIcon,
             colors = authTextFieldColors(),
         )
-        AnimatedVisibility(
-            visible = !errorText.isNullOrBlank(),
-            enter = fadeIn() + expandVertically(),
-            exit = fadeOut() + shrinkVertically(),
-        ) {
-            Text(
-                text = errorText.orEmpty(),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.error,
-                modifier = Modifier.padding(start = 16.dp, top = 4.dp),
-            )
+        Box(modifier = Modifier.heightIn(min = 24.dp)) {
+            androidx.compose.animation.AnimatedVisibility(
+                visible = !errorText.isNullOrBlank(),
+                enter = fadeIn() + expandVertically(),
+                exit = fadeOut() + shrinkVertically(),
+            ) {
+                Text(
+                    text = errorText.orEmpty(),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.padding(start = 16.dp, top = 4.dp),
+                )
+            }
         }
+
     }
 }
 

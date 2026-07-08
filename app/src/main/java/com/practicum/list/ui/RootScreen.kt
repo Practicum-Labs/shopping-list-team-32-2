@@ -81,7 +81,7 @@ fun RootScreen(
         }
 
         state.error?.let {
-            if(screenStarted) {
+            if (screenStarted) {
                 PlaceholderLayout(
                     modifier = Modifier
                         .fillMaxWidth()
