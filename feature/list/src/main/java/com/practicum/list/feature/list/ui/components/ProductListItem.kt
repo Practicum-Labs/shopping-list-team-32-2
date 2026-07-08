@@ -1,10 +1,9 @@
 package com.practicum.list.feature.list.ui.components
 
 import android.content.res.Configuration
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -25,60 +24,58 @@ import com.practicum.list.core.theme.ShoppingListTheme
 import com.practicum.list.feature.list.R
 
 private const val PREVIEW_PRODUCT_NAME = "Яблоки"
+private const val PREVIEW_QUANTITY_LABEL = "1 кг"
 private const val PREVIEW_LONG_PRODUCT_NAME =
     "Очень длинное название товара которое не помещается в две строки списка покупок"
 
 @Composable
 fun ProductListItem(
     name: String,
-    quantity: Int,
+    quantityLabel: String,
     isChecked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
-    onQuantityIncrease: () -> Unit,
-    onQuantityDecrease: () -> Unit,
+    onQuantityClick: () -> Unit,
     onDelete: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val textColor = if (isChecked) {
+    val nameColor = if (isChecked) {
         MaterialTheme.colorScheme.onSurfaceVariant
     } else {
         MaterialTheme.colorScheme.onSurface
     }
-    val textDecoration = if (isChecked) TextDecoration.LineThrough else TextDecoration.None
+    val nameDecoration = if (isChecked) TextDecoration.LineThrough else TextDecoration.None
     val checkboxDescription = stringResource(R.string.product_checkbox_content_description)
+    val quantityDescription = stringResource(R.string.product_quantity_content_description)
 
     Column(modifier = modifier.fillMaxWidth()) {
         ListItem(
             modifier = Modifier.fillMaxWidth(),
             leadingContent = {
-                Checkbox(
+                ProductRoundCheckbox(
                     checked = isChecked,
                     onCheckedChange = onCheckedChange,
                     modifier = Modifier.semantics { contentDescription = checkboxDescription },
-                    colors = CheckboxDefaults.colors(
-                        checkedColor = MaterialTheme.colorScheme.primary,
-                        checkmarkColor = MaterialTheme.colorScheme.onPrimary,
-                        uncheckedColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    ),
                 )
             },
             headlineContent = {
                 Text(
                     text = name,
                     style = MaterialTheme.typography.bodyLarge.copy(
-                        color = textColor,
-                        textDecoration = textDecoration,
+                        color = nameColor,
+                        textDecoration = nameDecoration,
                     ),
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                 )
             },
             supportingContent = {
-                ProductQuantityStepper(
-                    quantity = quantity,
-                    onIncrease = onQuantityIncrease,
-                    onDecrease = onQuantityDecrease,
-                    isChecked = isChecked,
+                Text(
+                    text = quantityLabel,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier
+                        .clickable(onClick = onQuantityClick)
+                        .semantics { contentDescription = quantityDescription },
                 )
             },
             trailingContent = {
@@ -101,11 +98,10 @@ private fun ProductListItemLightDefaultPreview() {
     ShoppingListTheme(darkTheme = false) {
         ProductListItem(
             name = PREVIEW_PRODUCT_NAME,
-            quantity = 1,
+            quantityLabel = PREVIEW_QUANTITY_LABEL,
             isChecked = false,
             onCheckedChange = {},
-            onQuantityIncrease = {},
-            onQuantityDecrease = {},
+            onQuantityClick = {},
             onDelete = {},
         )
     }
@@ -117,11 +113,10 @@ private fun ProductListItemLightCheckedPreview() {
     ShoppingListTheme(darkTheme = false) {
         ProductListItem(
             name = PREVIEW_PRODUCT_NAME,
-            quantity = 1,
+            quantityLabel = PREVIEW_QUANTITY_LABEL,
             isChecked = true,
             onCheckedChange = {},
-            onQuantityIncrease = {},
-            onQuantityDecrease = {},
+            onQuantityClick = {},
             onDelete = {},
         )
     }
@@ -133,11 +128,10 @@ private fun ProductListItemDarkDefaultPreview() {
     ShoppingListTheme(darkTheme = true) {
         ProductListItem(
             name = PREVIEW_PRODUCT_NAME,
-            quantity = 2,
+            quantityLabel = PREVIEW_QUANTITY_LABEL,
             isChecked = false,
             onCheckedChange = {},
-            onQuantityIncrease = {},
-            onQuantityDecrease = {},
+            onQuantityClick = {},
             onDelete = {},
         )
     }
@@ -149,11 +143,10 @@ private fun ProductListItemLongNamePreview() {
     ShoppingListTheme(darkTheme = false) {
         ProductListItem(
             name = PREVIEW_LONG_PRODUCT_NAME,
-            quantity = 10,
+            quantityLabel = "10 кг",
             isChecked = false,
             onCheckedChange = {},
-            onQuantityIncrease = {},
-            onQuantityDecrease = {},
+            onQuantityClick = {},
             onDelete = {},
         )
     }
