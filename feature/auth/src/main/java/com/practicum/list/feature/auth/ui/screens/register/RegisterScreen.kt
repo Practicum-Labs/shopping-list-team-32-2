@@ -1,20 +1,27 @@
 package com.practicum.list.feature.auth.ui.screens.register
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.practicum.list.core.theme.ShoppingListTheme
 import com.practicum.list.feature.auth.R
 import com.practicum.list.feature.auth.domain.validation.PasswordRequirements
+import com.practicum.list.feature.auth.presentation.login.LoginIntent
 import com.practicum.list.feature.auth.presentation.register.RegisterIntent
 import com.practicum.list.feature.auth.presentation.register.RegisterState
 import com.practicum.list.feature.auth.ui.components.buttons.PrimaryAuthButton
@@ -31,19 +38,32 @@ fun RegisterScreen(
     onIntent: (RegisterIntent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     Column(
         modifier = modifier
             .fillMaxSize()
             .padding(horizontal = 22.dp),
         verticalArrangement = Arrangement.Top,
     ) {
+
         AuthOutlinedTextField(
             value = state.email,
             onValueChange = { onIntent(RegisterIntent.EmailChanged(it)) },
             label = stringResource(R.string.auth_label_email),
             isError = state.emailError != null,
             errorText = state.emailError,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Email,
+                imeAction = ImeAction.Done
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    onIntent(RegisterIntent.SubmitEmailClicked(email = state.email))
+                    keyboardController?.hide()
+                }
+            )
         )
 
         Spacer(modifier = Modifier.height(16.dp))
