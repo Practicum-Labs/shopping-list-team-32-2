@@ -25,7 +25,7 @@ shopping-list-team-32-2/
 ├── docs/             # BRANCHING.md, PROJECT_AUDIT.md, AUTH.md
 ├── feature/
 │   ├── main/         # главный экран
-│   ├── product/      # экран списка / товаров
+│   ├── list/      # экран списка / товаров
 │   └── auth/         # auth UI-компоненты и экраны (Epic 2)
 ├── gradle/
 ├── build.gradle.kts
@@ -46,7 +46,7 @@ Gradle modules:
 - :core:design
 - :core:navigation
 - :feature:main
-- :feature:product
+- :feature:list
 - :feature:auth
 
 Build system:
@@ -108,7 +108,7 @@ feature/main/
 │   └── di/         — ShoppingListRepositoryModule
 └── ui/screens/    — MainScreen, mainScreenNavigation
 
-feature/product/   — ListScreen, listScreenNavigation
+feature/list/   — ListScreen, listScreenNavigation
 
 feature/auth/
 └── ui/components/ — AuthOutlinedTextField, PasswordTextField, PrimaryAuthButton, … (#43)

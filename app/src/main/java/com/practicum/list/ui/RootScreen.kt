@@ -8,6 +8,7 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -20,6 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.practicum.list.R
 import com.practicum.list.core.components.placeholder.PlaceholderLayout
 import com.practicum.list.presentation.RootIntent
@@ -47,8 +49,8 @@ fun RootScreen(
         onboardingVisible = true
         delay(ONBOARDING_VISIBLE_DURATION)
         onboardingVisible = false
-        screenStarted = true
         delay(ONBOARDING_FADE_OUT_DURATION.toLong())
+        screenStarted = true
         onIntent(RootIntent.AnimationFinished)
     }
 
@@ -79,15 +81,19 @@ fun RootScreen(
         }
 
         state.error?.let {
-            PlaceholderLayout(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                imageRes = R.drawable.ic_app_error_285,
-                title = stringResource(errorTitle),
-                message = stringResource(errorMessage),
-                buttonText = stringResource(errorButtonText),
-                onButtonClick = { onIntent(RootIntent.Renew) }
-            )
+            if(screenStarted) {
+                PlaceholderLayout(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.Center)
+                        .padding(horizontal = 44.dp),
+                    imageRes = R.drawable.ic_app_error_285,
+                    title = stringResource(errorTitle),
+                    message = stringResource(errorMessage),
+                    buttonText = stringResource(errorButtonText),
+                    onButtonClick = { onIntent(RootIntent.Renew) }
+                )
+            }
         }
     }
 }

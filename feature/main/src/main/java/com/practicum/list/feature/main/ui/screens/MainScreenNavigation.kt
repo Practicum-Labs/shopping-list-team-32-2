@@ -52,7 +52,7 @@ private fun MainScreenRouteContent(navController: NavController) {
         viewModel.effects.collect { effect ->
             when (effect) {
                 is MainEffect.NavigateToList ->
-                    navController.navigate(ListScreenRoute(id = effect.id))
+                    navController.navigate(ListScreenRoute(listId = effect.id))
 
                 is MainEffect.ShowDeleteConfirmation -> Unit
 

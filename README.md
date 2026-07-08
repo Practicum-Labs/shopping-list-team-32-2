@@ -24,7 +24,7 @@
 :core:data        — Room, Retrofit, Hilt modules
 :core:navigation  — type-safe маршруты
 :feature:main     — главный экран (presentation / domain / data)
-:feature:product  — экран списка / товаров
+:feature:list  — экран списка / товаров
 :feature:auth     — auth design system, экраны login / register / recovery (Epic 2)
 ```
 

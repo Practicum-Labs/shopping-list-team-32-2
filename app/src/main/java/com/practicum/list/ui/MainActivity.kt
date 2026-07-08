@@ -10,7 +10,7 @@ import com.practicum.list.core.navigation.RootScreenRoute
 import com.practicum.list.core.theme.ShoppingListTheme
 import com.practicum.list.feature.auth.ui.screens.authScreenNavigation
 import com.practicum.list.feature.main.ui.screens.mainScreenNavigation
-import com.practicum.list.feature.product.ui.screens.listScreenNavigation
+import com.practicum.list.feature.list.ui.screens.listScreenNavigation
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

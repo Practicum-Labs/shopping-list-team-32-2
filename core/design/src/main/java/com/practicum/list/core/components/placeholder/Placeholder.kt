@@ -59,7 +59,7 @@ fun PlaceholderLayout(
                 color = MaterialTheme.colorScheme.onSurface,
                 textAlign = TextAlign.Center,
                 overflow = TextOverflow.Ellipsis,
-                maxLines = 2,
+                maxLines = 3,
                 style = MaterialTheme.typography.bodyMedium
             )
 
