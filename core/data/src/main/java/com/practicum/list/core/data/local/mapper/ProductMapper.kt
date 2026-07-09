@@ -10,7 +10,8 @@ fun ProductEntity.toDomain(): Product =
         name = name,
         quantity = quantity,
         isChecked = isChecked,
-        unit = unit
+        unit = unit,
+        sortPosition = sortPosition
     )
 
 fun Product.toEntity(): ProductEntity =
@@ -20,5 +21,6 @@ fun Product.toEntity(): ProductEntity =
         name = name,
         quantity = quantity,
         isChecked = isChecked,
-        unit = unit
+        unit = unit,
+        sortPosition = sortPosition
     )

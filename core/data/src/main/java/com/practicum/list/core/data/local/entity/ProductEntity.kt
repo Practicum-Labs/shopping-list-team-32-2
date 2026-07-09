@@ -22,5 +22,6 @@ data class ProductEntity(
     val name: String,
     val quantity: Float = 1F,
     val isChecked: Boolean = false,
-    val unit: MeasureUnit
+    val unit: MeasureUnit,
+    val sortPosition: Int
 )
