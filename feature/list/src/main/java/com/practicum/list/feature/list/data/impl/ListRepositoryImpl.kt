@@ -1,18 +1,18 @@
-package com.practicum.list.feature.product.data.impl
+package com.practicum.list.feature.list.data.impl
 
 import com.practicum.list.core.common.domain.Product
 import com.practicum.list.core.data.local.dao.ProductDao
 import com.practicum.list.core.data.local.mapper.toDomain
 import com.practicum.list.core.data.local.mapper.toEntity
-import com.practicum.list.feature.product.domain.repository.ProductRepository
+import com.practicum.list.feature.product.domain.repository.ListRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class ProductRepositoryImpl @Inject constructor(
+class ListRepositoryImpl @Inject constructor(
     private val dao: ProductDao,
-) : ProductRepository {
+) : ListRepository {
 
     override suspend fun upsertProduct(product: Product) {
         dao.upsertProduct(product.toEntity())
