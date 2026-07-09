@@ -14,7 +14,7 @@ sealed class MeasureUnit(
 
     data object Milligram : MeasureUnit("mg", R.string.unit_mg)
 
-    data object Liter : MeasureUnit("l", R.string.unit_mg)
+    data object Liter : MeasureUnit("l", R.string.unit_l)
 
     companion object {
         val all: List<MeasureUnit> = listOf(Piece, Kilogram, Package, Milligram, Liter)

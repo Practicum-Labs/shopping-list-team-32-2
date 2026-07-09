@@ -1,4 +1,6 @@
-﻿package com.practicum.list.core.data.local.entity import androidx.room.Entity
+﻿package com.practicum.list.core.data.local.entity
+
+import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey

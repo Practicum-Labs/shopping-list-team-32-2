@@ -21,3 +21,32 @@ val MIGRATION_2_3 = object : Migration(2, 3) {
         )
     }
 }
+
+val MIGRATION_3_4 = object : Migration(3, 4) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
+            """
+            CREATE TABLE IF NOT EXISTS products_new (
+                id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                listId INTEGER NOT NULL,
+                name TEXT NOT NULL,
+                quantity REAL NOT NULL DEFAULT 1,
+                isChecked INTEGER NOT NULL DEFAULT 0,
+                unit TEXT NOT NULL DEFAULT 'pcs',
+                sortPosition INTEGER NOT NULL DEFAULT 0,
+                FOREIGN KEY(listId) REFERENCES shopping_lists(id) ON DELETE CASCADE
+            )
+            """.trimIndent(),
+        )
+        db.execSQL(
+            """
+            INSERT INTO products_new (id, listId, name, quantity, isChecked, unit, sortPosition)
+            SELECT id, listId, name, CAST(quantity AS REAL), isChecked, 'pcs', 0
+            FROM products
+            """.trimIndent(),
+        )
+        db.execSQL("DROP TABLE products")
+        db.execSQL("ALTER TABLE products_new RENAME TO products")
+        db.execSQL("CREATE INDEX IF NOT EXISTS index_products_listId ON products(listId)")
+    }
+}
