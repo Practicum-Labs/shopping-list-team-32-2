@@ -30,7 +30,11 @@ class MainViewModel @Inject constructor(
 
     override fun reduce(intent: MainIntent, current: MainState): MainState =
         when (intent) {
-            is MainIntent.LoadLists -> current.copy(isLoading = true)
+            is MainIntent.LoadLists -> if (current.lists.isEmpty()) {
+                current.copy(isLoading = true)
+            } else {
+                current
+            }
             is MainIntent.CreateListClicked -> current.copy(createListDialog = CreateListDialogState())
             is MainIntent.CreateListNameChanged -> current.copy(
                 createListDialog = current.createListDialog?.copy(name = intent.name),
