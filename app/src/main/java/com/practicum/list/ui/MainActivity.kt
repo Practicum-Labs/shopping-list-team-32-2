@@ -6,6 +6,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import com.practicum.list.core.navigation.ListScreenRoute
+import com.practicum.list.core.navigation.MainScreenRoute
 import com.practicum.list.core.navigation.RootScreenRoute
 import com.practicum.list.core.theme.ShoppingListTheme
 import com.practicum.list.feature.auth.ui.screens.authScreenNavigation
@@ -24,7 +26,7 @@ class MainActivity : ComponentActivity() {
             ShoppingListTheme {
                 NavHost(
                     navController = navController,
-                    startDestination = RootScreenRoute,
+                    startDestination = MainScreenRoute,
                 ) {
                     rootScreenNavigation(navController)
                     mainScreenNavigation(navController)

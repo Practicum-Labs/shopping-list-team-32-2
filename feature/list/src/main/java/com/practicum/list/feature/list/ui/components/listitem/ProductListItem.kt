@@ -1,4 +1,4 @@
-package com.practicum.list.feature.list.ui.components
+package com.practicum.list.feature.list.ui.components.listitem
 
 import android.content.res.Configuration
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -38,6 +38,8 @@ import com.practicum.list.core.components.cards.DragAnchors
 import com.practicum.list.core.theme.Dimens.AnimationDuration
 import com.practicum.list.core.theme.ShoppingListTheme
 import com.practicum.list.feature.list.R
+import com.practicum.list.feature.list.ui.components.ProductListActions
+import com.practicum.list.feature.list.ui.components.checkbox.ProductRoundCheckbox
 import kotlin.math.roundToInt
 
 private const val PREVIEW_PRODUCT_NAME = "Яблоки"
@@ -73,7 +75,10 @@ fun ProductListItem(
             },
             positionalThreshold = { distance -> distance * 0.5f },
             velocityThreshold = { velocityThresholdPx },
-            snapAnimationSpec = tween(durationMillis = AnimationDuration, easing = FastOutSlowInEasing),
+            snapAnimationSpec = tween(
+                durationMillis = AnimationDuration,
+                easing = FastOutSlowInEasing
+            ),
             decayAnimationSpec = decayAnimationSpec,
         )
     }

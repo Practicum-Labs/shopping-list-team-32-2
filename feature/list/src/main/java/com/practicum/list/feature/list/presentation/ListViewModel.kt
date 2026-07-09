@@ -66,6 +66,12 @@ class ListViewModel @Inject constructor(
         is ListIntent.EditProductConfirmClicked,
         is ListIntent.DeleteProductClicked,
         -> reduceProductEdit(intent, current)
+        ListIntent.BackClicked -> current
+        ListIntent.AddProductClicked -> current.copy(bottomSheetOpened = true)
+        ListIntent.DismissClicked -> current.copy(bottomSheetOpened = false)
+        is ListIntent.AmountChanged -> current.copy(amount = intent.amount)
+        is ListIntent.MeasureChanged -> current.copy(measure = intent.measure)
+        is ListIntent.NameChanged -> current.copy(name = intent.name)
 
         else -> current
     }

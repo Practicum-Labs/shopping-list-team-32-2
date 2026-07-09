@@ -1,4 +1,4 @@
-package com.practicum.list.feature.list.ui.components
+package com.practicum.list.feature.list.ui.components.checkbox
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background

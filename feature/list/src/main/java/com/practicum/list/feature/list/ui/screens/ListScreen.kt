@@ -25,13 +25,14 @@ import com.practicum.list.feature.list.presentation.ListIntent
 import com.practicum.list.feature.list.presentation.ListState
 import com.practicum.list.feature.list.ui.components.ListEmptyPlaceholder
 import com.practicum.list.feature.list.ui.components.ProductListItem
+import com.practicum.list.feature.list.ui.components.bottomsheet.AddProductBottomSheet
 import com.practicum.list.feature.list.ui.components.formatQuantityLabel
 
 @Composable
 fun ListScreen(
+    modifier: Modifier = Modifier,
     state: ListState,
     onIntent: (ListIntent) -> Unit,
-    modifier: Modifier = Modifier,
 ) {
     Box(
         modifier = modifier.fillMaxSize(),
@@ -94,6 +95,16 @@ fun ListScreen(
                 onClick = { onIntent(ListIntent.AddProductClicked) },
             )
         }
+        AddProductBottomSheet(
+            bottomSheetIsVisible = state.bottomSheetOpened,
+            textValue = state.addProductDialogState?.name?: "",
+            onValueChange = { onIntent(ListIntent.NameChanged(name = it)) },
+            amount = state.addProductDialogState?.quantity,
+            onAmountChange = { onIntent(ListIntent.AmountChanged(amount = it)) },
+            measure = state.addProductDialogState?.unit,
+            onMeasureClick = { onIntent(ListIntent.MeasureChanged(measure = it)) },
+            onDismiss = { onIntent(ListIntent.DismissClicked) }
+        )
     }
 }
 
