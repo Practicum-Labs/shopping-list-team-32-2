@@ -1,7 +1,7 @@
 package com.practicum.list.feature.list.data.di
 
 import com.practicum.list.feature.list.data.impl.ListRepositoryImpl
-import com.practicum.list.feature.product.domain.repository.ListRepository
+import com.practicum.list.feature.list.domain.repository.ListRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

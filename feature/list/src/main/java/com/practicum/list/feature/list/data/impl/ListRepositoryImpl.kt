@@ -4,7 +4,7 @@ import com.practicum.list.core.common.domain.Product
 import com.practicum.list.core.data.local.dao.ProductDao
 import com.practicum.list.core.data.local.mapper.toDomain
 import com.practicum.list.core.data.local.mapper.toEntity
-import com.practicum.list.feature.product.domain.repository.ListRepository
+import com.practicum.list.feature.list.domain.repository.ListRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
@@ -16,6 +16,10 @@ class ListRepositoryImpl @Inject constructor(
 
     override suspend fun upsertProduct(product: Product) {
         dao.upsertProduct(product.toEntity())
+    }
+
+    override suspend fun deleteProduct(productId: Long) {
+        dao.deleteProduct(productId)
     }
 
     override suspend fun sortProductsAlphabetically(listId: Long): List<Product> {

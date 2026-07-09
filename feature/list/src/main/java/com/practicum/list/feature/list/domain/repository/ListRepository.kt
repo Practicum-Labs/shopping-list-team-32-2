@@ -1,4 +1,4 @@
-package com.practicum.list.feature.product.domain.repository
+package com.practicum.list.feature.list.domain.repository
 
 import com.practicum.list.core.common.domain.Product
 import kotlinx.coroutines.flow.Flow
@@ -9,5 +9,6 @@ interface ListRepository {
     suspend fun sortCustom(listId: Long, newOrder: List<Product>)
     suspend fun deleteBoughtProducts(listId: Long)
     suspend fun deleteAllProducts(listId: Long)
+    suspend fun deleteProduct(productId: Long)
     fun observeProductsByListId(listId: Long): Flow<List<Product>>
 }

@@ -1,7 +1,7 @@
 package com.practicum.list.feature.list.domain.usecase
 
 import com.practicum.list.core.common.domain.Product
-import com.practicum.list.feature.product.domain.repository.ListRepository
+import com.practicum.list.feature.list.domain.repository.ListRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -18,6 +18,14 @@ class DeleteAllProductsUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(listId: Long) {
         repository.deleteAllProducts(listId)
+    }
+}
+
+class DeleteProductUseCase @Inject constructor(
+    private val repository: ListRepository,
+) {
+    suspend operator fun invoke(productId: Long) {
+        repository.deleteProduct(productId)
     }
 }
 
