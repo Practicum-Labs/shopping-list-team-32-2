@@ -15,7 +15,7 @@ interface ProductDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertProduct(product: ProductEntity)
 
-    @Query("SELECT * FROM products WHERE listId = :listId ORDER BY sortPosition, id")
+    @Query("SELECT * FROM products WHERE listId = :listId ORDER BY sortPosition")
     suspend fun getByListId(listId: Long): List<ProductEntity>
 
     @Query("SELECT * FROM products WHERE listId = :listId ORDER BY name COLLATE NOCASE, id")
@@ -29,4 +29,10 @@ interface ProductDao {
 
     @Query("DELETE FROM products WHERE listId = :listId AND isChecked = 1")
     suspend fun deleteAllCheckedByListId(listId: Long)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(productEntities: List<ProductEntity>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(entity: ProductEntity): Long
 }
