@@ -1,4 +1,6 @@
-﻿package com.practicum.list.core.data.local.dao import androidx.room.Dao
+﻿package com.practicum.list.core.data.local.dao
+
+import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -12,4 +14,10 @@ interface ProductDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(entity: ProductEntity): Long
+
+    @Query("SELECT * FROM products WHERE listId = :listId ORDER BY id")
+    suspend fun getByListId(listId: Long): List<ProductEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(productEntities: List<ProductEntity>)
 }

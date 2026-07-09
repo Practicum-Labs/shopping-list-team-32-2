@@ -52,6 +52,8 @@ dependencies {
     implementation(libs.hilt)
     implementation(libs.hilt.compose)
     ksp(libs.hilt.compiler)
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
 }
 
 detekt {
