@@ -19,9 +19,9 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import com.practicum.list.core.theme.R as CoreR
 import com.practicum.list.core.theme.ShoppingListTheme
 import com.practicum.list.feature.list.R
+import com.practicum.list.core.theme.R as CoreR
 
 private const val PREVIEW_PRODUCT_NAME = "Яблоки"
 private const val PREVIEW_QUANTITY_LABEL = "1 кг"
