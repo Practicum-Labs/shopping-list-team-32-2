@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -44,19 +46,17 @@ fun RegisterScreen(
             .padding(horizontal = 22.dp),
         verticalArrangement = Arrangement.SpaceBetween,
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.Top,
         ) {
             AuthOutlinedTextField(
-                modifier = Modifier
-                    .fillMaxWidth(),
                 value = state.email,
                 onValueChange = { onIntent(RegisterIntent.EmailChanged(it)) },
                 label = stringResource(R.string.auth_label_email),
                 isError = state.emailError != null,
                 errorText = state.emailError,
+                modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Email,
                     imeAction = ImeAction.Done
@@ -70,29 +70,26 @@ fun RegisterScreen(
             )
 
             PasswordTextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .offset(y = 90.dp),
                 value = state.password,
                 onValueChange = { onIntent(RegisterIntent.PasswordChanged(it)) },
                 label = stringResource(R.string.auth_label_password),
                 isError = state.passwordError != null,
-                errorText = state.passwordError
+                errorText = state.passwordError,
+                modifier = Modifier.fillMaxWidth()
             )
 
             if (state.password.isNotEmpty()) {
                 PasswordStrengthIndicator(
-                    modifier = Modifier.offset(y = 180.dp),
+                    modifier = Modifier.padding(top = 8.dp),
                     level = state.passwordStrengthLevel
                 )
 
-                // Для детекта, он ругается на длинные строки кода
                 val minLengthText = stringResource(R.string.auth_requirement_min_length)
                 val hasDigitText = stringResource(R.string.auth_requirement_has_digit)
                 val hasUppercaseText = stringResource(R.string.auth_requirement_has_uppercase)
 
                 PasswordRequirementsChecklist(
-                    modifier = Modifier.offset(y = 220.dp),
+                    modifier = Modifier.padding(top = 8.dp, bottom = 16.dp),
                     requirements = listOf(
                         minLengthText to state.passwordRequirements.hasMinLength,
                         hasDigitText to state.passwordRequirements.hasDigit,
@@ -102,15 +99,21 @@ fun RegisterScreen(
             }
 
             PasswordTextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .offset(y = 310.dp),
                 value = state.confirmPassword,
                 onValueChange = { onIntent(RegisterIntent.ConfirmPasswordChanged(it)) },
                 label = stringResource(R.string.auth_label_confirm_password),
                 isError = state.confirmPasswordError != null,
                 errorText = state.confirmPasswordError
             )
+
+            state.generalError?.let { error ->
+                Text(
+                    modifier = Modifier.padding(top = 8.dp),
+                    text = error,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
         }
 
         PrimaryAuthButton(
