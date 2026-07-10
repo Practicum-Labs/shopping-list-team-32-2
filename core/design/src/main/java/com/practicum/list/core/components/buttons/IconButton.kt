@@ -25,6 +25,7 @@ fun RoundIconButton(
     disabledContainerColor: Color? = null,
     disabledContentColor: Color? = null,
     enabled: Boolean = true,
+    contentDescription: String? = null
 ) {
     FilledTonalIconButton(
         onClick = onClick,
@@ -42,7 +43,7 @@ fun RoundIconButton(
     ) {
         Icon(
             painter = painterResource(resId),
-            contentDescription = null,
+            contentDescription = contentDescription,
         )
     }
 }

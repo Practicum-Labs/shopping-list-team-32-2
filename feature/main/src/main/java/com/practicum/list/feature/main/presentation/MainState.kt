@@ -7,6 +7,7 @@ data class MainState(
     val lists: List<ShoppingList> = emptyList(),
     val isLoading: Boolean = true,
     val createListDialog: CreateListDialogState? = null,
+    val selectedListIdForIcon: Long? = null
 ) : MviState {
     val isEmpty: Boolean get() = lists.isEmpty()
 }

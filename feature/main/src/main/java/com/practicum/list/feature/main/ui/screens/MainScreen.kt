@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -18,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.practicum.list.core.common.domain.ShoppingList
+import com.practicum.list.core.components.bottomsheet.IconPickerBottomSheet
 import com.practicum.list.core.components.cards.SwipeableListItem
 import com.practicum.list.core.components.dialogs.CustomLayoutDialog
 import com.practicum.list.core.components.fab.AddFab
@@ -26,12 +29,17 @@ import com.practicum.list.core.theme.ShoppingListTheme
 import com.practicum.list.feature.main.R
 import com.practicum.list.feature.main.presentation.MainIntent
 import com.practicum.list.feature.main.presentation.MainState
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
-    state: MainState,
-    onIntent: (MainIntent) -> Unit,
     modifier: Modifier = Modifier,
+    state: MainState,
+    sheetState: SheetState? = null,
+    scope: CoroutineScope? = null,
+    onIntent: (MainIntent) -> Unit
 ) {
     val dialog = state.createListDialog
     val interactionSource = remember { MutableInteractionSource() }
@@ -72,15 +80,16 @@ fun MainScreen(
                             onClick = {
                                 onIntent(MainIntent.OpenList(list.id))
                             },
+                            onLongClick = { onIntent(MainIntent.EditListIcon(list.id)) },
                             onDeleteClick = { onIntent(MainIntent.DeleteList(list.id)) },
                             onEditClick = { onIntent(MainIntent.RenameList(list.id)) },
                             onCopyClick = { onIntent(MainIntent.DuplicateList(list.id)) }
                         )
                     }
                 }
-
             }
         }
+
         if (dialog != null) {
             CustomLayoutDialog(
                 titleTextRes = R.string.new_list_dialog_title_text,
@@ -94,6 +103,24 @@ fun MainScreen(
                 onDismiss = { onIntent(MainIntent.DismissCreateListDialog) },
                 onTextChange = { onIntent(MainIntent.CreateListNameChanged(it)) },
                 onKeyboardDone = { keyboardController?.hide() },
+            )
+        }
+
+        if (state.selectedListIdForIcon != null) {
+            IconPickerBottomSheet(
+                sheetState = sheetState!!,
+                onDismiss = { onIntent(MainIntent.DismissEditListIcon(0, 0)) },
+                onIconClick = { resId ->
+                    onIntent(
+                        MainIntent.DismissEditListIcon(
+                            id = state.selectedListIdForIcon,
+                            resId = resId
+                        )
+                    )
+                    scope!!.launch {
+                        sheetState.hide()
+                    }
+                }
             )
         }
 
@@ -139,36 +166,39 @@ private val mainStateContent = MainState(
     isLoading = true
 )
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview(showSystemUi = true)
 @Composable
 private fun EmptyStatePreview() {
     ShoppingListTheme {
         MainScreen(
-            mainStateEmpty,
+            state = mainStateEmpty,
             onIntent = {},
             modifier = Modifier.fillMaxSize()
         )
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview(showSystemUi = true)
 @Composable
 private fun LoadingStatePreview() {
     ShoppingListTheme {
         MainScreen(
-            mainStateLoading,
+            state = mainStateLoading,
             onIntent = {},
             modifier = Modifier.fillMaxSize()
         )
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview(showSystemUi = true)
 @Composable
 private fun ContentStatePreview() {
     ShoppingListTheme {
         MainScreen(
-            mainStateContent,
+            state = mainStateContent,
             onIntent = {},
             modifier = Modifier.fillMaxSize()
         )

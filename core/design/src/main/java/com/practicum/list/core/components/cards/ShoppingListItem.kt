@@ -6,6 +6,7 @@ import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.AnchoredDraggableState
 import androidx.compose.foundation.gestures.DraggableAnchors
 import androidx.compose.foundation.gestures.Orientation
@@ -43,6 +44,7 @@ import kotlin.math.roundToInt
 fun SwipeableListItem(
     iconResId: Int,
     text: String,
+    onLongClick: () -> Unit,
     onClick: () -> Unit,
     onDeleteClick: () -> Unit,
     onEditClick: () -> Unit,
@@ -62,7 +64,10 @@ fun SwipeableListItem(
             },
             positionalThreshold = { distance -> distance * 0.5f },
             velocityThreshold = { velocityThresholdPx },
-            snapAnimationSpec = tween(durationMillis = AnimationDuration, easing = FastOutSlowInEasing),
+            snapAnimationSpec = tween(
+                durationMillis = AnimationDuration,
+                easing = FastOutSlowInEasing
+            ),
             decayAnimationSpec = decayAnimationSpec,
         )
     }
@@ -88,6 +93,7 @@ fun SwipeableListItem(
             iconResId = iconResId,
             modifier = Modifier,
             onClick = onClick,
+            onLongClick = onLongClick,
             state = state,
         )
     }
@@ -100,6 +106,7 @@ fun ShoppingListCell(
     iconResId: Int,
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
+    onLongClick: () -> Unit,
     state: AnchoredDraggableState<DragAnchors>,
 ) {
     ListItem(
@@ -113,7 +120,10 @@ fun ShoppingListCell(
                 elevation = 2.dp,
                 shape = RoundedCornerShape(12.dp),
             )
-            .clickable(onClick = onClick),
+            .combinedClickable(
+                onClick = onClick,
+                onLongClick = onLongClick
+            ),
         headlineContent = {
             Row(
                 verticalAlignment = Alignment.CenterVertically,

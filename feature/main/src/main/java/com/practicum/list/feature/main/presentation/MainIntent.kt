@@ -14,4 +14,6 @@ sealed class MainIntent : MviIntent {
     data class CreateListNameChanged(val name: String) : MainIntent()
     data class ConfirmCreateList(val name: String) : MainIntent()
     data object DismissCreateListDialog : MainIntent()
+    data class EditListIcon(val id: Long) : MainIntent()
+    data class DismissEditListIcon(val id: Long?, val resId: Int) : MainIntent()
 }
