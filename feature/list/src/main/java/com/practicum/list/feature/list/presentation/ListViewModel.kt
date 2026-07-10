@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.practicum.list.core.common.domain.Product
+import com.practicum.list.core.common.domain.usecase.ObserveListTitleUseCase
 import com.practicum.list.core.mvi.MviViewModel
 import com.practicum.list.core.navigation.ListScreenRoute
 import com.practicum.list.feature.list.domain.usecase.DeleteAllProductsUseCase
@@ -13,10 +14,9 @@ import com.practicum.list.feature.list.domain.usecase.ObserveProductsByListIdUse
 import com.practicum.list.feature.list.domain.usecase.SortProductsAlphabeticallyUseCase
 import com.practicum.list.feature.list.domain.usecase.SortProductsCustomUseCase
 import com.practicum.list.feature.list.domain.usecase.UpsertProductUseCase
-import com.practicum.list.core.common.domain.usecase.ObserveListTitleUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class ListViewModel @Inject constructor(
@@ -54,18 +54,19 @@ class ListViewModel @Inject constructor(
         ListIntent.ListMenuDeleteCheckedClicked,
         ListIntent.ListMenuDeleteAllClicked,
         is ListIntent.ListMenuCustomSortConfirmed,
-        -> reduceListMenu(intent, current)
+            -> reduceListMenu(intent, current)
 
         is ListIntent.DeleteDialogConfirmed,
         ListIntent.DeleteDialogDismissed,
-        -> reduceDeleteDialog(current)
+            -> reduceDeleteDialog(current)
 
         is ListIntent.ProductContextMenuOpened,
         ListIntent.ProductMenuEditClicked,
         ListIntent.EditProductBottomSheetDismissed,
         is ListIntent.EditProductConfirmClicked,
         is ListIntent.DeleteProductClicked,
-        -> reduceProductEdit(intent, current)
+            -> reduceProductEdit(intent, current)
+
         ListIntent.BackClicked -> current
         ListIntent.AddProductClicked -> current.copy(bottomSheetOpened = true)
         ListIntent.DismissClicked -> current.copy(bottomSheetOpened = false)
@@ -80,18 +81,22 @@ class ListViewModel @Inject constructor(
         ListIntent.ListMenuAlphabeticalSortClicked -> current.copy(
             contextMenuState = ListContextMenuState(sortType = SortType.Alphabetical),
         )
+
         ListIntent.ListMenuCustomSortClicked -> current.copy(
             contextMenuState = ListContextMenuState(sortType = SortType.Custom),
             isBeingSorted = true,
         )
+
         ListIntent.ListMenuDeleteCheckedClicked -> current.copy(
             contextMenuState = null,
             confirmationDialogState = ConfirmationDialogState(deleteType = DeleteType.Checked),
         )
+
         ListIntent.ListMenuDeleteAllClicked -> current.copy(
             contextMenuState = null,
             confirmationDialogState = ConfirmationDialogState(deleteType = DeleteType.All),
         )
+
         is ListIntent.ListMenuCustomSortConfirmed -> current.copy(isBeingSorted = false)
         else -> current
     }
@@ -99,28 +104,42 @@ class ListViewModel @Inject constructor(
     private fun reduceDeleteDialog(current: ListState): ListState =
         current.copy(confirmationDialogState = null)
 
-    private fun reduceProductEdit(intent: ListIntent, current: ListState): ListState = when (intent) {
-        is ListIntent.ProductContextMenuOpened -> current.copy(
-            editProductMenuState = EditProductMenuState(product = intent.product),
-        )
-        ListIntent.ProductMenuEditClicked -> {
-            val product = current.editProductMenuState?.product ?: return current
-            current.copy(
-                editProductMenuState = null,
-                editProductBottomSheetState = EditProductBottomSheetState(
-                    name = product.name,
-                    productId = product.id,
-                    quantity = product.quantity,
-                    measureUnits = product.unit,
-                ),
+    private fun reduceProductEdit(intent: ListIntent, current: ListState): ListState =
+        when (intent) {
+            is ListIntent.ProductContextMenuOpened -> current.copy(
+                editProductMenuState = EditProductMenuState(product = intent.product),
             )
+
+            ListIntent.ProductMenuEditClicked -> {
+                val product = current.editProductMenuState?.product ?: return current
+                current.copy(
+                    editProductMenuState = null,
+                    editProductBottomSheetState = EditProductBottomSheetState(
+                        name = product.name,
+                        productId = product.id,
+                        quantity = product.quantity,
+                        measureUnits = product.unit,
+                    ),
+                )
+            }
+
+            ListIntent.EditProductBottomSheetDismissed,
+            is ListIntent.EditProductConfirmClicked,
+                -> current.copy(editProductBottomSheetState = null)
+
+            is ListIntent.DeleteProductClicked -> current.copy(editProductMenuState = null)
+            is ListIntent.AmountChanged -> current.copy(addProductAmount = intent.amount)
+            is ListIntent.MeasureChanged -> current.copy(addProductMeasure = intent.measure)
+            is ListIntent.NameChanged -> current.copy(addProductName = intent.name)
+            ListIntent.ApplyClicked -> current.copy(
+                addProductName = "",
+                addProductAmount = 0f,
+                addProductMeasure = "",
+                bottomSheetOpened = false
+            )
+
+            else -> current
         }
-        ListIntent.EditProductBottomSheetDismissed,
-        is ListIntent.EditProductConfirmClicked,
-        -> current.copy(editProductBottomSheetState = null)
-        is ListIntent.DeleteProductClicked -> current.copy(editProductMenuState = null)
-        else -> current
-    }
 
     override suspend fun handleIntent(intent: ListIntent) {
         when (intent) {
@@ -131,16 +150,20 @@ class ListViewModel @Inject constructor(
                     DeleteType.Checked -> deleteCheckedItems()
                 }
             }
+
             is ListIntent.ListMenuAlphabeticalSortClicked -> sortAlphabetically()
             is ListIntent.ListMenuCustomSortConfirmed -> sortCustom(intent.newList)
             is ListIntent.EditProductConfirmClicked -> upsertProduct(intent.product)
             is ListIntent.ToggleProductChecked -> upsertProduct(
                 intent.product.copy(isChecked = intent.isChecked)
             )
+
             is ListIntent.QuantityChanged -> upsertProduct(
                 intent.product.copy(quantity = intent.quantity)
             )
+
             is ListIntent.DeleteProductClicked -> deleteProduct(intent.productId)
+            ListIntent.ApplyClicked -> addProduct()
             else -> Unit
         }
     }
@@ -186,6 +209,10 @@ class ListViewModel @Inject constructor(
             .onFailure { error ->
                 emitEffect(ListEffect.ShowError(error.message ?: UNKNOWN_ERROR))
             }
+    }
+
+    private fun addProduct() {
+
     }
 
     companion object {

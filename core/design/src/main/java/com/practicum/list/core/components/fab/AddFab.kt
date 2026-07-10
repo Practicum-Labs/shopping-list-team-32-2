@@ -1,5 +1,6 @@
 package com.practicum.list.core.components.fab
 
+import androidx.annotation.DrawableRes
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -14,7 +15,11 @@ import com.practicum.list.core.theme.R
 import com.practicum.list.core.theme.ShoppingListTheme
 
 @Composable
-fun AddFab(modifier: Modifier = Modifier, onClick: () -> Unit) {
+fun AddFab(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+    @DrawableRes iconRes: Int = R.drawable.ic_add_56
+) {
     SmallFloatingActionButton(
         modifier = modifier,
         onClick = onClick,
@@ -28,7 +33,7 @@ fun AddFab(modifier: Modifier = Modifier, onClick: () -> Unit) {
         )
     ) {
         Icon(
-            painter = painterResource(R.drawable.ic_add_56),
+            painter = painterResource(iconRes),
             contentDescription = stringResource(R.string.action_add)
         )
     }

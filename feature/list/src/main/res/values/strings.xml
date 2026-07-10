@@ -10,4 +10,7 @@
     <string name="goods">Товары</string>
     <string name="amount">Количество</string>
     <string name="measures">Единицы</string>
+    <string name="expand_dropdown_menu">Развернуть выпадающий список</string>
+    <string name="plus">увеличить количество на один</string>
+    <string name="minus">снизить количество на один</string>
 </resources>

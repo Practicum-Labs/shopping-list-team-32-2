@@ -26,6 +26,7 @@ sealed class ListIntent : MviIntent {
     data object AddProductClicked : ListIntent()
     data object DismissClicked : ListIntent()
     data class NameChanged(val name: String) : ListIntent()
-    data class AmountChanged(val amount: String) : ListIntent()
+    data class AmountChanged(val amount: Float) : ListIntent()
     data class MeasureChanged(val measure: String) : ListIntent()
+    data object ApplyClicked : ListIntent()
 }

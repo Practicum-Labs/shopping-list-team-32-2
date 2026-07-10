@@ -103,7 +103,9 @@ fun ListScreen(
             onAmountChange = { onIntent(ListIntent.AmountChanged(amount = it)) },
             measure = state.addProductDialogState?.unit,
             onMeasureClick = { onIntent(ListIntent.MeasureChanged(measure = it)) },
-            onDismiss = { onIntent(ListIntent.DismissClicked) }
+            onDismiss = { onIntent(ListIntent.DismissClicked) },
+            onApplyClicked = { onIntent(ListIntent.ApplyClicked) },
+            isApplyVisible = state.isAddEnabled
         )
     }
 }
