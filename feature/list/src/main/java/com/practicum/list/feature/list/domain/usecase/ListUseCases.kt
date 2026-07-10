@@ -13,6 +13,14 @@ class ObserveProductsByListIdUseCase @Inject constructor(
     }
 }
 
+class ObserveListTitleUseCase @Inject constructor(
+    private val repository: ListRepository,
+) {
+    operator fun invoke(listId: Long): Flow<String> {
+        return repository.observeListTitle(listId)
+    }
+}
+
 class DeleteAllProductsUseCase @Inject constructor(
     private val repository: ListRepository,
 ) {

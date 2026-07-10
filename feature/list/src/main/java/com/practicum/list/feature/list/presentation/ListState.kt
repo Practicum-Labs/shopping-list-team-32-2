@@ -6,5 +6,8 @@ import com.practicum.list.core.mvi.MviState
 data class ListState(
     val listId: Long,
     val listTitle: String = "",
-    val items: List<Product> = emptyList()
-) : MviState
+    val items: List<Product> = emptyList(),
+    val isLoading: Boolean = false,
+) : MviState {
+    val isEmpty: Boolean get() = items.isEmpty() && !isLoading
+}

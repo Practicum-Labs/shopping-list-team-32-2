@@ -6,7 +6,6 @@ import com.practicum.list.core.common.utils.NetworkConnectionChecker
 import com.practicum.list.core.common.utils.isEmailValid
 import com.practicum.list.core.common.utils.isPasswordWeak
 import com.practicum.list.core.data.network.NetworkClient
-import com.practicum.list.core.data.network.api.AuthApi
 import com.practicum.list.core.data.network.codes.BAD_REQUEST_ERROR
 import com.practicum.list.core.data.network.codes.DEFAULT_ERROR
 import com.practicum.list.core.data.network.codes.OK
@@ -22,7 +21,7 @@ import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 
 class RetrofitNetworkClient(
-    private val authApi: AuthApi,
+    private val authApi: ResilientAuthApi,
     private val networkConnectionChecker: NetworkConnectionChecker
 ) : NetworkClient {
     override suspend fun doRequest(dto: Any): Response<out Any> {

@@ -16,6 +16,9 @@
 | **Swagger UI** | https://practicumopbackend-production.up.railway.app/swagger-ui/index.html |
 | **OpenAPI JSON** | https://practicumopbackend-production.up.railway.app/v3/api-docs |
 | **Base URL (Retrofit)** | `https://practicumopbackend-production.up.railway.app/` |
+| **Fallback proxy URL** | `https://api.techlabhub.ru/` ([Swagger](https://api.techlabhub.ru/swagger-ui/index.html)) |
+
+При недоступности primary (сеть, timeout, 502/503/504) запросы auth автоматически повторяются через fallback proxy. После первого сбоя primary последующие запросы в сессии идут сразу на fallback; connect timeout primary — 3 с.
 
 Trailing slash в `BASE_URL` обязателен для Retrofit. Пути эндпоинтов — **без** префикса `/api/` (например, `auth/login`, не `api/auth/login`).
 

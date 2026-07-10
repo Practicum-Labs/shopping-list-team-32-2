@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="list">Список</string>
+    <string name="list_empty_title">В списке покупок пока пусто</string>
+    <string name="list_empty_message">Нажмите на кнопку + ниже,\nчтобы добавить товары</string>
     <string name="product_checkbox_content_description">Отметить товар как купленный</string>
     <string name="product_delete_content_description">Удалить товар</string>
+    <string name="product_edit_content_description">Редактировать товар</string>
     <string name="product_quantity_content_description">Количество, нажмите для изменения</string>
 </resources>
