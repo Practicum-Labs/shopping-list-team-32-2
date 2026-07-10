@@ -32,6 +32,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:data"))
     implementation(project(":core:mvi"))
     implementation(project(":core:design"))
     implementation(project(":core:common"))
@@ -44,6 +45,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     debugImplementation(libs.androidx.compose.ui.tooling)
     implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.navigation.compose)
     detektPlugins(libs.detekt.formatting)

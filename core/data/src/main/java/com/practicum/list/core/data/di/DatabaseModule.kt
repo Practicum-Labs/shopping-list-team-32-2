@@ -1,7 +1,10 @@
-﻿package com.practicum.list.core.data.di import android.content.Context
+﻿package com.practicum.list.core.data.di
+
+import android.content.Context
 import androidx.room.Room
 import com.practicum.list.core.data.local.MIGRATION_1_2
 import com.practicum.list.core.data.local.MIGRATION_2_3
+import com.practicum.list.core.data.local.MIGRATION_3_4
 import com.practicum.list.core.data.local.ShoppingDatabase
 import com.practicum.list.core.data.local.dao.ProductDao
 import com.practicum.list.core.data.local.dao.ShoppingListDao
@@ -25,7 +28,7 @@ object DatabaseModule {
             ShoppingDatabase::class.java,
             DATABASE_NAME,
         )
-            .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
             .build()
 
     @Provides
