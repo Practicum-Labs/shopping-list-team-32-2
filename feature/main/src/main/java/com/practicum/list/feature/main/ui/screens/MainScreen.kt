@@ -20,7 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.practicum.list.core.common.domain.ShoppingList
-import com.practicum.list.core.components.bottomsheet.IconPickerBottomSheet
+import com.practicum.list.core.components.bottomsheet.CategoryPickerBottomSheet
 import com.practicum.list.core.components.cards.SwipeableListItem
 import com.practicum.list.core.components.dialogs.CustomLayoutDialog
 import com.practicum.list.core.components.fab.AddFab
@@ -107,7 +107,7 @@ fun MainScreen(
         }
 
         if (state.selectedListIdForIcon != null) {
-            IconPickerBottomSheet(
+            CategoryPickerBottomSheet(
                 sheetState = sheetState!!,
                 onDismiss = { onIntent(MainIntent.DismissEditListIcon(null, 0)) },
                 onIconClick = { resId ->

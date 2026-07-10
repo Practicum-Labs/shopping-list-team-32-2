@@ -25,7 +25,7 @@ import com.practicum.list.core.theme.ShoppingListTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun IconPickerBottomSheet(
+fun CategoryPickerBottomSheet(
     sheetState: SheetState = rememberModalBottomSheetState(),
     onIconClick: (Int) -> Unit = {},
     onDismiss: () -> Unit = {}
@@ -118,9 +118,9 @@ private fun Content(
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showSystemUi = true)
 @Composable
-fun IconPickerBottomSheetPreviewLight() {
+fun CategoryPickerBottomSheetPreviewLight() {
 
     ShoppingListTheme(darkTheme = false) {
-        IconPickerBottomSheet()
+        CategoryPickerBottomSheet()
     }
 }
