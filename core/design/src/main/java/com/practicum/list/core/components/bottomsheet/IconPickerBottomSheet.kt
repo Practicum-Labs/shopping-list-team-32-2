@@ -108,7 +108,7 @@ private fun Content(
                     },
                     containerColor = MaterialTheme.colorScheme.secondaryContainer,
                     contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                    contentDescription = description,
+                    contentDescription = description
                 )
             }
         }

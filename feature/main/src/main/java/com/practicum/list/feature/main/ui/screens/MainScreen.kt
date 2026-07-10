@@ -109,7 +109,7 @@ fun MainScreen(
         if (state.selectedListIdForIcon != null) {
             IconPickerBottomSheet(
                 sheetState = sheetState!!,
-                onDismiss = { onIntent(MainIntent.DismissEditListIcon(0, 0)) },
+                onDismiss = { onIntent(MainIntent.DismissEditListIcon(null, 0)) },
                 onIconClick = { resId ->
                     onIntent(
                         MainIntent.DismissEditListIcon(
