@@ -15,6 +15,7 @@ import com.practicum.list.feature.list.domain.usecase.SortProductsCustomUseCase
 import com.practicum.list.feature.list.domain.usecase.UpsertProductUseCase
 import com.practicum.list.feature.main.domain.usecase.ObserveShoppingListTitleUseCase
 import com.practicum.list.feature.list.domain.usecase.ObserveListTitleUseCase
+import com.practicum.list.core.common.domain.usecase.ObserveListTitleUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -23,7 +24,7 @@ import javax.inject.Inject
 class ListViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val observeProductsByListIdUseCase: ObserveProductsByListIdUseCase,
-    private val observeShoppingListTitleUseCase: ObserveShoppingListTitleUseCase,
+    private val observeListTitleUseCase: ObserveListTitleUseCase,
     private val deleteAllProductsUseCase: DeleteAllProductsUseCase,
     private val deleteProductUseCase: DeleteProductUseCase,
     private val deleteBoughtProductsUseCase: DeleteBoughtProductsUseCase,
@@ -45,7 +46,7 @@ class ListViewModel @Inject constructor(
             }
         }
         viewModelScope.launch {
-            observeShoppingListTitleUseCase(listId).collect { title ->
+            observeListTitleUseCase(listId).collect { title ->
                 updateState { it.copy(listTitle = title) }
             }
         }

@@ -1,7 +1,7 @@
 package com.practicum.list.feature.main.data.di
 
+import com.practicum.list.core.common.domain.repository.ShoppingListRepository
 import com.practicum.list.feature.main.data.impl.ShoppingListRepositoryImpl
-import com.practicum.list.feature.main.domain.repository.ShoppingListRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
