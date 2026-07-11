@@ -1,6 +1,6 @@
 package com.practicum.list.feature.list.presentation
 
-import android.icu.util.MeasureUnit
+import com.practicum.list.core.common.domain.MeasureUnit
 import com.practicum.list.core.mvi.MviIntent
 
 sealed class ListIntent : MviIntent {
@@ -18,9 +18,9 @@ sealed class ListIntent : MviIntent {
 
     data object DeleteCheckedProductsDialogDismissed: ListIntent()
 
-    data class DeleteCheckedProductsDialpgConfirmed(val listId: Long): ListIntent()
+    data class DeleteCheckedProductsDialogConfirmed(val listId: Long): ListIntent()
 
-    data class UserCustomSortClicked(val listId: Long): ListIntent()
+    data class CustomSortClicked(val listId: Long): ListIntent()
 
     data class AlphabeticalSortClicked(val listId: Long): ListIntent()
 
