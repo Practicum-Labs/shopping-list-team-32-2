@@ -13,7 +13,7 @@ data class ListState(
     val addProductError: String? = null,
     val editProductBottomSheetState: EditProductBottomSheetState? = null,
     val contextMenuState: ListContextMenuState? = null,
-    val confirmationDialogState:  ConfirmationDialogState? = null,
+    val confirmationDialogState: ConfirmationDialogState? = null,
     val editProductMenuState: EditProductMenuState? = null,
     val isBeingSorted: Boolean = false,
 ) : MviState {
@@ -42,7 +42,7 @@ data class EditProductMenuState(
     val product: Product
 )
 
-data class ConfirmationDialogState (
+data class ConfirmationDialogState(
     val deleteType: DeleteType,
 )
 

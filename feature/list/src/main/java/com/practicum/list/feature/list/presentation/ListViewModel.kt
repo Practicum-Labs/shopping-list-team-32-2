@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.practicum.list.core.common.domain.Product
+import com.practicum.list.core.common.domain.usecase.ObserveListTitleUseCase
 import com.practicum.list.core.mvi.MviViewModel
 import com.practicum.list.core.navigation.ListScreenRoute
 import com.practicum.list.feature.list.domain.usecase.DeleteAllProductsUseCase
@@ -17,8 +18,8 @@ import com.practicum.list.feature.main.domain.usecase.ObserveShoppingListTitleUs
 import com.practicum.list.feature.list.domain.usecase.ObserveListTitleUseCase
 import com.practicum.list.core.common.domain.usecase.ObserveListTitleUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.launch
 
 @HiltViewModel
 class ListViewModel @Inject constructor(
@@ -30,13 +31,10 @@ class ListViewModel @Inject constructor(
     private val deleteBoughtProductsUseCase: DeleteBoughtProductsUseCase,
     private val sortProductsAlphabeticallyUseCase: SortProductsAlphabeticallyUseCase,
     private val sortProductsCustomUseCase: SortProductsCustomUseCase,
-    private val upsertProductUseCase: UpsertProductUseCase
-) :
-    MviViewModel<ListIntent, ListState, ListEffect>(
-        initialState = createInitialState(
-            savedStateHandle
-        )
-    ) {
+    private val upsertProductUseCase: UpsertProductUseCase,
+) : MviViewModel<ListIntent, ListState, ListEffect>(
+    initialState = createInitialState(savedStateHandle),
+) {
     private val listId: Long = savedStateHandle.toRoute<ListScreenRoute>().listId
 
     init {
@@ -53,16 +51,45 @@ class ListViewModel @Inject constructor(
     }
 
     override fun reduce(intent: ListIntent, current: ListState): ListState = when (intent) {
+        is ListIntent.AddButtonClicked,
+        is ListIntent.AddProductConfirmed,
+        is ListIntent.AddProductNameChanged,
+        ListIntent.AddProductMinusClicked,
+        ListIntent.AddProductPlusClicked,
+        is ListIntent.AddProductQuantityChanged,
+        is ListIntent.AddProductUnitsChanged,
+        -> reduceAddProduct(intent, current)
+
+        ListIntent.ListMenuAlphabeticalSortClicked,
+        ListIntent.ListMenuCustomSortClicked,
+        ListIntent.ListMenuDeleteCheckedClicked,
+        ListIntent.ListMenuDeleteAllClicked,
+        is ListIntent.ListMenuCustomSortConfirmed,
+        -> reduceListMenu(intent, current)
+
+        is ListIntent.DeleteDialogConfirmed,
+        ListIntent.DeleteDialogDismissed,
+        -> reduceDeleteDialog(current)
+
+        is ListIntent.ProductContextMenuOpened,
+        ListIntent.ProductMenuEditClicked,
+        ListIntent.EditProductBottomSheetDismissed,
+        is ListIntent.EditProductConfirmClicked,
+        is ListIntent.DeleteProductClicked,
+        -> reduceProductEdit(intent, current)
+
+        else -> current
+    }
+
+    private fun reduceAddProduct(intent: ListIntent, current: ListState): ListState = when (intent) {
         is ListIntent.AddButtonClicked -> current.copy(
             addProductDialogState = AddProductDialogState(
                 name = "",
                 quantity = null,
-                unit = null
-            )
+                unit = null,
+            ),
         )
-        is ListIntent.AddProductConfirmed -> current.copy(
-            addProductDialogState = null
-        )
+        is ListIntent.AddProductConfirmed -> current.copy(addProductDialogState = null)
         is ListIntent.AddProductNameChanged -> current.copy(
             addProductDialogState = current.addProductDialogState?.copy(name = intent.name)
                 ?: AddProductDialogState(name = intent.name),
@@ -70,14 +97,14 @@ class ListViewModel @Inject constructor(
         ListIntent.AddProductMinusClicked -> current.addProductDialogState?.let { dialog ->
             current.copy(
                 addProductDialogState = dialog.copy(
-                    quantity = (dialog.quantity ?: 1f) - 0.1f,
+                    quantity = (dialog.quantity ?: DEFAULT_QUANTITY) - QUANTITY_STEP,
                 ),
             )
         } ?: current
-        ListIntent.AddProductPlusClicked ->  current.addProductDialogState?.let { dialog ->
+        ListIntent.AddProductPlusClicked -> current.addProductDialogState?.let { dialog ->
             current.copy(
                 addProductDialogState = dialog.copy(
-                    quantity = (dialog.quantity ?: 1f) + 0.1f,
+                    quantity = (dialog.quantity ?: DEFAULT_QUANTITY) + QUANTITY_STEP,
                 ),
             )
         } ?: current
@@ -89,66 +116,52 @@ class ListViewModel @Inject constructor(
             addProductDialogState = current.addProductDialogState?.copy(unit = intent.unit)
                 ?: AddProductDialogState(unit = intent.unit),
         )
+        else -> current
+    }
+
+    private fun reduceListMenu(intent: ListIntent, current: ListState): ListState = when (intent) {
         ListIntent.ListMenuAlphabeticalSortClicked -> current.copy(
-            contextMenuState = ListContextMenuState(
-                sortType = SortType.Alphabetical
-            )
-        ) // закрываем по тапу вне меню!
+            contextMenuState = ListContextMenuState(sortType = SortType.Alphabetical),
+        )
         ListIntent.ListMenuCustomSortClicked -> current.copy(
-            contextMenuState = ListContextMenuState(
-                sortType = SortType.Custom
-            ),
-            isBeingSorted = true
-        ) // закрываем по тапу вне меню!
+            contextMenuState = ListContextMenuState(sortType = SortType.Custom),
+            isBeingSorted = true,
+        )
         ListIntent.ListMenuDeleteCheckedClicked -> current.copy(
             contextMenuState = null,
-            confirmationDialogState = ConfirmationDialogState(
-                deleteType = DeleteType.Checked
-            )
+            confirmationDialogState = ConfirmationDialogState(deleteType = DeleteType.Checked),
         )
         ListIntent.ListMenuDeleteAllClicked -> current.copy(
             contextMenuState = null,
-            confirmationDialogState = ConfirmationDialogState(
-                deleteType = DeleteType.All
-            )
+            confirmationDialogState = ConfirmationDialogState(deleteType = DeleteType.All),
         )
-        is ListIntent.DeleteDialogConfirmed -> current.copy(
-            confirmationDialogState = null
-        )
-        ListIntent.DeleteDialogDismissed -> current.copy(
-            confirmationDialogState = null
-        )
+        is ListIntent.ListMenuCustomSortConfirmed -> current.copy(isBeingSorted = false)
+        else -> current
+    }
+
+    private fun reduceDeleteDialog(current: ListState): ListState =
+        current.copy(confirmationDialogState = null)
+
+    private fun reduceProductEdit(intent: ListIntent, current: ListState): ListState = when (intent) {
         is ListIntent.ProductContextMenuOpened -> current.copy(
-            editProductMenuState = EditProductMenuState(product = intent.product)
+            editProductMenuState = EditProductMenuState(product = intent.product),
         )
         ListIntent.ProductMenuEditClicked -> {
-            val product = current.editProductMenuState?.product
-            if (product == null) {
-                current
-            } else {
-                current.copy(
-                    editProductMenuState = null,
-                    editProductBottomSheetState = EditProductBottomSheetState(
-                        name = product.name,
-                        productId = product.id,
-                        quantity = product.quantity,
-                        measureUnits = product.unit,
-                    ),
-                )
-            }
+            val product = current.editProductMenuState?.product ?: return current
+            current.copy(
+                editProductMenuState = null,
+                editProductBottomSheetState = EditProductBottomSheetState(
+                    name = product.name,
+                    productId = product.id,
+                    quantity = product.quantity,
+                    measureUnits = product.unit,
+                ),
+            )
         }
-        ListIntent.EditProductBottomSheetDismissed -> current.copy(
-            editProductBottomSheetState = null
-        )
-        is ListIntent.EditProductConfirmClicked -> current.copy(
-            editProductBottomSheetState = null
-        )
-        is ListIntent.DeleteProductClicked -> current.copy(
-            editProductMenuState = null
-        )
-        is ListIntent.ListMenuCustomSortConfirmed -> current.copy(
-            isBeingSorted = false
-        )
+        ListIntent.EditProductBottomSheetDismissed,
+        is ListIntent.EditProductConfirmClicked,
+        -> current.copy(editProductBottomSheetState = null)
+        is ListIntent.DeleteProductClicked -> current.copy(editProductMenuState = null)
         else -> current
 
         ListIntent.BackClicked,
@@ -243,6 +256,8 @@ class ListViewModel @Inject constructor(
 
     companion object {
         private const val UNKNOWN_ERROR = "Unknown error"
+        private const val DEFAULT_QUANTITY = 1f
+        private const val QUANTITY_STEP = 0.1f
 
         private fun createInitialState(handle: SavedStateHandle): ListState {
             val route = handle.toRoute<ListScreenRoute>()
