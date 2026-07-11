@@ -37,6 +37,7 @@ dependencies {
     implementation(project(":core:design"))
     implementation(project(":core:common"))
     implementation(project(":core:navigation"))
+    implementation(project(":feature:main"))
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)

@@ -13,6 +13,7 @@ import com.practicum.list.feature.list.domain.usecase.ObserveProductsByListIdUse
 import com.practicum.list.feature.list.domain.usecase.SortProductsAlphabeticallyUseCase
 import com.practicum.list.feature.list.domain.usecase.SortProductsCustomUseCase
 import com.practicum.list.feature.list.domain.usecase.UpsertProductUseCase
+import com.practicum.list.feature.main.domain.usecase.ObserveShoppingListTitleUseCase
 import com.practicum.list.feature.list.domain.usecase.ObserveListTitleUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -22,6 +23,7 @@ import javax.inject.Inject
 class ListViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val observeProductsByListIdUseCase: ObserveProductsByListIdUseCase,
+    private val observeShoppingListTitleUseCase: ObserveShoppingListTitleUseCase,
     private val deleteAllProductsUseCase: DeleteAllProductsUseCase,
     private val deleteProductUseCase: DeleteProductUseCase,
     private val deleteBoughtProductsUseCase: DeleteBoughtProductsUseCase,
@@ -42,18 +44,14 @@ class ListViewModel @Inject constructor(
                 updateState { it.copy(products = products, isLoading = false) }
             }
         }
-
         viewModelScope.launch {
-            observeListTitleUseCase(listId).collect { title ->
+            observeShoppingListTitleUseCase(listId).collect { title ->
                 updateState { it.copy(listTitle = title) }
             }
         }
     }
 
     override fun reduce(intent: ListIntent, current: ListState): ListState = when (intent) {
-        is ListIntent.ConfirmDeleteListItems -> current.copy(
-            confirmationDialogState = null
-        )
         is ListIntent.AddButtonClicked -> current.copy(
             addProductDialogState = AddProductDialogState(
                 name = "",
@@ -65,46 +63,42 @@ class ListViewModel @Inject constructor(
             addProductDialogState = null
         )
         is ListIntent.AddProductNameChanged -> current.copy(
-            addProductDialogState = AddProductDialogState(
-                name = intent.name
-            )
+            addProductDialogState = current.addProductDialogState?.copy(name = intent.name)
+                ?: AddProductDialogState(name = intent.name),
         )
-        ListIntent.AddProductMinusClicked -> current.copy(
-            addProductDialogState = AddProductDialogState(
-                quantity = 1.1F// прошлое минус 0,1
+        ListIntent.AddProductMinusClicked -> current.addProductDialogState?.let { dialog ->
+            current.copy(
+                addProductDialogState = dialog.copy(
+                    quantity = (dialog.quantity ?: 1f) - 0.1f,
+                ),
             )
-        )
-        ListIntent.AddProductPlusClicked ->  current.copy(
-            addProductDialogState = AddProductDialogState(
-                quantity = 1.1F// прошлое плюс 0,1
+        } ?: current
+        ListIntent.AddProductPlusClicked ->  current.addProductDialogState?.let { dialog ->
+            current.copy(
+                addProductDialogState = dialog.copy(
+                    quantity = (dialog.quantity ?: 1f) + 0.1f,
+                ),
             )
-        )
+        } ?: current
         is ListIntent.AddProductQuantityChanged -> current.copy(
-            addProductDialogState = AddProductDialogState(
-                quantity = intent.quantity
-            )
+            addProductDialogState = current.addProductDialogState?.copy(quantity = intent.quantity)
+                ?: AddProductDialogState(quantity = intent.quantity),
         )
         is ListIntent.AddProductUnitsChanged -> current.copy(
-            addProductDialogState = AddProductDialogState(
-                unit = intent.unit
-            )
+            addProductDialogState = current.addProductDialogState?.copy(unit = intent.unit)
+                ?: AddProductDialogState(unit = intent.unit),
         )
-        ListIntent.ListMenuAlphabeticalSortClicked(0L) -> current.copy(
+        ListIntent.ListMenuAlphabeticalSortClicked -> current.copy(
             contextMenuState = ListContextMenuState(
                 sortType = SortType.Alphabetical
             )
-        )
-        ListIntent.ListMenuCustomSortClicked(0L) -> current.copy(
+        ) // закрываем по тапу вне меню!
+        ListIntent.ListMenuCustomSortClicked -> current.copy(
             contextMenuState = ListContextMenuState(
                 sortType = SortType.Custom
-            )
-        )
-        ListIntent.DeleteCheckedProductsDialogDismissed -> current.copy(
-            confirmationDialogState = null
-        )
-        ListIntent.DeleteCheckedProductsDialogConfirmed -> current.copy(
-            confirmationDialogState = null
-        )
+            ),
+            isBeingSorted = true
+        ) // закрываем по тапу вне меню!
         ListIntent.ListMenuDeleteCheckedClicked -> current.copy(
             contextMenuState = null,
             confirmationDialogState = ConfirmationDialogState(
@@ -117,23 +111,39 @@ class ListViewModel @Inject constructor(
                 deleteType = DeleteType.All
             )
         )
-        ListIntent.DeleteDialogConfirmed -> current.copy(
+        is ListIntent.DeleteDialogConfirmed -> current.copy(
             confirmationDialogState = null
         )
         ListIntent.DeleteDialogDismissed -> current.copy(
             confirmationDialogState = null
+        )
+        is ListIntent.ProductContextMenuOpened -> current.copy(
+            editProductMenuState = EditProductMenuState(product = intent.product)
+        )
+        ListIntent.ProductMenuEditClicked -> {
+            val product = current.editProductMenuState?.product
+            if (product == null) {
+                current
+            } else {
+                current.copy(
+                    editProductMenuState = null,
+                    editProductBottomSheetState = EditProductBottomSheetState(
+                        name = product.name,
+                        productId = product.id,
+                        quantity = product.quantity,
+                        measureUnits = product.unit,
+                    ),
+                )
+            }
+        }
+        ListIntent.EditProductBottomSheetDismissed -> current.copy(
+            editProductBottomSheetState = null
         )
         is ListIntent.EditProductConfirmClicked -> current.copy(
             editProductBottomSheetState = null
         )
         is ListIntent.DeleteProductClicked -> current.copy(
             editProductMenuState = null
-        )
-        is ListIntent.EditProductClicked -> current.copy(
-            editProductMenuState = EditProductMenuState(product = intent.product)
-        )
-        is ListIntent.ListMenuCustomSortClicked -> current.copy(
-            isBeingSorted = true
         )
         is ListIntent.ListMenuCustomSortConfirmed -> current.copy(
             isBeingSorted = false
@@ -160,9 +170,12 @@ class ListViewModel @Inject constructor(
     override suspend fun handleIntent(intent: ListIntent) {
         when (intent) {
             ListIntent.BackClicked -> emitEffect(ListEffect.NavigateToMain)
-            ListIntent.ConfirmDeleteListItems -> deleteAllItems()
-            ListIntent.DeleteCheckedProductsDialogConfirmed -> deleteCheckedItems()
-            ListIntent.ItemMoved(0L,1) -> Unit
+            is ListIntent.DeleteDialogConfirmed -> {
+                when (intent.type) {
+                    DeleteType.All -> deleteAllItems()
+                    DeleteType.Checked -> deleteCheckedItems()
+                }
+            }
             is ListIntent.ListMenuAlphabeticalSortClicked -> sortAlphabetically()
             is ListIntent.ListMenuCustomSortConfirmed -> sortCustom(intent.newList)
             is ListIntent.AddProductConfirmed -> upsertProduct(intent.product)
@@ -185,43 +198,51 @@ class ListViewModel @Inject constructor(
     }
 
     private suspend fun sortCustom(newOrderedList: List<Product>) {
-        runCatching {
+        runCatchingWithError {
             sortProductsCustomUseCase(listId, newOrderedList)
         }
     }
 
-
     private suspend fun sortAlphabetically() {
-        runCatching {
+        runCatchingWithError {
             sortProductsAlphabeticallyUseCase(listId)
         }
     }
 
     private suspend fun deleteCheckedItems() {
-        runCatching {
+        runCatchingWithError {
             deleteBoughtProductsUseCase(listId)
         }
     }
 
     private suspend fun deleteAllItems() {
-        runCatching {
+        runCatchingWithError {
             deleteAllProductsUseCase(listId)
         }
     }
 
     private suspend fun upsertProduct(product: Product) {
-        runCatching {
-           upsertProductUseCase(product)
+        runCatchingWithError {
+            upsertProductUseCase(product)
         }
     }
 
     private suspend fun deleteProduct(id: Long) {
-        runCatching {
+        runCatchingWithError {
             deleteProductUseCase(id)
         }
     }
 
+    private suspend fun runCatchingWithError(block: suspend () -> Unit) {
+        runCatching { block() }
+            .onFailure { error ->
+                emitEffect(ListEffect.ShowError(error.message ?: UNKNOWN_ERROR))
+            }
+    }
+
     companion object {
+        private const val UNKNOWN_ERROR = "Unknown error"
+
         private fun createInitialState(handle: SavedStateHandle): ListState {
             val route = handle.toRoute<ListScreenRoute>()
             return ListState(listId = route.listId)
