@@ -1,28 +1,31 @@
 package com.practicum.list.feature.list.presentation
 
 import com.practicum.list.core.common.domain.MeasureUnit
+import com.practicum.list.core.common.domain.Product
 import com.practicum.list.core.mvi.MviIntent
 
 sealed class ListIntent : MviIntent {
     data object BackClicked : ListIntent()
 
-    data object LoadList : ListIntent()
-
-    data class ConfirmDeleteListItems(val id: Long) : ListIntent()
-
-    data class UpdateQuantityAndUnits(val id: Long): ListIntent()
+    data object ConfirmDeleteListItems : ListIntent()
 
     data object DeleteDialogDismissed: ListIntent()
 
-    data class DeleteDialogConfirmed(val listId: Long): ListIntent()
+    data object DeleteDialogConfirmed: ListIntent()
 
     data object DeleteCheckedProductsDialogDismissed: ListIntent()
 
-    data class DeleteCheckedProductsDialogConfirmed(val listId: Long): ListIntent()
+    data object DeleteCheckedProductsDialogConfirmed: ListIntent()
 
-    data class CustomSortClicked(val listId: Long): ListIntent()
+    data class ListMenuCustomSortClicked(val listId: Long): ListIntent()
 
-    data class AlphabeticalSortClicked(val listId: Long): ListIntent()
+    data class ListMenuAlphabeticalSortClicked(val listId: Long): ListIntent()
+
+    data object ListMenuDeleteCheckedClicked: ListIntent()
+
+    data object ListMenuDeleteAllClicked: ListIntent()
+
+    data class ListMenuCustomSortConfirmed(val newList: List<Product>): ListIntent()
 
     data class ItemMoved(val productId: Long, val sortPosition: Int): ListIntent()
 
@@ -38,8 +41,13 @@ sealed class ListIntent : MviIntent {
 
     data class AddProductUnitsChanged(val unit: MeasureUnit) : ListIntent()
 
-    data object AddProductConfirmed: ListIntent()
+    data class AddProductConfirmed(val product: Product): ListIntent()
 
+    data class DeleteProductClicked(val productId: Long): ListIntent()
+
+    data class EditProductClicked(val product: Product): ListIntent()
+
+    data class EditProductConfirmClicked(val product: Product): ListIntent()
 
 
     data object AddProductClicked : ListIntent()
