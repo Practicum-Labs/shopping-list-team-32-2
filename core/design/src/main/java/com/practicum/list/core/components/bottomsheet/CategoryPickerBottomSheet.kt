@@ -31,7 +31,7 @@ fun CategoryPickerBottomSheet(
     onDismiss: () -> Unit = {}
 ) {
     BottomSheet(
-        modifier = Modifier.fillMaxHeight(0.5f),
+        modifier = Modifier,
         sheetState = sheetState,
         onDismiss = onDismiss
     ) {
@@ -121,6 +121,16 @@ private fun Content(
 fun CategoryPickerBottomSheetPreviewLight() {
 
     ShoppingListTheme(darkTheme = false) {
+        CategoryPickerBottomSheet()
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview(showSystemUi = true)
+@Composable
+fun CategoryPickerBottomSheetPreviewDark() {
+
+    ShoppingListTheme(darkTheme = true) {
         CategoryPickerBottomSheet()
     }
 }

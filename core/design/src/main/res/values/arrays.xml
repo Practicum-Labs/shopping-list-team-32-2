@@ -1,38 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <array name="list_icon_resources">
-        <item>@drawable/ic_list_icon_1</item>
-        <item>@drawable/ic_list_icon_2</item>
-        <item>@drawable/ic_list_icon_3</item>
-        <item>@drawable/ic_list_icon_4</item>
-        <item>@drawable/ic_list_icon_5</item>
-        <item>@drawable/ic_list_icon_6</item>
-        <item>@drawable/ic_list_icon_7</item>
-        <item>@drawable/ic_list_icon_8</item>
-        <item>@drawable/ic_list_icon_9</item>
-        <item>@drawable/ic_list_icon_10</item>
-        <item>@drawable/ic_list_icon_11</item>
-        <item>@drawable/ic_list_icon_12</item>
-        <item>@drawable/ic_list_icon_13</item>
-        <item>@drawable/ic_list_icon_14</item>
-        <item>@drawable/ic_list_icon_15</item>
-        <item>@drawable/ic_list_icon_16</item>
-        <item>@drawable/ic_list_icon_17</item>
-        <item>@drawable/ic_list_icon_18</item>
-        <item>@drawable/ic_list_icon_19</item>
-        <item>@drawable/ic_list_icon_20</item>
-        <item>@drawable/ic_list_icon_21</item>
-        <item>@drawable/ic_list_icon_22</item>
-        <item>@drawable/ic_list_icon_23</item>
-        <item>@drawable/ic_list_icon_24</item>
-        <item>@drawable/ic_list_icon_25</item>
-        <item>@drawable/ic_list_icon_26</item>
-        <item>@drawable/ic_list_icon_27</item>
-        <item>@drawable/ic_list_icon_28</item>
-        <item>@drawable/ic_list_icon_29</item>
-        <item>@drawable/ic_list_icon_30</item>
-    </array>
-
     <array name="list_icon_description">
         <item>@string/icon_list_description_1</item>
         <item>@string/icon_list_description_2</item>

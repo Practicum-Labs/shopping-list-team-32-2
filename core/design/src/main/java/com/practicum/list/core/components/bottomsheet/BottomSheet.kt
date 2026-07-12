@@ -3,7 +3,6 @@ package com.practicum.list.core.components.bottomsheet
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -28,8 +27,9 @@ fun BottomSheet(
     onDismiss: () -> Unit,
     content: @Composable () -> Unit
 ) {
+
     ModalBottomSheet(
-        modifier = modifier,
+        modifier = modifier.fillMaxWidth(),
         onDismissRequest = onDismiss,
         sheetState = sheetState,
         containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
@@ -67,7 +67,6 @@ fun BottomSheetPreviewLight() {
     ShoppingListTheme(darkTheme = false) {
 
         BottomSheet(
-            modifier = Modifier.height(452.dp),
             onDismiss = {},
             content = {}
         )
@@ -81,7 +80,6 @@ fun BottomSheetPreviewDark() {
     ShoppingListTheme(darkTheme = true) {
 
         BottomSheet(
-            modifier = Modifier.height(452.dp),
             onDismiss = {},
             content = {}
         )

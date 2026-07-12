@@ -44,7 +44,7 @@ import kotlin.math.roundToInt
 fun SwipeableListItem(
     iconResId: Int,
     text: String,
-    onLongClick: () -> Unit,
+    onIconClick: () -> Unit,
     onClick: () -> Unit,
     onDeleteClick: () -> Unit,
     onEditClick: () -> Unit,
@@ -93,8 +93,8 @@ fun SwipeableListItem(
             iconResId = iconResId,
             modifier = Modifier,
             onClick = onClick,
-            onLongClick = onLongClick,
-            state = state,
+            onIconClick = onIconClick,
+            state = state
         )
     }
 }
@@ -106,7 +106,7 @@ fun ShoppingListCell(
     iconResId: Int,
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
-    onLongClick: () -> Unit,
+    onIconClick: () -> Unit,
     state: AnchoredDraggableState<DragAnchors>,
 ) {
     ListItem(
@@ -120,9 +120,8 @@ fun ShoppingListCell(
                 elevation = 2.dp,
                 shape = RoundedCornerShape(12.dp),
             )
-            .combinedClickable(
-                onClick = onClick,
-                onLongClick = onLongClick
+            .clickable(
+                onClick = onClick
             ),
         headlineContent = {
             Row(
@@ -131,10 +130,10 @@ fun ShoppingListCell(
             ) {
                 RoundIconButton(
                     resId = iconResId,
-                    onClick = {},
+                    onClick = onIconClick,
                     contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
                     containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                    enabled = false,
+                    enabled = true,
                 )
                 Text(
                     maxLines = 1,

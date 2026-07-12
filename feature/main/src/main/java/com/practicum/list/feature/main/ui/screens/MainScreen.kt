@@ -80,7 +80,7 @@ fun MainScreen(
                             onClick = {
                                 onIntent(MainIntent.OpenList(list.id))
                             },
-                            onLongClick = { onIntent(MainIntent.EditListIcon(list.id)) },
+                            onIconClick = { onIntent(MainIntent.EditListIcon(list.id)) },
                             onDeleteClick = { onIntent(MainIntent.DeleteList(list.id)) },
                             onEditClick = { onIntent(MainIntent.RenameList(list.id)) },
                             onCopyClick = { onIntent(MainIntent.DuplicateList(list.id)) }
