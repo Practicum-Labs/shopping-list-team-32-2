@@ -27,7 +27,6 @@ fun BottomSheet(
     onDismiss: () -> Unit,
     content: @Composable () -> Unit
 ) {
-
     ModalBottomSheet(
         modifier = modifier.fillMaxWidth(),
         onDismissRequest = onDismiss,
@@ -65,7 +64,6 @@ private fun BaseDragHandle() {
 @Preview(showSystemUi = true)
 fun BottomSheetPreviewLight() {
     ShoppingListTheme(darkTheme = false) {
-
         BottomSheet(
             onDismiss = {},
             content = {}
@@ -78,7 +76,6 @@ fun BottomSheetPreviewLight() {
 @Preview(showSystemUi = true)
 fun BottomSheetPreviewDark() {
     ShoppingListTheme(darkTheme = true) {
-
         BottomSheet(
             onDismiss = {},
             content = {}

@@ -67,6 +67,12 @@ private fun MainScreenRouteContent(navController: NavController) {
                     }
                 }
 
+                is MainEffect.HideCategoryPicker -> {
+                    scope.launch {
+                        sheetState.hide()
+                    }
+                }
+
                 is MainEffect.ShowError ->
                     snackbarHostState.showSnackbar(effect.message)
             }
@@ -88,8 +94,7 @@ private fun MainScreenRouteContent(navController: NavController) {
             state = state,
             onIntent = viewModel::dispatch,
             modifier = Modifier.padding(paddingValues),
-            sheetState = sheetState,
-            scope = scope
+            sheetState = sheetState
         )
     }
 }

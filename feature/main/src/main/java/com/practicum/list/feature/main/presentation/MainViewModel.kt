@@ -75,6 +75,7 @@ class MainViewModel @Inject constructor(
                 if (intent.resId != 0 && intent.id != null) {
                     updateIcon(intent.id, intent.resId)
                 }
+                emitEffect(MainEffect.HideCategoryPicker)
             }
 
             else -> Unit

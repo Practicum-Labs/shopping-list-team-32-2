@@ -29,8 +29,6 @@ import com.practicum.list.core.theme.ShoppingListTheme
 import com.practicum.list.feature.main.R
 import com.practicum.list.feature.main.presentation.MainIntent
 import com.practicum.list.feature.main.presentation.MainState
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,7 +36,6 @@ fun MainScreen(
     modifier: Modifier = Modifier,
     state: MainState,
     sheetState: SheetState? = null,
-    scope: CoroutineScope? = null,
     onIntent: (MainIntent) -> Unit
 ) {
     val dialog = state.createListDialog
@@ -108,7 +105,7 @@ fun MainScreen(
 
         if (state.selectedListIdForIcon != null) {
             CategoryPickerBottomSheet(
-                sheetState = sheetState!!,
+                sheetState = sheetState,
                 onDismiss = { onIntent(MainIntent.DismissEditListIcon(null, 0)) },
                 onIconClick = { resId ->
                     onIntent(
@@ -117,9 +114,6 @@ fun MainScreen(
                             resId = resId
                         )
                     )
-                    scope!!.launch {
-                        sheetState.hide()
-                    }
                 }
             )
         }

@@ -1,37 +1,36 @@
 package com.practicum.list.core.components.bottomsheet
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.practicum.list.core.components.buttons.RoundIconButton
+import com.practicum.list.core.components.buttons.CategoryIconItem
 import com.practicum.list.core.theme.R
 import com.practicum.list.core.theme.ShoppingListTheme
+
+private const val NUMBER_OF_COLUMN = 5
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategoryPickerBottomSheet(
-    sheetState: SheetState = rememberModalBottomSheetState(),
+    sheetState: SheetState? = rememberModalBottomSheetState(),
     onIconClick: (Int) -> Unit = {},
     onDismiss: () -> Unit = {}
 ) {
     BottomSheet(
         modifier = Modifier,
-        sheetState = sheetState,
+        sheetState = sheetState ?: rememberModalBottomSheetState(),
         onDismiss = onDismiss
     ) {
         Content(
@@ -91,25 +90,17 @@ private fun Content(
         modifier = Modifier
             .padding(horizontal = 28.dp)
             .padding(top = 16.dp),
-        columns = GridCells.Fixed(5),
+        columns = GridCells.Fixed(NUMBER_OF_COLUMN),
         horizontalArrangement = Arrangement.spacedBy(18.dp),
         verticalArrangement = Arrangement.spacedBy(18.dp)
     ) {
         items(iconList.zip(iconDescriptions)) { (resId, description) ->
-            Box(
+            CategoryIconItem(
                 modifier = Modifier.size(40.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                RoundIconButton(
-                    resId = resId,
-                    onClick = {
-                        onIconClick(resId)
-                    },
-                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                    contentDescription = description
-                )
-            }
+                resId = resId,
+                contentDescription = description,
+                onClick = { onIconClick(resId) }
+            )
         }
     }
 }
@@ -118,7 +109,6 @@ private fun Content(
 @Preview(showSystemUi = true)
 @Composable
 fun CategoryPickerBottomSheetPreviewLight() {
-
     ShoppingListTheme(darkTheme = false) {
         CategoryPickerBottomSheet()
     }
@@ -128,7 +118,6 @@ fun CategoryPickerBottomSheetPreviewLight() {
 @Preview(showSystemUi = true)
 @Composable
 fun CategoryPickerBottomSheetPreviewDark() {
-
     ShoppingListTheme(darkTheme = true) {
         CategoryPickerBottomSheet()
     }
