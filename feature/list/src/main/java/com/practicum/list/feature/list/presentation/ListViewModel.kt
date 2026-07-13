@@ -61,8 +61,7 @@ class ListViewModel @Inject constructor(
         ListIntent.ListMenuCustomSortClicked,
         ListIntent.ListMenuDeleteCheckedClicked,
         ListIntent.ListMenuDeleteAllClicked,
-        is ListIntent.ListMenuCustomSortConfirmed,
-        -> reduceListMenu(intent, current)
+        is ListIntent.ListMenuCustomSortConfirmed -> reduceListMenu(intent, current)
 
         is ListIntent.DeleteDialogConfirmed,
         ListIntent.DeleteDialogDismissed -> current.copy(confirmationDialogState = null)
@@ -88,7 +87,7 @@ class ListViewModel @Inject constructor(
 
         ListIntent.ProductBottomSheetDismissed,
         is ListIntent.DeleteProductClicked,
-        is ListIntent.ProductApplyClicked-> current.copy(productBottomSheetOpened = false)
+        is ListIntent.ProductApplyClicked -> current.copy(productBottomSheetOpened = false)
 
         ListIntent.BackClicked -> current
         ListIntent.AddProductClicked -> current.copy(

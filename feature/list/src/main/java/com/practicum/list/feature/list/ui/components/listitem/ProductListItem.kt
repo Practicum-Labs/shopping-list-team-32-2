@@ -11,7 +11,6 @@ import androidx.compose.foundation.gestures.AnchoredDraggableState
 import androidx.compose.foundation.gestures.DraggableAnchors
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.anchoredDraggable
-import androidx.compose.foundation.gestures.animateTo
 import androidx.compose.foundation.gestures.snapTo
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -43,8 +42,8 @@ import com.practicum.list.core.theme.ShoppingListTheme
 import com.practicum.list.feature.list.R
 import com.practicum.list.feature.list.ui.components.ProductListActions
 import com.practicum.list.feature.list.ui.components.checkbox.ProductRoundCheckbox
-import kotlin.math.roundToInt
 import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
 private const val PREVIEW_PRODUCT_NAME = "Яблоки"
 private const val PREVIEW_QUANTITY_LABEL = "1 кг"
@@ -81,8 +80,7 @@ fun ProductListItem(
             positionalThreshold = { distance -> distance * 0.5f },
             velocityThreshold = { velocityThresholdPx },
             snapAnimationSpec = tween(
-                durationMillis = AnimationDuration,
-                easing = FastOutSlowInEasing
+                durationMillis = AnimationDuration, easing = FastOutSlowInEasing
             ),
             decayAnimationSpec = decayAnimationSpec,
         )
