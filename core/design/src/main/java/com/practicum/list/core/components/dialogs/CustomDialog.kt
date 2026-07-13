@@ -1,10 +1,8 @@
 package com.practicum.list.core.components.dialogs
 
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -14,105 +12,58 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.practicum.list.core.components.textedits.CustomTextEdit
-import com.practicum.list.core.theme.Dimens.DialogHorizontalPadding
 import com.practicum.list.core.theme.Dimens.DialogIconDimension
 import com.practicum.list.core.theme.Dimens.DialogVerticalPadding
 
 @Composable
 fun CustomLayoutDialog(
-    titleTextRes: Int,
-    iconRes: Int? = null,
-    textEditLabelRes: Int,
-    primaryButtonTextRes: Int,
-    secondaryButtonTextRes: Int,
-    textEditText: String,
     modifier: Modifier = Modifier,
-    interactionSource: MutableInteractionSource,
     onDismiss: () -> Unit,
-    onConfirm: () -> Unit,
-    onTextChange: (String) -> Unit,
-    onKeyboardDone: () -> Unit,
-    confirmEnabled: Boolean = true,
-    @Composable Textfield
+    iconRes: Int? = null,
+    title: @Composable () -> Unit,
+    content: @Composable (() -> Unit)? = null,
+    confirmButton: @Composable () -> Unit,
+    dismissButton: @Composable (modifier: Modifier) -> Unit
 ) {
     Dialog(onDismissRequest = onDismiss) {
         Card(
             modifier = modifier,
             shape = RoundedCornerShape(28.dp)
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                if (iconRes != null) {
+            if (iconRes != null) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     DialogIcon(
-                        iconRes,
+                        iconRes = iconRes,
                         modifier = Modifier.padding(top = DialogVerticalPadding)
                     )
                 }
+            }
+            Column {
+                title()
+                content?.invoke()
+            }
 
-                Text(
-                    text = stringResource(titleTextRes),
-                    style = MaterialTheme.typography.headlineLarge
-                        .copy(color = MaterialTheme.colorScheme.surfaceBright),
-                    modifier = Modifier.padding(
-                        vertical = 16.dp,
-                        horizontal = DialogVerticalPadding
-                    )
-                )
-
-                Row(
-                    horizontalArrangement = Arrangement.End,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = DialogVerticalPadding)
-                ) {
-                    DialogButton(
-                        textRes = primaryButtonTextRes,
-                        onClick = { onConfirm() },
-                        enabled = confirmEnabled
-                    )
-                    DialogButton(
-                        textRes = secondaryButtonTextRes,
-                        modifier = Modifier.padding(start = 8.dp, end = 24.dp),
-                        onClick = { onDismiss() }
-                    )
-                }
+            Row(
+                horizontalArrangement = Arrangement.End,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = DialogVerticalPadding)
+            ) {
+                dismissButton(Modifier.padding(start = 8.dp, end = 24.dp))
+                confirmButton()
             }
         }
     }
 }
 
-@Composable
-fun DialogButton(
-    textRes: Int,
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit,
-    enabled: Boolean = true
-) {
-    TextButton(
-        onClick = onClick,
-        modifier = modifier,
-        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 10.dp),
-        enabled = enabled
-    ) {
-        Text(
-            color = MaterialTheme.colorScheme.onPrimary,
-            text = stringResource(textRes),
-            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold)
-        )
-    }
-}
 
 @Composable
 fun DialogIcon(
