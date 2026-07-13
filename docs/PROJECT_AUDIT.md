@@ -2,6 +2,12 @@
 
 Справочник по архитектуре, структуре модулей и ключевым техническим решениям.
 
+| Документ | Содержание |
+|----------|------------|
+| [`AUTH.md`](AUTH.md) | Auth API, сессия, Epic 2 |
+| [`PRODUCT.md`](PRODUCT.md) | Экран списка, товары, Room, Epic 3, **Figma deep-links** |
+| [`BRANCHING.md`](BRANCHING.md) | Правила веток и PR |
+
 ---
 
 ## 1. Репозиторий и структура проекта
@@ -10,6 +16,7 @@
 |----------|----------|
 | Название проекта | `shopping_list` (`rootProject.name` в `settings.gradle.kts`) |
 | Репозиторий | `Practicum-Labs/shopping-list-team-32-2` |
+| **Figma (UI-kit)** | [Оригинал](https://www.figma.com/design/n84usOH28EjTrPXrfCzM3q/%D0%9F%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D0%BA%D1%83%D0%BC-%D0%9E%D0%9F-%D0%A1%D0%BF%D0%B8%D1%81%D0%BE%D0%BA-%D0%BF%D0%BE%D0%BA%D1%83%D0%BF%D0%BE%D0%BA?node-id=0-1) · [Copy (Dev/MCP)](https://www.figma.com/design/1aFbKnXJKtKwUg6vURrVim/%D0%9F%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D0%BA%D1%83%D0%BC-%D0%9E%D0%9F-%D0%A1%D0%BF%D0%B8%D1%81%D0%BE%D0%BA-%D0%BF%D0%BE%D0%BA%D1%83%D0%BF%D0%BE%D0%BA--Copy-?node-id=0-1) |
 
 ```
 shopping-list-team-32-2/
@@ -22,7 +29,7 @@ shopping-list-team-32-2/
 │   ├── design/       # Compose-тема (Kotlin only)
 │   ├── mvi/          # MVI-база
 │   └── navigation/ # NavGraph (Compose Navigation)
-├── docs/             # BRANCHING.md, PROJECT_AUDIT.md, AUTH.md
+├── docs/             # BRANCHING.md, PROJECT_AUDIT.md, AUTH.md, PRODUCT.md
 ├── feature/
 │   ├── main/         # главный экран
 │   ├── list/      # экран списка / товаров
@@ -76,8 +83,16 @@ Build system:
 ```text
 app/src/main/java/
 └── com.practicum.list/
-    ├── MainActivity.kt
-    ├── ShoppingListApplication.kt
+    ├── ui/
+    │   ├── MainActivity.kt          — NavHost, startDestination = RootScreenRoute
+    │   ├── RootScreen.kt            — splash / проверка сессии (#45)
+    │   └── RootScreenNavigation.kt
+    ├── presentation/
+    │   └── RootViewModel.kt
+    ├── domain/
+    │   └── RootUseCases.kt          — CheckToken, RefreshToken
+    ├── appliction/
+    │   └── ShoppingListApplication.kt
     └── di/
         └── AppModule.kt
 
@@ -108,11 +123,25 @@ feature/main/
 │   └── di/         — ShoppingListRepositoryModule
 └── ui/screens/    — MainScreen, mainScreenNavigation
 
-feature/list/   — ListScreen, listScreenNavigation
+feature/list/
+├── presentation/  — ListState, ListIntent, ListEffect, ListViewModel
+├── domain/
+│   ├── repository/ — ListRepository
+│   └── usecase/    — ObserveProducts, Upsert, Delete, Sort, …
+├── data/
+│   ├── impl/       — ListRepositoryImpl
+│   └── di/         — ListRepositoryModule
+└── ui/
+    ├── screens/    — ListScreen, listScreenNavigation
+    └── components/ — ProductListItem, ProductListActions, …
 
 feature/auth/
-└── ui/components/ — AuthOutlinedTextField, PasswordTextField, PrimaryAuthButton, … (#43)
-    ui/screens/    — authScreenNavigation (#42, в merge)
+├── presentation/  — Login / Register / ResetPassword ViewModel + MVI
+├── domain/          — AuthRepository, AuthUseCases, validation
+├── data/            — AuthRepositoryImpl
+└── ui/
+    ├── components/ — AuthOutlinedTextField, PasswordTextField, … (#43)
+    └── screens/    — authScreenNavigation (#42)
 ```
 
 **`:core:design` не содержит `src/main/res/`** — палитра и типографика только в Kotlin (drawable иконок списков — в `:core:design`).
@@ -146,7 +175,7 @@ feature/auth/
 | Coroutines / StateFlow | :core:mvi | `MviViewModel` |
 | Detekt | все модули + CI | `config/detekt/detekt.yml` |
 | Room | :core:data | ShoppingDatabase, DAOs, миграции |
-| Hilt | :app, :core:data, :feature:main | `@InstallIn(SingletonComponent)`, `@HiltViewModel` |
+| Hilt | :app, :core:data, :feature:* | `@InstallIn(SingletonComponent)`, `@HiltViewModel` |
 | Retrofit / OkHttp | :core:data | `AuthApi` (Railway), `ProductApi` (заглушка) |
 
 **Тема:** Compose-only по требованию заказчика — без XML attrs/colors в `:core:design`.
@@ -218,6 +247,8 @@ ShoppingListTheme {
 
 Переключение light/dark — автоматически по системной теме устройства.
 
+Токены сверены с Figma (`Android light` [1:7480](https://www.figma.com/design/n84usOH28EjTrPXrfCzM3q/%D0%9F%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D0%BA%D1%83%D0%BC-%D0%9E%D0%9F-%D0%A1%D0%BF%D0%B8%D1%81%D0%BE%D0%BA-%D0%BF%D0%BE%D0%BA%D1%83%D0%BF%D0%BE%D0%BA?node-id=1-7480) / `Android dark` [1:8266](https://www.figma.com/design/n84usOH28EjTrPXrfCzM3q/%D0%9F%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D0%BA%D1%83%D0%BC-%D0%9E%D0%9F-%D0%A1%D0%BF%D0%B8%D1%81%D0%BE%D0%BA-%D0%BF%D0%BE%D0%BA%D1%83%D0%BF%D0%BE%D0%BA?node-id=1-8266)). Экранные макеты — [`PRODUCT.md`](PRODUCT.md#figma).
+
 ---
 
 ## 8. Detekt
@@ -238,9 +269,10 @@ ShoppingListTheme {
 | Параметр | Значение |
 |----------|----------|
 | release buildType | объявлен |
-| minifyEnabled | false |
-| proguard-rules.pro | указан в Gradle, файл может отсутствовать |
-| signing config | не настроен |
+| minifyEnabled | **true** (`isShrinkResources = true`) |
+| proguard-rules.pro | `app/proguard-rules.pro` (Room, Hilt, Moshi, MeasureUnit) |
+| signing config | `local.properties` / env: `STORE_FILE`, `STORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD` |
+| CI | `assembleDebug` only; release — ручная проверка `assembleRelease` |
 
 ---
 
@@ -248,13 +280,15 @@ ShoppingListTheme {
 
 Type-safe маршруты в `:core:navigation` (`@Serializable`):
 
+- `RootScreenRoute` — splash + проверка токена (#45), **startDestination**
 - `MainScreenRoute` — главный экран
-- `ListScreenRoute(id: Long)` — экран списка / товаров
+- `ListScreenRoute(listId: Long)` — экран списка / товаров
 - `LoginRoute`, `RegisterRoute`, `ResetPasswordRoute` — auth-флоу (#42)
 
-Feature-модули регистрируют destination через extension (`mainScreenNavigation`, `listScreenNavigation`, `authScreenNavigation`). `:app` собирает `NavHost`.
+Feature-модули регистрируют destination через extension (`rootScreenNavigation`, `mainScreenNavigation`, `listScreenNavigation`, `authScreenNavigation`). `:app` собирает `NavHost`.
 
-Auth back stack: login → register/reset через `navigate()`; обратно на login — `popBackStack()`. Подробнее — [`AUTH.md`](AUTH.md).
+Auth back stack: login → register/reset через `navigate()`; обратно на login — `popBackStack()`. Подробнее — [`AUTH.md`](AUTH.md).  
+Экран списка и товары — [`PRODUCT.md`](PRODUCT.md).
 
 Передача аргументов — через type-safe routes (`ListScreenRoute(id = …)`), не hardcoded path.
 
@@ -264,12 +298,13 @@ Auth back stack: login → register/reset через `navigate()`; обратн�
 
 | Компонент | Где | Статус |
 |-----------|-----|--------|
-| **Room** | `:core:data` | `ShoppingDatabase` v3, `ShoppingListDao`, `ProductDao`; `shopping_lists.user_id` |
+| **Room** | `:core:data` | `ShoppingDatabase` **v5**, `ShoppingListDao`, `ProductDao`; `shopping_lists.user_id`; миграции 1→5 |
 | **UserSession** | `:core:data` | DataStore: `user_id`, токены; миграция legacy-списков при логине |
 | **Hilt** | `:app`, `:core:data`, `:feature:*` | `DatabaseModule`, `NetworkModule`, `AppModule`, feature `@Binds`-модули |
-| **Retrofit** | `:core:data` | `AuthApi` → Railway; `ProductApi` — заглушка |
-| **Auth** | `:core:data`, `:feature:auth` | DTO, `AuthError`, UI-компоненты; см. [`AUTH.md`](AUTH.md) |
-| **Repository** | `:feature:main/data` | `ShoppingListRepository` + impl, маппер в `:core:data` |
-| **UseCase** | `:feature:main/domain/usecase` | Observe / Upsert / Delete / Duplicate |
+| **Retrofit** | `:core:data` | `AuthApi` → Railway (+ fallback proxy); `ProductApi` — заглушка |
+| **Auth** | `:core:data`, `:feature:auth`, `:app` | DTO, экраны, `RootViewModel`; см. [`AUTH.md`](AUTH.md) |
+| **Lists** | `:feature:main` | `ShoppingListRepository` — CRUD списков, duplicate с товарами |
+| **Products** | `:feature:list` | `ListRepository` — CRUD товаров, sort, bulk delete; см. [`PRODUCT.md`](PRODUCT.md) |
+| **UseCase** | `:feature:*/domain/usecase` | `*UseCase`-классы (не `interactor`) |
 
 Domain-слой feature-модулей использует пакет **`domain/usecase`**, не `interactor`.
