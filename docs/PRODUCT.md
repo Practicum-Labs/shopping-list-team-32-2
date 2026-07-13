@@ -11,12 +11,9 @@
 
 ## Figma
 
-| | Ссылка |
-|---|--------|
-| **Оригинал (Practicum-Labs)** | [Практикум ОП — Список покупок](https://www.figma.com/design/n84usOH28EjTrPXrfCzM3q/%D0%9F%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D0%BA%D1%83%D0%BC-%D0%9E%D0%9F-%D0%A1%D0%BF%D0%B8%D1%81%D0%BE%D0%BA-%D0%BF%D0%BE%D0%BA%D1%83%D0%BF%D0%BE%D0%BA?node-id=0-1) |
-| **Копия команды (MCP / Dev)** | [Copy](https://www.figma.com/design/1aFbKnXJKtKwUg6vURrVim/%D0%9F%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D0%BA%D1%83%D0%BC-%D0%9E%D0%9F-%D0%A1%D0%BF%D0%B8%D1%81%D0%BE%D0%BA-%D0%BF%D0%BE%D0%BA%D1%83%D0%BF%D0%BE%D0%BA--Copy-?node-id=0-1) |
+**Файл:** [Практикум ОП — Список покупок](https://www.figma.com/design/n84usOH28EjTrPXrfCzM3q/%D0%9F%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D0%BA%D1%83%D0%BC-%D0%9E%D0%9F-%D0%A1%D0%BF%D0%B8%D1%81%D0%BE%D0%BA-%D0%BF%D0%BE%D0%BA%D1%83%D0%BF%D0%BE%D0%BA?node-id=0-1)
 
-Node-id **одинаковы** в оригинале и копии. Для deep-link замените `:` на `-` (например `1:8208` → `node-id=1-8208`).
+Для deep-link в URL замените `:` на `-` (например `1:8208` → `node-id=1-8208`).
 
 ### Секции файла
 
