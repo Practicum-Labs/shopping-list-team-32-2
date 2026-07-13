@@ -80,7 +80,7 @@ fun ListScreen(
                                 onIntent(ListIntent.ProductQuantityClicked(product.id))
                             },
                             onDelete = {
-                                onIntent(ListIntent.DeleteProduct(product.id))
+                                onIntent(ListIntent.DeleteProductClicked(product.id))
                             },
                             onEdit = {
                                 onIntent(ListIntent.EditProduct(product.id))
