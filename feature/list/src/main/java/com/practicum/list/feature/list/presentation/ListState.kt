@@ -9,7 +9,8 @@ data class ListState(
     val listTitle: String = "",
     val products: List<Product> = emptyList(),
     val isLoading: Boolean = true,
-    val addProductDialogState: AddProductDialogState? = null,
+    val addProductBottomSheetOpened: Boolean = false,
+    val addProductBottomSheetState: AddProductBottomSheetState = AddProductBottomSheetState(),
     val addProductError: String? = null,
     val editProductBottomSheetState: EditProductBottomSheetState? = null,
     val contextMenuState: ListContextMenuState? = null,
@@ -18,13 +19,14 @@ data class ListState(
     val isBeingSorted: Boolean = false,
 ) : MviState {
     val isEmpty: Boolean get() = products.isEmpty() && !isLoading
-    val isAddEnabled: Boolean get() = addProductDialogState?.name?.trim()?.isNotEmpty() ?: false
+    val isAddEnabled: Boolean
+        get() = addProductBottomSheetState.name.trim().isNotEmpty()
 }
 
-data class AddProductDialogState(
+data class AddProductBottomSheetState(
     val name: String = "",
-    val quantity: Float? = null,
-    val unit: MeasureUnit? = null
+    val quantity: Float = 1f,
+    val unit: MeasureUnit? = MeasureUnit.Package
 )
 
 data class EditProductBottomSheetState(

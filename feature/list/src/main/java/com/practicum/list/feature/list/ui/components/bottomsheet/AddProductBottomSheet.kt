@@ -27,6 +27,8 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.practicum.list.core.common.domain.MeasureUnit
+import com.practicum.list.core.common.domain.Product
 import com.practicum.list.core.components.fab.AddFab
 import com.practicum.list.core.theme.ShoppingListTheme
 import com.practicum.list.feature.list.R
@@ -43,14 +45,14 @@ private const val KEYBOARD_OPEN_DELAY = 200L
 fun AddProductBottomSheet(
     isApplyVisible: Boolean,
     bottomSheetIsVisible: Boolean,
-    textValue: String,
-    onTextValueChange: (String) -> Unit,
-    amount: Float,
-    onAmountChange: (Float) -> Unit,
-    measure: String,
-    onMeasureClick: (String) -> Unit,
+    name: String,
+    onNameChange: (String) -> Unit,
+    quantity: Float,
+    onQuantityChange: (Float) -> Unit,
+    unit: MeasureUnit,
+    onUnitClick: (MeasureUnit) -> Unit,
     onDismiss: () -> Unit,
-    onApplyClicked: () -> Unit,
+    onApplyClicked: (Product) -> Unit,
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val focusRequester = remember { FocusRequester() }
@@ -84,7 +86,19 @@ fun AddProductBottomSheet(
                             .align(Alignment.TopEnd)
                             .padding(end = 16.dp)
                             .size(56.dp),
-                        onClick = onApplyClicked,
+                        onClick = {
+                            onApplyClicked(
+                                Product(
+                                    name = name,
+                                    isChecked = false,
+                                    quantity = quantity,
+                                    unit = unit,
+                                    id = 0,
+                                    listId = 0,
+                                    sortPosition = 0,
+                                )
+                            )
+                        },
                         iconRes = R.drawable.ic_apply_24
                     )
                 }
@@ -102,8 +116,8 @@ fun AddProductBottomSheet(
                         BottomSheetDefaults.DragHandle(modifier = Modifier.align(Alignment.CenterHorizontally))
 
                         NameTextEdit(
-                            value = textValue,
-                            onValueChanged = onTextValueChange,
+                            value = name,
+                            onValueChanged = onNameChange,
                             focusRequester = focusRequester
                         )
                         Row(
@@ -116,17 +130,17 @@ fun AddProductBottomSheet(
                         ) {
                             AmountTextField(
                                 modifier = Modifier.weight(1f),
-                                amount = amount,
-                                onAmountChanged = onAmountChange
+                                amount = quantity,
+                                onAmountChanged = onQuantityChange
                             )
                             CountDropDownMenu(
                                 modifier = Modifier.weight(1f),
-                                measure = measure,
-                                onMeasureClick = onMeasureClick
+                                unit = unit,
+                                onUnitClick = onUnitClick
                             )
                             RoundQuantifier(
-                                count = amount,
-                                onCountChange = onAmountChange
+                                count = quantity,
+                                onCountChange = onQuantityChange
                             )
                         }
                     }
@@ -155,12 +169,12 @@ private fun BottomSheetFilledPreview() {
     ShoppingListTheme {
         AddProductBottomSheet(
             bottomSheetIsVisible = true,
-            textValue = "лабубы",
-            onTextValueChange = {},
-            amount = 2f,
-            onAmountChange = {},
-            measure = Measure.KG.text,
-            onMeasureClick = {},
+            name = "лабубы",
+            onNameChange = {},
+            quantity = 2f,
+            onQuantityChange = {},
+            unit = MeasureUnit.Piece,
+            onUnitClick = {},
             onDismiss = {},
             onApplyClicked = {},
             isApplyVisible = true
@@ -174,12 +188,12 @@ private fun BottomSheetEmptyPreview() {
     ShoppingListTheme {
         AddProductBottomSheet(
             bottomSheetIsVisible = true,
-            textValue = "",
-            onTextValueChange = {},
-            amount = 2f,
-            onAmountChange = {},
-            measure = Measure.KG.text,
-            onMeasureClick = {},
+            name = "",
+            onNameChange = {},
+            quantity = 2f,
+            onQuantityChange = {},
+            unit = MeasureUnit.Piece,
+            onUnitClick = {},
             onDismiss = {},
             onApplyClicked = {},
             isApplyVisible = true

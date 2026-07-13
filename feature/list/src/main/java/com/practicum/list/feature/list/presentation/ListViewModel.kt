@@ -68,16 +68,29 @@ class ListViewModel @Inject constructor(
             -> reduceProductEdit(intent, current)
 
         ListIntent.BackClicked -> current
-        ListIntent.AddProductClicked -> current.copy(bottomSheetOpened = true)
-        ListIntent.DismissClicked -> current.copy(bottomSheetOpened = false)
-        is ListIntent.AmountChanged -> current.copy(addProductAmount = intent.amount)
-        is ListIntent.MeasureChanged -> current.copy(addProductMeasure = intent.measure)
-        is ListIntent.NameChanged -> current.copy(addProductName = intent.name)
-        ListIntent.ApplyClicked -> current.copy(
-            addProductName = "",
-            addProductAmount = DEFAULT_AMOUNT,
-            addProductMeasure = "",
-            bottomSheetOpened = false
+        ListIntent.AddProductClicked -> current.copy(addProductBottomSheetOpened = true)
+        ListIntent.AddProductDismissClicked -> current.copy(addProductBottomSheetOpened = false)
+        is ListIntent.AddProductQuantityChanged -> current.copy(
+            addProductBottomSheetState = current.addProductBottomSheetState.copy(
+                quantity = intent.quantity
+            )
+        )
+
+        is ListIntent.AddProductUnitChanged -> current.copy(
+            addProductBottomSheetState = current.addProductBottomSheetState.copy(
+                unit = intent.unit
+            )
+        )
+
+        is ListIntent.AddProductNameChanged -> current.copy(
+            addProductBottomSheetState = current.addProductBottomSheetState.copy(
+                name = intent.name
+            )
+        )
+
+        is ListIntent.AddProductApplyClicked -> current.copy(
+            addProductBottomSheetState = AddProductBottomSheetState(),
+            addProductBottomSheetOpened = false
         )
 
         else -> current
@@ -134,15 +147,6 @@ class ListViewModel @Inject constructor(
                 -> current.copy(editProductBottomSheetState = null)
 
             is ListIntent.DeleteProductClicked -> current.copy(editProductMenuState = null)
-            is ListIntent.AmountChanged -> current.copy(addProductAmount = intent.amount)
-            is ListIntent.MeasureChanged -> current.copy(addProductMeasure = intent.measure)
-            is ListIntent.NameChanged -> current.copy(addProductName = intent.name)
-            ListIntent.ApplyClicked -> current.copy(
-                addProductName = "",
-                addProductAmount = 0f,
-                addProductMeasure = "",
-                bottomSheetOpened = false
-            )
 
             else -> current
         }
@@ -169,7 +173,13 @@ class ListViewModel @Inject constructor(
             )
 
             is ListIntent.DeleteProductClicked -> deleteProduct(intent.productId)
-            ListIntent.ApplyClicked -> addProduct()
+            is ListIntent.AddProductApplyClicked -> upsertProduct(
+                intent.product.copy(
+                    listId = listId,
+                    sortPosition = state.value.products.size + 1
+                )
+            )
+
             else -> Unit
         }
     }
@@ -217,27 +227,8 @@ class ListViewModel @Inject constructor(
             }
     }
 
-    private fun addProduct() {
-    private suspend fun addProduct() {
-        try {
-            val product = Product(
-                name = state.value.addProductName.trim(),
-                amount = state.value.addProductAmount,
-                measure = state.value.addProductMeasure
-            )
-             //Логика добавления в БД
-
-        } catch (e: Error) {
-            updateState { it.copy(addProductError = ADDING_ERROR_MESSAGE) }
-            emitEffect(ListEffect.ShowError(ADDING_ERROR_MESSAGE))
-        }
-    }
-
     companion object {
-        private val UNKNOWN_ERROR = "Unknown error"
-
-        private val DEFAULT_AMOUNT = 1f
-        private val ADDING_ERROR_MESSAGE = "Не получилось добавить новый элемент списка"
+        private const val UNKNOWN_ERROR = "Unknown error"
 
         private fun createInitialState(handle: SavedStateHandle): ListState {
             val route = handle.toRoute<ListScreenRoute>()

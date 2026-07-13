@@ -1,5 +1,6 @@
 package com.practicum.list.feature.list.presentation
 
+import com.practicum.list.core.common.domain.MeasureUnit
 import com.practicum.list.core.common.domain.Product
 import com.practicum.list.core.mvi.MviIntent
 
@@ -24,9 +25,9 @@ sealed class ListIntent : MviIntent {
     data class ToggleProductChecked(val product: Product, val isChecked: Boolean) : ListIntent()
     data class QuantityChanged(val product: Product, val quantity: Float) : ListIntent()
     data object AddProductClicked : ListIntent()
-    data object DismissClicked : ListIntent()
-    data class NameChanged(val name: String) : ListIntent()
-    data class AmountChanged(val amount: Float) : ListIntent()
-    data class MeasureChanged(val measure: String) : ListIntent()
-    data object ApplyClicked : ListIntent()
+    data object AddProductDismissClicked : ListIntent()
+    data class AddProductNameChanged(val name: String) : ListIntent()
+    data class AddProductQuantityChanged(val quantity: Float) : ListIntent()
+    data class AddProductUnitChanged(val unit: MeasureUnit) : ListIntent()
+    data class AddProductApplyClicked(val product: Product) : ListIntent()
 }

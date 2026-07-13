@@ -15,24 +15,24 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import com.practicum.list.core.common.domain.MeasureUnit
 import com.practicum.list.feature.list.R
-import com.practicum.list.feature.list.ui.components.bottomsheet.Measure
 import com.practicum.list.feature.list.ui.components.bottomsheet.textFieldColors
 import com.practicum.list.feature.list.ui.components.textedit.CommonTextFieldLabel
 
 @Composable
 fun CountDropDownMenu(
     modifier: Modifier = Modifier,
-    measure: String,
-    onMeasureClick: (String) -> Unit,
+    unit: MeasureUnit,
+    onUnitClick: (MeasureUnit) -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
     Box(
         modifier = modifier,
     ) {
         OutlinedTextField(
-            value = measure,
-            onValueChange = onMeasureClick,
+            value = stringResource(unit.name),
+            onValueChange = {},
             label = {
                 CommonTextFieldLabel(R.string.measures)
             },
@@ -51,11 +51,11 @@ fun CountDropDownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false }
         ) {
-            Measure.entries.forEach { measure ->
+            MeasureUnit.all.forEach { unit ->
                 MenuItem(
-                    measure,
+                    unit = unit,
                     onClick = { selected ->
-                        onMeasureClick(selected)
+                        onUnitClick(selected)
                         expanded = false
                     }
                 )
@@ -65,6 +65,12 @@ fun CountDropDownMenu(
 }
 
 @Composable
-private fun MenuItem(measure: Measure, onClick: (String) -> Unit) {
-    DropdownMenuItem(text = { Text(measure.text) }, onClick = { onClick(measure.text) })
+private fun MenuItem(unit: MeasureUnit, onClick: (MeasureUnit) -> Unit) {
+    DropdownMenuItem(text = {
+        Text(
+            stringResource(
+                unit.name
+            )
+        )
+    }, onClick = { onClick(unit) })
 }
