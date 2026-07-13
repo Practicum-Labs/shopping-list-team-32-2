@@ -173,14 +173,21 @@ class ListViewModel @Inject constructor(
             )
 
             is ListIntent.DeleteProductClicked -> deleteProduct(intent.productId)
-            is ListIntent.AddProductApplyClicked -> upsertProduct(
-                intent.product.copy(
-                    listId = listId,
-                    sortPosition = state.value.products.size + 1
-                )
-            )
+            is ListIntent.AddProductApplyClicked -> addProduct(intent)
 
             else -> Unit
+        }
+    }
+
+    private suspend fun addProduct(intent: ListIntent.AddProductApplyClicked) {
+        val product = intent.product.copy(
+            listId = listId,
+            sortPosition = (state.value.products.maxOfOrNull { it.sortPosition } ?: -1) + 1
+        )
+        if (product.quantity == ERROR_QUANTITY) {
+            emitEffect(ListEffect.ShowError(QUANTITY_ERROR))
+        } else {
+            upsertProduct(product)
         }
     }
 
@@ -229,6 +236,8 @@ class ListViewModel @Inject constructor(
 
     companion object {
         private const val UNKNOWN_ERROR = "Unknown error"
+        private const val QUANTITY_ERROR = "Количество должно быть больше нуля"
+        private const val ERROR_QUANTITY = 0f
 
         private fun createInitialState(handle: SavedStateHandle): ListState {
             val route = handle.toRoute<ListScreenRoute>()

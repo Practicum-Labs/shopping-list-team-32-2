@@ -89,7 +89,7 @@ fun AddProductBottomSheet(
                         onClick = {
                             onApplyClicked(
                                 Product(
-                                    name = name,
+                                    name = name.trim(),
                                     isChecked = false,
                                     quantity = quantity,
                                     unit = unit,
@@ -148,10 +148,6 @@ fun AddProductBottomSheet(
             }
         }
     }
-}
-
-enum class Measure(val text: String) {
-    KG("кг"), G("г"), L("л"), MG("mg"), ML("мл")
 }
 
 @Composable
