@@ -1,6 +1,5 @@
 package com.practicum.list.feature.list.ui.components.textedit
 
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.Composable
@@ -17,6 +16,11 @@ import com.practicum.list.feature.list.ui.components.bottomsheet.textFieldColors
 import java.math.BigDecimal
 import java.math.RoundingMode
 
+private const val DOTS_ACCEPTABLE = 1
+private const val DEFAULT_ZERO_AMOUNT = 0f
+private const val DECIMAL_PLACES = 2
+private const val DELETE_SYMBOLS = 1
+
 @Composable
 fun AmountTextField(
     modifier: Modifier = Modifier,
@@ -25,7 +29,7 @@ fun AmountTextField(
 ) {
     var localAmountText by remember { mutableStateOf("") }
     LaunchedEffect(amount) {
-        val formatted = if (amount == 0f) "" else formatAmount(amount)
+        val formatted = if (amount == DEFAULT_ZERO_AMOUNT) "" else formatAmount(amount)
         if (formatted.toFloatOrNull() != localAmountText.toFloatOrNull()) {
             localAmountText = formatted
         }
@@ -34,17 +38,18 @@ fun AmountTextField(
         value = localAmountText,
         onValueChange = { newValue ->
             val filtered = newValue.replace(',', '.')
-            if (filtered.count { it == '.' } <= 1 && filtered.all { it.isDigit() || it == '.' }) {
+            if (filtered.count { it == '.' } <= DOTS_ACCEPTABLE && filtered.all { it.isDigit() || it == '.' }) {
                 localAmountText = filtered
 
                 if (filtered.isEmpty() || filtered == ".") {
-                    onAmountChanged(0f)
+                    onAmountChanged(DEFAULT_ZERO_AMOUNT)
                 } else {
-                    val cleanValue = if (filtered.endsWith(".")) filtered.dropLast(1) else filtered
+                    val cleanValue =
+                        if (filtered.endsWith(".")) filtered.dropLast(DELETE_SYMBOLS) else filtered
                     cleanValue.toFloatOrNull()?.let { parsedFloat ->
 
                         val preciseFloat = BigDecimal(parsedFloat.toDouble())
-                            .setScale(2, RoundingMode.HALF_UP)
+                            .setScale(DECIMAL_PLACES, RoundingMode.HALF_UP)
                             .toFloat()
 
                         onAmountChanged(preciseFloat)

@@ -19,8 +19,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.contentColorFor
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -31,8 +34,9 @@ import com.practicum.list.feature.list.ui.components.menu.CountDropDownMenu
 import com.practicum.list.feature.list.ui.components.quantifier.RoundQuantifier
 import com.practicum.list.feature.list.ui.components.textedit.AmountTextField
 import com.practicum.list.feature.list.ui.components.textedit.NameTextEdit
+import kotlinx.coroutines.delay
 
-private const val MAX_CHAR = 60
+private const val KEYBOARD_OPEN_DELAY = 200L
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,75 +53,82 @@ fun AddProductBottomSheet(
     onApplyClicked: () -> Unit,
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    if (!bottomSheetIsVisible) return
+    val focusRequester = remember { FocusRequester() }
+    LaunchedEffect(bottomSheetIsVisible) {
+        if (bottomSheetIsVisible) {
+            delay(KEYBOARD_OPEN_DELAY)
+            focusRequester.requestFocus()
+        }
+    }
 
-    ModalBottomSheet(
-        onDismissRequest = {
-            onDismiss()
-        },
-        sheetState = sheetState,
-        containerColor = Color.Transparent,
-        contentColor = contentColorFor(MaterialTheme.colorScheme.surfaceContainerLow),
-        tonalElevation = 0.dp,
-        scrimColor = BottomSheetDefaults.ScrimColor,
-        dragHandle = null
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .navigationBarsPadding()
+    if (bottomSheetIsVisible) {
+        ModalBottomSheet(
+            onDismissRequest = {
+                onDismiss()
+            },
+            sheetState = sheetState,
+            containerColor = Color.Transparent,
+            contentColor = contentColorFor(MaterialTheme.colorScheme.surfaceContainerLow),
+            tonalElevation = 0.dp,
+            scrimColor = BottomSheetDefaults.ScrimColor,
+            dragHandle = null
         ) {
-            if (isApplyVisible) {
-                AddFab(
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .padding(end = 16.dp)
-                        .size(56.dp),
-                    onClick = onApplyClicked,
-                    iconRes = R.drawable.ic_apply_24
-                )
-            }
-            Surface(
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 80.dp)
-                    .imePadding(),
-                shape = BottomSheetDefaults.ExpandedShape,
-                color = MaterialTheme.colorScheme.surfaceContainerLow
+                    .navigationBarsPadding()
             ) {
-                Column(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    BottomSheetDefaults.DragHandle(modifier = Modifier.align(Alignment.CenterHorizontally))
-
-                    NameTextEdit(
-                        value = textValue, onValueChanged = {
-                            if (it.length <= MAX_CHAR) {
-                                onTextValueChange(it)
-                            }
-                        }
-                    )
-                    Row(
+                if (isApplyVisible) {
+                    AddFab(
                         modifier = Modifier
-                            .padding(16.dp)
-                            .fillMaxWidth()
-                            .heightIn(max = 64.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                            .align(Alignment.TopEnd)
+                            .padding(end = 16.dp)
+                            .size(56.dp),
+                        onClick = onApplyClicked,
+                        iconRes = R.drawable.ic_apply_24
+                    )
+                }
+                Surface(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 80.dp)
+                        .imePadding(),
+                    shape = BottomSheetDefaults.ExpandedShape,
+                    color = MaterialTheme.colorScheme.surfaceContainerLow
+                ) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth()
                     ) {
-                        AmountTextField(
-                            modifier = Modifier.weight(1f),
-                            amount = amount,
-                            onAmountChanged = { onAmountChange(it) }
+                        BottomSheetDefaults.DragHandle(modifier = Modifier.align(Alignment.CenterHorizontally))
+
+                        NameTextEdit(
+                            value = textValue,
+                            onValueChanged = onTextValueChange,
+                            focusRequester = focusRequester
                         )
-                        CountDropDownMenu(
-                            modifier = Modifier.weight(1f),
-                            measure = measure,
-                            onMeasureClick = onMeasureClick
-                        )
-                        RoundQuantifier(
-                            count = amount,
-                            onCountChange = { newCount -> onAmountChange(newCount) })
+                        Row(
+                            modifier = Modifier
+                                .padding(16.dp)
+                                .fillMaxWidth()
+                                .heightIn(max = 64.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            AmountTextField(
+                                modifier = Modifier.weight(1f),
+                                amount = amount,
+                                onAmountChanged = onAmountChange
+                            )
+                            CountDropDownMenu(
+                                modifier = Modifier.weight(1f),
+                                measure = measure,
+                                onMeasureClick = onMeasureClick
+                            )
+                            RoundQuantifier(
+                                count = amount,
+                                onCountChange = onAmountChange
+                            )
+                        }
                     }
                 }
             }
@@ -140,15 +151,34 @@ internal fun textFieldColors() = OutlinedTextFieldDefaults.colors(
 
 @Preview(showSystemUi = true)
 @Composable
-private fun BottomSheetPreview() {
+private fun BottomSheetFilledPreview() {
     ShoppingListTheme {
         AddProductBottomSheet(
             bottomSheetIsVisible = true,
-            textValue = "Алёша",
+            textValue = "лабубы",
             onTextValueChange = {},
             amount = 2f,
             onAmountChange = {},
-            measure = "кг",
+            measure = Measure.KG.text,
+            onMeasureClick = {},
+            onDismiss = {},
+            onApplyClicked = {},
+            isApplyVisible = true
+        )
+    }
+}
+
+@Preview(showSystemUi = true)
+@Composable
+private fun BottomSheetEmptyPreview() {
+    ShoppingListTheme {
+        AddProductBottomSheet(
+            bottomSheetIsVisible = true,
+            textValue = "",
+            onTextValueChange = {},
+            amount = 2f,
+            onAmountChange = {},
+            measure = Measure.KG.text,
             onMeasureClick = {},
             onDismiss = {},
             onApplyClicked = {},

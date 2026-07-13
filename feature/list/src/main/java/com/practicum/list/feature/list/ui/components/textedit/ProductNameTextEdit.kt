@@ -7,6 +7,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -14,14 +16,14 @@ import com.practicum.list.feature.list.R
 import com.practicum.list.feature.list.ui.components.bottomsheet.textFieldColors
 
 @Composable
-fun NameTextEdit(value: String, onValueChanged: (String) -> Unit) {
-
+fun NameTextEdit(value: String, onValueChanged: (String) -> Unit, focusRequester: FocusRequester) {
     OutlinedTextField(
         value = value,
         onValueChange = onValueChanged,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp),
+            .padding(horizontal = 16.dp)
+            .focusRequester(focusRequester),
         label = { Text(stringResource(R.string.goods)) },
         singleLine = true,
         colors = textFieldColors(),

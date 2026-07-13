@@ -45,15 +45,20 @@ fun CountDropDownMenu(
                         contentDescription = stringResource(R.string.expand_dropdown_menu)
                     )
                 }
-            })
+            }
+        )
         DropdownMenu(
-            expanded = expanded, onDismissRequest = { expanded = false }) {
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
             Measure.entries.forEach { measure ->
                 MenuItem(
-                    measure, onClick = { selected ->
+                    measure,
+                    onClick = { selected ->
                         onMeasureClick(selected)
                         expanded = false
-                    })
+                    }
+                )
             }
         }
     }

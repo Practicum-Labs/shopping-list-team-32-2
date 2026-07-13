@@ -70,9 +70,15 @@ class ListViewModel @Inject constructor(
         ListIntent.BackClicked -> current
         ListIntent.AddProductClicked -> current.copy(bottomSheetOpened = true)
         ListIntent.DismissClicked -> current.copy(bottomSheetOpened = false)
-        is ListIntent.AmountChanged -> current.copy(amount = intent.amount)
-        is ListIntent.MeasureChanged -> current.copy(measure = intent.measure)
-        is ListIntent.NameChanged -> current.copy(name = intent.name)
+        is ListIntent.AmountChanged -> current.copy(addProductAmount = intent.amount)
+        is ListIntent.MeasureChanged -> current.copy(addProductMeasure = intent.measure)
+        is ListIntent.NameChanged -> current.copy(addProductName = intent.name)
+        ListIntent.ApplyClicked -> current.copy(
+            addProductName = "",
+            addProductAmount = DEFAULT_AMOUNT,
+            addProductMeasure = "",
+            bottomSheetOpened = false
+        )
 
         else -> current
     }
@@ -212,11 +218,26 @@ class ListViewModel @Inject constructor(
     }
 
     private fun addProduct() {
+    private suspend fun addProduct() {
+        try {
+            val product = Product(
+                name = state.value.addProductName.trim(),
+                amount = state.value.addProductAmount,
+                measure = state.value.addProductMeasure
+            )
+             //Логика добавления в БД
 
+        } catch (e: Error) {
+            updateState { it.copy(addProductError = ADDING_ERROR_MESSAGE) }
+            emitEffect(ListEffect.ShowError(ADDING_ERROR_MESSAGE))
+        }
     }
 
     companion object {
-        private const val UNKNOWN_ERROR = "Unknown error"
+        private val UNKNOWN_ERROR = "Unknown error"
+
+        private val DEFAULT_AMOUNT = 1f
+        private val ADDING_ERROR_MESSAGE = "Не получилось добавить новый элемент списка"
 
         private fun createInitialState(handle: SavedStateHandle): ListState {
             val route = handle.toRoute<ListScreenRoute>()
