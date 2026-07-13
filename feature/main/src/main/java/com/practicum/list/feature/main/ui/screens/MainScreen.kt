@@ -38,7 +38,8 @@ fun MainScreen(
     sheetState: SheetState? = null,
     onIntent: (MainIntent) -> Unit
 ) {
-    val dialog = state.createListDialog
+    val createDialog = state.createListDialog
+    val renameDialog = state.renameListDialog
     val interactionSource = remember { MutableInteractionSource() }
     val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -79,7 +80,14 @@ fun MainScreen(
                             },
                             onIconClick = { onIntent(MainIntent.EditListIcon(list.id)) },
                             onDeleteClick = { onIntent(MainIntent.DeleteList(list.id)) },
-                            onEditClick = { onIntent(MainIntent.RenameList(list.id)) },
+                            onEditClick = {
+                                onIntent(
+                                    MainIntent.RenameListClicked(
+                                        list.id,
+                                        list.name
+                                    )
+                                )
+                            },
                             onCopyClick = { onIntent(MainIntent.DuplicateList(list.id)) }
                         )
                     }
@@ -87,19 +95,42 @@ fun MainScreen(
             }
         }
 
-        if (dialog != null) {
+        if (createDialog != null) {
             CustomLayoutDialog(
                 titleTextRes = R.string.new_list_dialog_title_text,
                 iconRes = R.drawable.ic_docs_add_on,
                 primaryButtonTextRes = R.string.new_list_dialog_create_button_text,
                 secondaryButtonTextRes = R.string.cancel_general_text,
-                textEditLabelRes = R.string.new_list_label_text,
-                textEditText = dialog.name,
+                textEditLabelRes = R.string.general_list_label_text,
+                textEditText = createDialog.name,
                 interactionSource = interactionSource,
-                onConfirm = { onIntent(MainIntent.ConfirmCreateList(dialog.name)) },
+                onConfirm = { onIntent(MainIntent.ConfirmCreateList(createDialog.name)) },
                 onDismiss = { onIntent(MainIntent.DismissCreateListDialog) },
                 onTextChange = { onIntent(MainIntent.CreateListNameChanged(it)) },
                 onKeyboardDone = { keyboardController?.hide() },
+            )
+        }
+
+        if (renameDialog != null) {
+            CustomLayoutDialog(
+                titleTextRes = R.string.rename_list_dialog_title_text,
+                primaryButtonTextRes = R.string.rename_list_rename_button_text,
+                secondaryButtonTextRes = R.string.cancel_general_text,
+                textEditLabelRes = R.string.general_list_label_text,
+                textEditText = renameDialog.newName,
+                interactionSource = interactionSource,
+                onConfirm = {
+                    onIntent(
+                        MainIntent.ConfirmRenameList(
+                            renameDialog.id,
+                            renameDialog.newName
+                        )
+                    )
+                },
+                onDismiss = { onIntent(MainIntent.DismissRenameListDialog) },
+                onTextChange = { onIntent(MainIntent.RenameListNameChanged(it)) },
+                onKeyboardDone = { keyboardController?.hide() },
+                confirmEnabled = renameDialog.isEnabled
             )
         }
 

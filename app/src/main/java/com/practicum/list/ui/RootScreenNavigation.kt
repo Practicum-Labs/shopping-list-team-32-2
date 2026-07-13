@@ -40,19 +40,20 @@ private fun RootScreenRouteContent(navController: NavController) {
 
     LaunchedEffect(viewModel) {
         viewModel.effects.collect { effect ->
-            when (effect) {
-                RootEffect.NavigateToLogin -> navController.navigate(LoginRoute) {
-                    popUpTo(RootScreenRoute) {
-                        inclusive = true
-                    }
-                }
-
-                RootEffect.NavigateToMain -> navController.navigate(MainScreenRoute) {
-                    popUpTo(RootScreenRoute) {
-                        inclusive = true
-                    }
-                }
-            }
+//            when (effect) {
+//                RootEffect.NavigateToLogin -> navController.navigate(LoginRoute) {
+//                    popUpTo(RootScreenRoute) {
+//                        inclusive = true
+//                    }
+//                }
+//
+//                RootEffect.NavigateToMain -> navController.navigate(MainScreenRoute) {
+//                    popUpTo(RootScreenRoute) {
+//                        inclusive = true
+//                    }
+//                }
+//            }
+            navController.navigate(MainScreenRoute)
         }
     }
 
