@@ -1,5 +1,6 @@
 package com.practicum.list.core.components.dialogs
 
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,6 +19,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.practicum.list.core.components.textedits.CustomTextEdit
+import com.practicum.list.core.theme.Dimens.DialogHorizontalPadding
 import com.practicum.list.core.theme.Dimens.DialogIconDimension
 import com.practicum.list.core.theme.Dimens.DialogVerticalPadding
 
@@ -63,9 +66,9 @@ fun CustomLayoutDialog(
                     horizontalArrangement = Arrangement.End,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = DialogVerticalPadding)
+                        .padding(bottom = 16.dp, end = 36.dp)
                 ) {
-                    dismissButton(Modifier.padding(start = 8.dp, end = 24.dp))
+                    dismissButton(Modifier.padding(start = 8.dp))
                     confirmButton()
                 }
             }
@@ -89,6 +92,32 @@ fun DialogIcon(
             painter = painterResource(iconRes),
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+}
+
+@Composable
+fun TextInputContent(
+    textEditLabelRes: Int,
+    textEditText: String,
+    interactionSource: MutableInteractionSource,
+    onKeyboardDone: () -> Unit,
+    onTextChange: (String) -> Unit
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        CustomTextEdit(
+            modifier = Modifier
+                .padding(
+                    vertical = 18.dp,
+                    horizontal = DialogHorizontalPadding
+                ),
+            labelTextRes = textEditLabelRes,
+            textString = textEditText,
+            interactionSource = interactionSource,
+            onKeyboardDone = { onKeyboardDone() },
+            onTextChange = { onTextChange(it) }
         )
     }
 }

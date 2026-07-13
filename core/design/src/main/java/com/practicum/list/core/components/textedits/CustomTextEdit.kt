@@ -51,7 +51,7 @@ fun CustomTextEdit(
             onValueChange = onTextChange,
             modifier = Modifier
                 .height(56.dp)
-                .width(210.dp)
+                .width(230.dp)
                 .focusRequester(focusRequester),
             singleLine = true,
             interactionSource = interactionSource,

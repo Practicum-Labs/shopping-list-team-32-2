@@ -22,7 +22,9 @@ import androidx.compose.ui.zIndex
 import com.practicum.list.core.common.domain.ShoppingList
 import com.practicum.list.core.components.bottomsheet.CategoryPickerBottomSheet
 import com.practicum.list.core.components.cards.SwipeableListItem
+import com.practicum.list.core.components.dialogs.CreateListDialog
 import com.practicum.list.core.components.dialogs.CustomLayoutDialog
+import com.practicum.list.core.components.dialogs.RenameListDialog
 import com.practicum.list.core.components.fab.AddFab
 import com.practicum.list.core.components.placeholder.PlaceholderLayout
 import com.practicum.list.core.theme.ShoppingListTheme
@@ -96,27 +98,18 @@ fun MainScreen(
         }
 
         if (createDialog != null) {
-            CustomLayoutDialog(
-                titleTextRes = R.string.new_list_dialog_title_text,
-                iconRes = R.drawable.ic_docs_add_on,
-                primaryButtonTextRes = R.string.new_list_dialog_create_button_text,
-                secondaryButtonTextRes = R.string.cancel_general_text,
-                textEditLabelRes = R.string.general_list_label_text,
+            CreateListDialog(
                 textEditText = createDialog.name,
                 interactionSource = interactionSource,
                 onConfirm = { onIntent(MainIntent.ConfirmCreateList(createDialog.name)) },
                 onDismiss = { onIntent(MainIntent.DismissCreateListDialog) },
                 onTextChange = { onIntent(MainIntent.CreateListNameChanged(it)) },
-                onKeyboardDone = { keyboardController?.hide() },
+                onKeyboardDone = { keyboardController?.hide() }
             )
         }
 
         if (renameDialog != null) {
-            CustomLayoutDialog(
-                titleTextRes = R.string.rename_list_dialog_title_text,
-                primaryButtonTextRes = R.string.rename_list_rename_button_text,
-                secondaryButtonTextRes = R.string.cancel_general_text,
-                textEditLabelRes = R.string.general_list_label_text,
+            RenameListDialog(
                 textEditText = renameDialog.newName,
                 interactionSource = interactionSource,
                 onConfirm = {
