@@ -18,6 +18,8 @@ sealed class MeasureUnit(
 
     companion object {
         val all: List<MeasureUnit> = listOf(Piece, Kilogram, Package, Milligram, Liter)
-        fun fromCode(code: String): MeasureUnit = all.first { it.code == code }
+
+        fun fromCode(code: String?): MeasureUnit =
+            all.firstOrNull { unit -> unit.code == code } ?: Piece
     }
 }

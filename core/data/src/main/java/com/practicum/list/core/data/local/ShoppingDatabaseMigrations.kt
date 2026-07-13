@@ -48,5 +48,16 @@ val MIGRATION_3_4 = object : Migration(3, 4) {
         db.execSQL("DROP TABLE products")
         db.execSQL("ALTER TABLE products_new RENAME TO products")
         db.execSQL("CREATE INDEX IF NOT EXISTS index_products_listId ON products(listId)")
+        db.execSQL(
+            "UPDATE products SET unit = 'pcs' WHERE unit IS NULL OR unit = ''",
+        )
+    }
+}
+
+val MIGRATION_4_5 = object : Migration(4, 5) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
+            "UPDATE products SET unit = 'pcs' WHERE unit IS NULL OR unit = ''",
+        )
     }
 }

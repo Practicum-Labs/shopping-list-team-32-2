@@ -5,8 +5,10 @@ import com.practicum.list.core.common.domain.MeasureUnit
 
 class MeasureUnitConverter {
     @TypeConverter
-    fun toCode(unit: MeasureUnit): String = unit.code
+    fun toCode(unit: MeasureUnit?): String =
+        unit?.code ?: MeasureUnit.Piece.code
 
     @TypeConverter
-    fun fromCode(code: String): MeasureUnit = MeasureUnit.fromCode(code)
+    fun fromCode(code: String?): MeasureUnit =
+        MeasureUnit.fromCode(code)
 }
