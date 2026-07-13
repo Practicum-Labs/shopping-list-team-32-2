@@ -5,8 +5,11 @@ captures/
 .externalNativeBuild/
 .cxx/
 local.properties
+*.jks
+*.keystore
 
 **/build/
+app/release/
 /.idea
 .idea/workspace.xml
 .idea/tasks.xml

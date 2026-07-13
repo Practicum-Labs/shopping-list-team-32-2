@@ -1,10 +1,8 @@
-# default: proguard-android-optimize.txt
 -keepattributes SourceFile,LineNumberTable
 -renamesourcefileattribute SourceFile
 -keepattributes RuntimeVisibleAnnotations,AnnotationDefault
 -keepattributes Signature,*Annotation*,InnerClasses,EnclosingMethod
 
-# Moshi: @JsonClass(generateAdapter = true) + KotlinJsonAdapterFactory
 -keep class com.squareup.moshi.** { *; }
 -dontwarn com.squareup.moshi.**
 -keep class kotlin.Metadata { *; }
@@ -20,8 +18,19 @@
 -keepclassmembers class com.practicum.list.core.data.network.dto.** {
     <init>(...);
 }
+-keep class com.practicum.list.core.data.remote.dto.** { *; }
+-keepclassmembers class com.practicum.list.core.data.remote.dto.** {
+    <init>(...);
+}
 
-# kotlinx.serialization — type-safe Navigation routes (@Serializable)
+-dontwarn retrofit2.**
+-keepclassmembers,allowshrinking,allowobfuscation interface * {
+    @retrofit2.http.* <methods>;
+}
+-keepclasseswithmembers class * {
+    @retrofit2.http.* <methods>;
+}
+
 -dontwarn kotlinx.serialization.**
 -keep,includedescriptorclasses class com.practicum.list.core.navigation.**$$serializer { *; }
 -keepclassmembers class com.practicum.list.core.navigation.** {
@@ -36,9 +45,42 @@
     kotlinx.serialization.KSerializer serializer(...);
 }
 
-# Enums used via Room TypeConverters / reflection-ish lookups
+-keep class * extends androidx.room.RoomDatabase
+-keep @androidx.room.Entity class *
+-keep @androidx.room.Dao interface *
+-keep class androidx.room.Room { *; }
+-keep class * extends androidx.room.RoomDatabase {
+    static *** create(...);
+}
+-keepclassmembers class * {
+    @androidx.room.Query *;
+    @androidx.room.Insert *;
+    @androidx.room.Update *;
+    @androidx.room.Delete *;
+    @androidx.room.Transaction *;
+}
+-keep class com.practicum.list.core.data.local.** { *; }
+
+-keep class dagger.hilt.** { *; }
+-keep class javax.inject.** { *; }
+-keep class * extends dagger.hilt.android.internal.managers.ViewComponentManager$FragmentContextWrapper { *; }
+-keepclasseswithmembers class * {
+    @dagger.hilt.** *;
+}
+-keepclasseswithmembers class * {
+    @javax.inject.Inject <init>(...);
+}
+-keep class * extends androidx.lifecycle.ViewModel {
+    <init>(...);
+}
+-keep class * extends androidx.lifecycle.AndroidViewModel {
+    <init>(...);
+}
+
 -keepclassmembers enum * {
     public static **[] values();
     public static ** valueOf(java.lang.String);
 }
+-keep class com.practicum.list.core.common.domain.MeasureUnit { *; }
+-keep class com.practicum.list.core.common.domain.MeasureUnit$* { *; }
 
