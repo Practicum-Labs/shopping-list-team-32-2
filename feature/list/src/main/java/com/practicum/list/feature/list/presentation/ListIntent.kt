@@ -21,20 +21,6 @@ sealed class ListIntent : MviIntent {
 
     data class ListMenuCustomSortConfirmed(val newList: List<Product>) : ListIntent()
 
-    data object AddButtonClicked : ListIntent()
-
-    data class AddProductNameChanged(val name: String) : ListIntent()
-
-    data object AddProductPlusClicked : ListIntent()
-
-    data object AddProductMinusClicked : ListIntent()
-
-    data class AddProductQuantityChanged(val quantity: Float) : ListIntent()
-
-    data class AddProductUnitsChanged(val unit: MeasureUnit) : ListIntent()
-
-    data class AddProductConfirmed(val product: Product) : ListIntent()
-
     data class DeleteProductClicked(val productId: Long) : ListIntent()
 
     data class ProductContextMenuOpened(val product: Product) : ListIntent()

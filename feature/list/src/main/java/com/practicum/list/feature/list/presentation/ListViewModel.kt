@@ -51,14 +51,6 @@ class ListViewModel @Inject constructor(
     }
 
     override fun reduce(intent: ListIntent, current: ListState): ListState = when (intent) {
-        is ListIntent.AddButtonClicked,
-        is ListIntent.AddProductConfirmed,
-        is ListIntent.AddProductNameChanged,
-        ListIntent.AddProductMinusClicked,
-        ListIntent.AddProductPlusClicked,
-        is ListIntent.AddProductQuantityChanged,
-        is ListIntent.AddProductUnitsChanged,
-        -> reduceAddProduct(intent, current)
 
         ListIntent.ListMenuAlphabeticalSortClicked,
         ListIntent.ListMenuCustomSortClicked,
@@ -78,44 +70,6 @@ class ListViewModel @Inject constructor(
         is ListIntent.DeleteProductClicked,
         -> reduceProductEdit(intent, current)
 
-        else -> current
-    }
-
-    private fun reduceAddProduct(intent: ListIntent, current: ListState): ListState = when (intent) {
-        is ListIntent.AddButtonClicked -> current.copy(
-            addProductDialogState = AddProductDialogState(
-                name = "",
-                quantity = null,
-                unit = null,
-            ),
-        )
-        is ListIntent.AddProductConfirmed -> current.copy(addProductDialogState = null)
-        is ListIntent.AddProductNameChanged -> current.copy(
-            addProductDialogState = current.addProductDialogState?.copy(name = intent.name)
-                ?: AddProductDialogState(name = intent.name),
-        )
-        ListIntent.AddProductMinusClicked -> current.addProductDialogState?.let { dialog ->
-            current.copy(
-                addProductDialogState = dialog.copy(
-                    quantity = (dialog.quantity ?: DEFAULT_QUANTITY) - QUANTITY_STEP,
-                ),
-            )
-        } ?: current
-        ListIntent.AddProductPlusClicked -> current.addProductDialogState?.let { dialog ->
-            current.copy(
-                addProductDialogState = dialog.copy(
-                    quantity = (dialog.quantity ?: DEFAULT_QUANTITY) + QUANTITY_STEP,
-                ),
-            )
-        } ?: current
-        is ListIntent.AddProductQuantityChanged -> current.copy(
-            addProductDialogState = current.addProductDialogState?.copy(quantity = intent.quantity)
-                ?: AddProductDialogState(quantity = intent.quantity),
-        )
-        is ListIntent.AddProductUnitsChanged -> current.copy(
-            addProductDialogState = current.addProductDialogState?.copy(unit = intent.unit)
-                ?: AddProductDialogState(unit = intent.unit),
-        )
         else -> current
     }
 
@@ -192,7 +146,6 @@ class ListViewModel @Inject constructor(
             }
             is ListIntent.ListMenuAlphabeticalSortClicked -> sortAlphabetically()
             is ListIntent.ListMenuCustomSortConfirmed -> sortCustom(intent.newList)
-            is ListIntent.AddProductConfirmed -> upsertProduct(intent.product)
             is ListIntent.EditProductConfirmClicked -> upsertProduct(intent.product)
             is ListIntent.DeleteProductClicked -> deleteProduct(intent.productId)
             else -> Unit
@@ -256,8 +209,6 @@ class ListViewModel @Inject constructor(
 
     companion object {
         private const val UNKNOWN_ERROR = "Unknown error"
-        private const val DEFAULT_QUANTITY = 1f
-        private const val QUANTITY_STEP = 0.1f
 
         private fun createInitialState(handle: SavedStateHandle): ListState {
             val route = handle.toRoute<ListScreenRoute>()
