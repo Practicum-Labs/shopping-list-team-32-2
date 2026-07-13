@@ -1,32 +1,37 @@
 package com.practicum.list.feature.list.data.impl
 
 import com.practicum.list.core.common.domain.Product
+import com.practicum.list.core.common.domain.UserSession
 import com.practicum.list.core.data.local.dao.ProductDao
+import com.practicum.list.core.data.local.dao.ShoppingListDao
 import com.practicum.list.core.data.local.mapper.toDomain
 import com.practicum.list.core.data.local.mapper.toEntity
 import com.practicum.list.feature.list.domain.repository.ListRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class ListRepositoryImpl @Inject constructor(
-    private val dao: ProductDao,
+    private val productDao: ProductDao,
+    private val shoppingListDao: ShoppingListDao,
+    private val userSession: UserSession,
 ) : ListRepository {
 
     override suspend fun upsertProduct(product: Product) {
-        dao.upsertProduct(product.toEntity())
+        productDao.upsertProduct(product.toEntity())
     }
 
     override suspend fun deleteProduct(productId: Long) {
-        dao.deleteProduct(productId)
+        productDao.deleteProduct(productId)
     }
 
     override suspend fun sortProductsAlphabetically(listId: Long): List<Product> {
-        val sortedEntities = dao.getByListIdOrderByName(listId)
+        val sortedEntities = productDao.getByListIdOrderByName(listId)
         sortedEntities.forEachIndexed { index, entity ->
             if (entity.sortPosition != index) {
-                dao.updateListPosition(entity.id, index)
+                productDao.updateListPosition(entity.id, index)
             }
         }
         return sortedEntities.mapIndexed { index, entity ->
@@ -38,21 +43,30 @@ class ListRepositoryImpl @Inject constructor(
         newOrder
             .filter { product -> product.listId == listId }
             .forEach { product ->
-                dao.updateListPosition(product.id, product.sortPosition)
+                productDao.updateListPosition(product.id, product.sortPosition)
             }
     }
 
     override suspend fun deleteBoughtProducts(listId: Long) {
-        dao.deleteAllCheckedByListId(listId)
+        productDao.deleteAllCheckedByListId(listId)
     }
 
     override suspend fun deleteAllProducts(listId: Long) {
-        dao.deleteAllByListId(listId)
+        productDao.deleteAllByListId(listId)
     }
 
     override fun observeProductsByListId(listId: Long): Flow<List<Product>> {
-        return dao.observeByListId(listId)
+        return productDao.observeByListId(listId)
             .distinctUntilChanged()
             .map { products -> products.map { it.toDomain() } }
+    }
+
+    override fun observeListTitle(listId: Long): Flow<String> {
+        return userSession.userId
+            .flatMapLatest { userId ->
+                shoppingListDao.observeById(listId, userId)
+            }
+            .distinctUntilChanged()
+            .map { shoppingList -> shoppingList?.name.orEmpty() }
     }
 }

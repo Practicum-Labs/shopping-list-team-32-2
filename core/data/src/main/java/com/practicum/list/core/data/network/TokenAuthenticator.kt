@@ -2,8 +2,8 @@ package com.practicum.list.core.data.network
 
 import com.practicum.list.core.common.domain.UserSession
 import com.practicum.list.core.data.SessionEvents
-import com.practicum.list.core.data.di.RefreshAuthApi
-import com.practicum.list.core.data.network.api.AuthApi
+import com.practicum.list.core.data.di.RefreshResilientAuthApi
+import com.practicum.list.core.data.network.client.ResilientAuthApi
 import com.practicum.list.core.data.network.dto.RefreshTokenRequest
 import kotlinx.coroutines.runBlocking
 import okhttp3.Authenticator
@@ -16,7 +16,7 @@ import javax.inject.Singleton
 @Singleton
 class TokenAuthenticator @Inject constructor(
     private val userSession: UserSession,
-    @RefreshAuthApi private val refreshAuthApi: AuthApi,
+    @RefreshResilientAuthApi private val refreshAuthApi: ResilientAuthApi,
     private val sessionEvents: SessionEvents,
 ) : Authenticator {
 

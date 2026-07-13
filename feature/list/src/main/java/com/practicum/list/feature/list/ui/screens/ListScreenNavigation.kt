@@ -10,7 +10,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -21,7 +20,6 @@ import com.practicum.list.core.navigation.anim.defaultEnterTransition
 import com.practicum.list.core.navigation.anim.defaultExitTransition
 import com.practicum.list.core.navigation.anim.defaultPopEnterTransition
 import com.practicum.list.core.navigation.anim.defaultPopExitTransition
-import com.practicum.list.feature.list.R
 import com.practicum.list.feature.list.presentation.ListEffect
 import com.practicum.list.feature.list.presentation.ListIntent
 import com.practicum.list.feature.list.presentation.ListViewModel
@@ -56,11 +54,14 @@ private fun ListScreenRouteContent(navController: NavController) {
 
     Scaffold(topBar = {
         TopBar(
-            title = state.listTitle.ifEmpty { stringResource(R.string.list) },
+            title = state.listTitle,
             onNavigateBack = {
                 viewModel.dispatch(
                     ListIntent.BackClicked
                 )
+            },
+            onOptionsClick = {
+                viewModel.dispatch(ListIntent.OptionsMenuClicked)
             },
         )
     }, snackbarHost = { SnackbarHost(hostState = snackbarHostState) }) { paddingValues ->

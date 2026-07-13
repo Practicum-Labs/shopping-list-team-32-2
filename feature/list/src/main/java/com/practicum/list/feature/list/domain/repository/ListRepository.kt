@@ -11,4 +11,5 @@ interface ListRepository {
     suspend fun deleteAllProducts(listId: Long)
     suspend fun deleteProduct(productId: Long)
     fun observeProductsByListId(listId: Long): Flow<List<Product>>
+    fun observeListTitle(listId: Long): Flow<String>
 }
