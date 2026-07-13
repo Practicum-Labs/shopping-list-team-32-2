@@ -101,7 +101,17 @@ fun RegisterScreen(
                 onValueChange = { onIntent(RegisterIntent.ConfirmPasswordChanged(it)) },
                 label = stringResource(R.string.auth_label_confirm_password),
                 isError = state.confirmPasswordError != null,
-                errorText = state.confirmPasswordError
+                errorText = state.confirmPasswordError,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Email,
+                    imeAction = ImeAction.Done
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        onIntent(RegisterIntent.SubmitClicked)
+                        keyboardController?.hide()
+                    }
+                )
             )
 
             state.generalError?.let { error ->
