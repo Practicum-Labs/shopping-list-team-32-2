@@ -24,7 +24,7 @@
 :core:data        — Room, Retrofit, Hilt modules
 :core:navigation  — type-safe маршруты
 :feature:main     — главный экран (presentation / domain / data)
-:feature:list  — экран списка / товаров
+:feature:list  — экран списка / товаров (Epic 3)
 :feature:auth     — auth design system, экраны login / register / recovery (Epic 2)
 ```
 
@@ -36,7 +36,13 @@
 
 Списки покупок в Room привязаны к `user_id` из auth-сессии (см. `UserSession` в `:core:data`).
 
-Точка входа в приложение и проверка сессии — в работе ([#45](https://github.com/Practicum-Labs/shopping-list-team-32-2/issues/45)); после логина — `MainScreenRoute`.
+Точка входа: `RootScreenRoute` — splash, проверка токена, redirect на Login или Main ([#45](https://github.com/Practicum-Labs/shopping-list-team-32-2/issues/45)).
+
+## Products & List Screen (Epic 3)
+
+Экран списка покупок: товары, сортировка, swipe-действия, FAB «добавить». Данные — только Room, backend не хранит товары.
+
+Архитектура, MVI, `MeasureUnit`, duplicate, статус реализации — в [`docs/PRODUCT.md`](docs/PRODUCT.md).
 
 ## Слои feature-модуля
 
@@ -64,3 +70,5 @@ feature/<name>/
 ## Команда
 
 Проект: [shopping-list-team-32-2](https://github.com/Practicum-Labs/shopping-list-team-32-2)
+
+**Figma:** [Практикум ОП — Список покупок](https://www.figma.com/design/n84usOH28EjTrPXrfCzM3q/%D0%9F%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D0%BA%D1%83%D0%BC-%D0%9E%D0%9F-%D0%A1%D0%BF%D0%B8%D1%81%D0%BE%D0%BA-%D0%BF%D0%BE%D0%BA%D1%83%D0%BF%D0%BE%D0%BA?node-id=0-1). Deep-links по экранам — [`docs/PRODUCT.md`](docs/PRODUCT.md#figma).
