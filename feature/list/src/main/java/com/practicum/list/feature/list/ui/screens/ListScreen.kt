@@ -101,16 +101,15 @@ fun ListScreen(
             )
         }
         ProductBottomSheet(
-            product = state.productBottomSheetState.product,
             bottomSheetIsVisible = state.productBottomSheetOpened,
-            name =  state.productBottomSheetState.name,
-            onNameChange = { onIntent(ListIntent.AddProductNameChanged(it)) },
+            name = state.productBottomSheetState.name,
+            onNameChange = { onIntent(ListIntent.ProductNameChanged(it)) },
             quantity = state.productBottomSheetState.quantity,
-            onQuantityChange = { onIntent(ListIntent.AddProductQuantityChanged(it)) },
-            unit = state.productBottomSheetState.unit ?: MeasureUnit.Piece,
-            onUnitClick = { onIntent(ListIntent.AddProductUnitChanged(it)) },
-            onDismiss = { onIntent(ListIntent.AddProductDismissClicked) },
-            onApplyClicked = { onIntent(ListIntent.AddProductApplyClicked(it)) },
+            onQuantityChange = { onIntent(ListIntent.ProductQuantityChanged(it)) },
+            unit = state.productBottomSheetState.unit,
+            onUnitClick = { onIntent(ListIntent.ProductUnitChanged(it)) },
+            onDismiss = { onIntent(ListIntent.ProductBottomSheetDismissed) },
+            onApplyClicked = { onIntent(ListIntent.ProductApplyClicked) },
             isApplyVisible = state.isAddEnabled
         )
     }

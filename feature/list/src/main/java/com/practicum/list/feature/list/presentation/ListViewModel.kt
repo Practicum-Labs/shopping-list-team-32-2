@@ -1,6 +1,5 @@
 package com.practicum.list.feature.list.presentation
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
@@ -49,6 +48,7 @@ class ListViewModel @Inject constructor(
     }
 
     override fun reduce(intent: ListIntent, current: ListState): ListState = when (intent) {
+        ////
         ListIntent.OptionsMenuClicked,
         ListIntent.OptionsMenuDismissed,
         -> reduceOptionsMenu(intent, current)
@@ -56,7 +56,7 @@ class ListViewModel @Inject constructor(
         is ListIntent.EditProduct,
         is ListIntent.ProductQuantityClicked,
         -> reduceOpenEditSheet(intent, current)
-
+//////
         ListIntent.ListMenuAlphabeticalSortClicked,
         ListIntent.ListMenuCustomSortClicked,
         ListIntent.ListMenuDeleteCheckedClicked,
@@ -65,40 +65,52 @@ class ListViewModel @Inject constructor(
         -> reduceListMenu(intent, current)
 
         is ListIntent.DeleteDialogConfirmed,
-        ListIntent.DeleteDialogDismissed,
-        -> reduceDeleteDialog(current)
+        ListIntent.DeleteDialogDismissed -> current.copy(confirmationDialogState = null)
 
-        is ListIntent.ProductContextMenuOpened,
-        is ListIntent.ProductMenuEditClicked,
-        ListIntent.EditProductBottomSheetDismissed,
-        is ListIntent.EditProductConfirmClicked,
+        is ListIntent.ProductContextMenuOpened -> current.copy(
+            contextMenuState = ListContextMenuState()
+        )
+
+        is ListIntent.ProductMenuEditClicked -> {
+            val product = intent.product
+            current.copy(
+                productBottomSheetOpened = true,
+                productBottomSheetState = ProductBottomSheetState(
+                    id = product.id,
+                    name = product.name,
+                    quantity = product.quantity,
+                    unit = product.unit,
+                    isChecked = product.isChecked,
+                    sortPosition = product.sortPosition,
+                ),
+            )
+        }
+
+        ListIntent.ProductBottomSheetDismissed,
         is ListIntent.DeleteProductClicked,
-        -> reduceProductEdit(intent, current)
+        is ListIntent.ProductApplyClicked-> current.copy(productBottomSheetOpened = false)
 
         ListIntent.BackClicked -> current
-        ListIntent.AddProductClicked -> current.copy(productBottomSheetOpened = true)
-        ListIntent.AddProductDismissClicked -> current.copy(productBottomSheetOpened = false)
-        is ListIntent.AddProductQuantityChanged -> current.copy(
+        ListIntent.AddProductClicked -> current.copy(
+            productBottomSheetOpened = true,
+            productBottomSheetState = ProductBottomSheetState(),
+        )
+        is ListIntent.ProductQuantityChanged -> current.copy(
             productBottomSheetState = current.productBottomSheetState.copy(
                 quantity = intent.quantity
             )
         )
 
-        is ListIntent.AddProductUnitChanged -> current.copy(
+        is ListIntent.ProductUnitChanged -> current.copy(
             productBottomSheetState = current.productBottomSheetState.copy(
                 unit = intent.unit
             )
         )
 
-        is ListIntent.AddProductNameChanged -> current.copy(
+        is ListIntent.ProductNameChanged -> current.copy(
             productBottomSheetState = current.productBottomSheetState.copy(
                 name = intent.name
             )
-        )
-
-        is ListIntent.AddProductApplyClicked -> current.copy(
-            productBottomSheetState = ProductBottomSheetState(null),
-            productBottomSheetOpened = false
         )
 
         else -> current
@@ -155,31 +167,6 @@ class ListViewModel @Inject constructor(
         else -> current
     }
 
-    private fun reduceDeleteDialog(current: ListState): ListState =
-        current.copy(confirmationDialogState = null)
-
-    private fun reduceProductEdit(intent: ListIntent, current: ListState): ListState =
-        when (intent) {
-            is ListIntent.ProductContextMenuOpened -> current.copy(
-
-            )
-
-            is ListIntent.ProductMenuEditClicked -> {
-                current.copy(
-                    productBottomSheetOpened = true,
-                    productBottomSheetState = ProductBottomSheetState(intent.product),
-                )
-            }
-
-            ListIntent.EditProductBottomSheetDismissed,
-            is ListIntent.EditProductConfirmClicked,
-                -> current.copy(productBottomSheetOpened = false)
-
-            is ListIntent.DeleteProductClicked -> current.copy(productBottomSheetOpened = false)
-
-            else -> current
-        }
-
     override suspend fun handleIntent(intent: ListIntent) {
         when (intent) {
             ListIntent.BackClicked -> emitEffect(ListEffect.NavigateToMain)
@@ -192,7 +179,6 @@ class ListViewModel @Inject constructor(
 
             is ListIntent.ListMenuAlphabeticalSortClicked -> sortAlphabetically()
             is ListIntent.ListMenuCustomSortConfirmed -> sortCustom(intent.newList)
-            is ListIntent.EditProductConfirmClicked -> updateProduct(intent.product)
             is ListIntent.ToggleProductChecked -> upsertProduct(
                 intent.product.copy(isChecked = intent.isChecked),
             )
@@ -202,32 +188,34 @@ class ListViewModel @Inject constructor(
             )
 
             is ListIntent.DeleteProductClicked -> deleteProduct(intent.productId)
-            is ListIntent.AddProductApplyClicked -> addProduct(intent)
+            ListIntent.ProductApplyClicked -> applyProductForm()
 
             else -> Unit
         }
     }
 
-    private suspend fun updateProduct(updatedProduct: Product) {
-        val existing = state.value.products.find { it.id == updatedProduct.id } ?: updatedProduct
-        upsertProduct(
-            existing.copy(
-                name = updatedProduct.name.trim(),
-                quantity = updatedProduct.quantity.coerceAtLeast(MIN_PRODUCT_QUANTITY),
-                unit = updatedProduct.unit,
-            ),
-        )
-    }
-
-    private suspend fun addProduct(intent: ListIntent.AddProductApplyClicked) {
-        val product = intent.product.copy(
+    private suspend fun applyProductForm() {
+        val bottomSheetState = state.value.productBottomSheetState
+        val product = Product(
+            id = bottomSheetState.id,
+            name = bottomSheetState.name.trim(),
+            isChecked = bottomSheetState.isChecked,
             listId = listId,
-            sortPosition = (state.value.products.maxOfOrNull { it.sortPosition } ?: -1) + 1
+            quantity = bottomSheetState.quantity.coerceAtLeast(MIN_PRODUCT_QUANTITY),
+            unit = bottomSheetState.unit,
+            sortPosition = if (state.value.productBottomSheetState.id == 0L) {
+                (state.value.products.maxOfOrNull { it.sortPosition } ?: -1) + 1
+            } else {
+                bottomSheetState.sortPosition
+            },
         )
         if (product.quantity == ERROR_QUANTITY) {
             emitEffect(ListEffect.ShowError(QUANTITY_ERROR))
         } else {
             upsertProduct(product)
+        }
+        updateState {
+            it.copy(productBottomSheetState = ProductBottomSheetState())
         }
     }
 
