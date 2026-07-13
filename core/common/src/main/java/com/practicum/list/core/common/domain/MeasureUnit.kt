@@ -9,15 +9,22 @@ sealed class MeasureUnit(
 ) {
     data object Piece : MeasureUnit("pcs", R.string.unit_piece)
     data object Kilogram : MeasureUnit("kg", R.string.unit_kg)
-
+    data object Gram : MeasureUnit("g", R.string.unit_g)
+    data object Milligram : MeasureUnit("mg", R.string.unit_mg)
+    data object Liter : MeasureUnit("l", R.string.unit_l)
+    data object Milliliter : MeasureUnit("ml", R.string.unit_ml)
     data object Package : MeasureUnit("pkg", R.string.unit_pkg)
 
-    data object Milligram : MeasureUnit("mg", R.string.unit_mg)
-
-    data object Liter : MeasureUnit("l", R.string.unit_l)
-
     companion object {
-        val all: List<MeasureUnit> = listOf(Piece, Kilogram, Package, Milligram, Liter)
+        val all: List<MeasureUnit> = listOf(
+            Piece,
+            Kilogram,
+            Gram,
+            Milligram,
+            Liter,
+            Milliliter,
+            Package,
+        )
 
         fun fromCode(code: String?): MeasureUnit =
             all.firstOrNull { unit -> unit.code == code } ?: Piece
