@@ -26,6 +26,7 @@ fun CustomLayoutDialog(
     modifier: Modifier = Modifier,
     onDismiss: () -> Unit,
     iconRes: Int? = null,
+    titleAlignment: Alignment.Horizontal = Alignment.CenterHorizontally,
     title: @Composable () -> Unit,
     content: @Composable (() -> Unit)? = null,
     confirmButton: @Composable () -> Unit,
@@ -36,29 +37,37 @@ fun CustomLayoutDialog(
             modifier = modifier,
             shape = RoundedCornerShape(28.dp)
         ) {
-            if (iconRes != null) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
+            Column {
+                if (iconRes != null) {
                     DialogIcon(
                         iconRes = iconRes,
-                        modifier = Modifier.padding(top = DialogVerticalPadding)
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .padding(top = DialogVerticalPadding)
                     )
                 }
-            }
-            Column {
-                title()
-                content?.invoke()
-            }
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = titleAlignment
+                ) {
+                    title()
+                }
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    content?.invoke()
+                }
 
-            Row(
-                horizontalArrangement = Arrangement.End,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = DialogVerticalPadding)
-            ) {
-                dismissButton(Modifier.padding(start = 8.dp, end = 24.dp))
-                confirmButton()
+                Row(
+                    horizontalArrangement = Arrangement.End,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = DialogVerticalPadding)
+                ) {
+                    dismissButton(Modifier.padding(start = 8.dp, end = 24.dp))
+                    confirmButton()
+                }
             }
         }
     }
