@@ -4,7 +4,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.practicum.list.core.common.domain.Product
-import com.practicum.list.core.common.domain.usecase.ObserveListTitleUseCase
 import com.practicum.list.core.mvi.MviViewModel
 import com.practicum.list.core.navigation.ListScreenRoute
 import com.practicum.list.feature.list.domain.usecase.DeleteAllProductsUseCase
@@ -14,8 +13,6 @@ import com.practicum.list.feature.list.domain.usecase.ObserveProductsByListIdUse
 import com.practicum.list.feature.list.domain.usecase.SortProductsAlphabeticallyUseCase
 import com.practicum.list.feature.list.domain.usecase.SortProductsCustomUseCase
 import com.practicum.list.feature.list.domain.usecase.UpsertProductUseCase
-import com.practicum.list.feature.main.domain.usecase.ObserveShoppingListTitleUseCase
-import com.practicum.list.feature.list.domain.usecase.ObserveListTitleUseCase
 import com.practicum.list.core.common.domain.usecase.ObserveListTitleUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -117,22 +114,6 @@ class ListViewModel @Inject constructor(
         -> current.copy(editProductBottomSheetState = null)
         is ListIntent.DeleteProductClicked -> current.copy(editProductMenuState = null)
         else -> current
-
-        ListIntent.BackClicked,
-
-        ListIntent.AddProductClicked,
-
-        ListIntent.OptionsMenuClicked,
-
-            -> current
-
-        is ListIntent.ToggleProductChecked,
-
-        is ListIntent.DeleteProduct,
-        is ListIntent.EditProduct,
-        is ListIntent.ProductQuantityClicked,
-
-            -> current
     }
 
     override suspend fun handleIntent(intent: ListIntent) {
@@ -155,18 +136,6 @@ class ListViewModel @Inject constructor(
             )
             is ListIntent.DeleteProductClicked -> deleteProduct(intent.productId)
             else -> Unit
-
-            ListIntent.AddProductClicked,
-
-            ListIntent.OptionsMenuClicked,
-
-            is ListIntent.ToggleProductChecked,
-
-            is ListIntent.DeleteProduct,
-            is ListIntent.EditProduct,
-            is ListIntent.ProductQuantityClicked,
-
-                -> Unit
         }
     }
 
