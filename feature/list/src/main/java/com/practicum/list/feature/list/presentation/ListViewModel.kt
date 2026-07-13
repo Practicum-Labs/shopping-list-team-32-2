@@ -1,5 +1,6 @@
 package com.practicum.list.feature.list.presentation
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
@@ -68,36 +69,36 @@ class ListViewModel @Inject constructor(
         -> reduceDeleteDialog(current)
 
         is ListIntent.ProductContextMenuOpened,
-        ListIntent.ProductMenuEditClicked,
+        is ListIntent.ProductMenuEditClicked,
         ListIntent.EditProductBottomSheetDismissed,
         is ListIntent.EditProductConfirmClicked,
         is ListIntent.DeleteProductClicked,
         -> reduceProductEdit(intent, current)
 
         ListIntent.BackClicked -> current
-        ListIntent.AddProductClicked -> current.copy(addProductBottomSheetOpened = true)
-        ListIntent.AddProductDismissClicked -> current.copy(addProductBottomSheetOpened = false)
+        ListIntent.AddProductClicked -> current.copy(productBottomSheetOpened = true)
+        ListIntent.AddProductDismissClicked -> current.copy(productBottomSheetOpened = false)
         is ListIntent.AddProductQuantityChanged -> current.copy(
-            addProductBottomSheetState = current.addProductBottomSheetState.copy(
+            productBottomSheetState = current.productBottomSheetState.copy(
                 quantity = intent.quantity
             )
         )
 
         is ListIntent.AddProductUnitChanged -> current.copy(
-            addProductBottomSheetState = current.addProductBottomSheetState.copy(
+            productBottomSheetState = current.productBottomSheetState.copy(
                 unit = intent.unit
             )
         )
 
         is ListIntent.AddProductNameChanged -> current.copy(
-            addProductBottomSheetState = current.addProductBottomSheetState.copy(
+            productBottomSheetState = current.productBottomSheetState.copy(
                 name = intent.name
             )
         )
 
         is ListIntent.AddProductApplyClicked -> current.copy(
-            addProductBottomSheetState = AddProductBottomSheetState(),
-            addProductBottomSheetOpened = false
+            productBottomSheetState = ProductBottomSheetState(null),
+            productBottomSheetOpened = false
         )
 
         else -> current
@@ -160,27 +161,21 @@ class ListViewModel @Inject constructor(
     private fun reduceProductEdit(intent: ListIntent, current: ListState): ListState =
         when (intent) {
             is ListIntent.ProductContextMenuOpened -> current.copy(
-                editProductMenuState = EditProductMenuState(product = intent.product),
+
             )
 
-            ListIntent.ProductMenuEditClicked -> {
-                val product = current.editProductMenuState?.product ?: return current
+            is ListIntent.ProductMenuEditClicked -> {
                 current.copy(
-                    editProductMenuState = null,
-                    editProductBottomSheetState = EditProductBottomSheetState(
-                        name = product.name,
-                        productId = product.id,
-                        quantity = product.quantity,
-                        measureUnits = product.unit,
-                    ),
+                    productBottomSheetOpened = true,
+                    productBottomSheetState = ProductBottomSheetState(intent.product),
                 )
             }
 
             ListIntent.EditProductBottomSheetDismissed,
             is ListIntent.EditProductConfirmClicked,
-                -> current.copy(editProductBottomSheetState = null)
+                -> current.copy(productBottomSheetOpened = false)
 
-            is ListIntent.DeleteProductClicked -> current.copy(editProductMenuState = null)
+            is ListIntent.DeleteProductClicked -> current.copy(productBottomSheetOpened = false)
 
             else -> current
         }

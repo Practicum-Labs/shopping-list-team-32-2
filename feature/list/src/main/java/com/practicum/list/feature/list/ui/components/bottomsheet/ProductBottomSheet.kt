@@ -42,7 +42,8 @@ private const val KEYBOARD_OPEN_DELAY = 200L
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddProductBottomSheet(
+fun ProductBottomSheet(
+    product: Product,
     isApplyVisible: Boolean,
     bottomSheetIsVisible: Boolean,
     name: String,
@@ -88,14 +89,10 @@ fun AddProductBottomSheet(
                             .size(56.dp),
                         onClick = {
                             onApplyClicked(
-                                Product(
+                                product.copy(
                                     name = name.trim(),
-                                    isChecked = false,
                                     quantity = quantity,
                                     unit = unit,
-                                    id = 0,
-                                    listId = 0,
-                                    sortPosition = 0,
                                 )
                             )
                         },
@@ -163,7 +160,16 @@ internal fun textFieldColors() = OutlinedTextFieldDefaults.colors(
 @Composable
 private fun BottomSheetFilledPreview() {
     ShoppingListTheme {
-        AddProductBottomSheet(
+        ProductBottomSheet(
+            product = Product(
+                0,
+                "??",
+                false,
+                0,
+                0F,
+                MeasureUnit.all.first(),
+                1
+            ),
             bottomSheetIsVisible = true,
             name = "лабубы",
             onNameChange = {},
@@ -182,7 +188,16 @@ private fun BottomSheetFilledPreview() {
 @Composable
 private fun BottomSheetEmptyPreview() {
     ShoppingListTheme {
-        AddProductBottomSheet(
+        ProductBottomSheet(
+            product = Product(
+                0,
+                "??",
+                false,
+                0,
+                0F,
+                MeasureUnit.all.first(),
+                1
+            ),
             bottomSheetIsVisible = true,
             name = "",
             onNameChange = {},
