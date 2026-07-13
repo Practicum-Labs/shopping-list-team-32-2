@@ -16,15 +16,17 @@ sealed class MeasureUnit(
     data object Package : MeasureUnit("pkg", R.string.unit_pkg)
 
     companion object {
-        val all: List<MeasureUnit> = listOf(
-            Piece,
-            Kilogram,
-            Gram,
-            Milligram,
-            Liter,
-            Milliliter,
-            Package,
-        )
+        val all: List<MeasureUnit> by lazy {
+            listOf(
+                Piece,
+                Kilogram,
+                Gram,
+                Milligram,
+                Liter,
+                Milliliter,
+                Package,
+            )
+        }
 
         fun fromCode(code: String?): MeasureUnit =
             all.firstOrNull { unit -> unit.code == code } ?: Piece
