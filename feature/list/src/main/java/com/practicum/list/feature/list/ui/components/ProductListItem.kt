@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -114,18 +115,24 @@ private fun ProductListItemContent(
     onQuantityClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val nameColor = if (isChecked) {
+    val headlineColor = if (isChecked) {
         MaterialTheme.colorScheme.onSurfaceVariant
     } else {
         MaterialTheme.colorScheme.onSurface
     }
-    val nameDecoration = if (isChecked) TextDecoration.LineThrough else TextDecoration.None
+    val supportingColor = MaterialTheme.colorScheme.onSurfaceVariant
+    val textDecoration = if (isChecked) TextDecoration.LineThrough else TextDecoration.None
     val checkboxDescription = stringResource(R.string.product_checkbox_content_description)
     val quantityDescription = stringResource(R.string.product_quantity_content_description)
 
     Column(modifier = modifier.fillMaxWidth()) {
         ListItem(
             modifier = Modifier.fillMaxWidth(),
+            colors = ListItemDefaults.colors(
+                containerColor = MaterialTheme.colorScheme.surface,
+                headlineColor = headlineColor,
+                supportingColor = supportingColor,
+            ),
             leadingContent = {
                 ProductRoundCheckbox(
                     checked = isChecked,
@@ -137,8 +144,8 @@ private fun ProductListItemContent(
                 Text(
                     text = name,
                     style = MaterialTheme.typography.bodyLarge.copy(
-                        color = nameColor,
-                        textDecoration = nameDecoration,
+                        color = headlineColor,
+                        textDecoration = textDecoration,
                     ),
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
@@ -147,8 +154,10 @@ private fun ProductListItemContent(
             supportingContent = {
                 Text(
                     text = quantityLabel,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        color = supportingColor,
+                        textDecoration = textDecoration,
+                    ),
                     modifier = Modifier
                         .clickable(onClick = onQuantityClick)
                         .semantics { contentDescription = quantityDescription },
