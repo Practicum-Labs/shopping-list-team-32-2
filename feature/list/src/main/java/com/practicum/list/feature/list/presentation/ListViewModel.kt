@@ -147,6 +147,12 @@ class ListViewModel @Inject constructor(
             is ListIntent.ListMenuAlphabeticalSortClicked -> sortAlphabetically()
             is ListIntent.ListMenuCustomSortConfirmed -> sortCustom(intent.newList)
             is ListIntent.EditProductConfirmClicked -> upsertProduct(intent.product)
+            is ListIntent.ToggleProductChecked -> upsertProduct(
+                intent.product.copy(isChecked = intent.isChecked)
+            )
+            is ListIntent.QuantityChanged -> upsertProduct(
+                intent.product.copy(quantity = intent.quantity)
+            )
             is ListIntent.DeleteProductClicked -> deleteProduct(intent.productId)
             else -> Unit
 

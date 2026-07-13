@@ -38,4 +38,7 @@ sealed class ListIntent : MviIntent {
     data class DeleteProduct(val productId: Long) : ListIntent()
     data class EditProduct(val productId: Long) : ListIntent()
     data class ProductQuantityClicked(val productId: Long) : ListIntent()
+
+    data class ToggleProductChecked(val product: Product, val isChecked: Boolean) : ListIntent()
+    data class QuantityChanged(val product: Product, val quantity: Float): ListIntent()
 }
