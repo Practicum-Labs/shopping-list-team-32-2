@@ -24,6 +24,7 @@ import com.practicum.list.feature.list.R
 import com.practicum.list.feature.list.presentation.ListIntent
 import com.practicum.list.feature.list.presentation.ListState
 import com.practicum.list.feature.list.ui.components.ListEmptyPlaceholder
+import com.practicum.list.feature.list.ui.components.bottomsheet.ListMenu
 import com.practicum.list.feature.list.ui.components.bottomsheet.ProductBottomSheet
 import com.practicum.list.feature.list.ui.components.formatQuantityLabel
 import com.practicum.list.feature.list.ui.components.listitem.ProductListItem
@@ -111,6 +112,13 @@ fun ListScreen(
             onDismiss = { onIntent(ListIntent.ProductBottomSheetDismissed) },
             onApplyClicked = { onIntent(ListIntent.ProductApplyClicked) },
             isApplyVisible = state.isAddEnabled
+        )
+
+
+        ListMenu(
+            onSortClicked = { onIntent(ListIntent.ListMenuAlphabeticalSortClicked) },
+            onRemoveAllClicked = { onIntent(ListIntent.ListMenuDeleteAllClicked) },
+            onRemoveChecked = { onIntent(ListIntent.ListMenuDeleteCheckedClicked) },
         )
     }
 }

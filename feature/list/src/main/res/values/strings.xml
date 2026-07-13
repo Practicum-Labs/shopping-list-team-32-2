@@ -13,4 +13,7 @@
     <string name="expand_dropdown_menu">Развернуть выпадающий список</string>
     <string name="plus">увеличить количество на один</string>
     <string name="minus">снизить количество на один</string>
+    <string name="sort_alphabetically">Сортировать по алфавиту</string>
+    <string name="remove_all">Удалить всё</string>
+    <string name="remove_bought">Удалить купленные</string>
 </resources>
