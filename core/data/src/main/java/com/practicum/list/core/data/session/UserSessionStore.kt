@@ -37,14 +37,10 @@ class UserSessionStore @Inject constructor(
             ?: UserSessionDefaults.LEGACY_LOCAL_USER_ID
 
     override suspend fun getAccessToken(): String? =
-        cryptoHelper.decryptBytes(
-            context.authSessionDataStore.data.first()[KEY_ACCESS_TOKEN]
-        )
+        decryptStoredToken(KEY_ACCESS_TOKEN)
 
     override suspend fun getRefreshToken(): String? =
-        cryptoHelper.decryptBytes(
-            context.authSessionDataStore.data.first()[KEY_REFRESH_TOKEN]
-        )
+        decryptStoredToken(KEY_REFRESH_TOKEN)
 
     override suspend fun saveSession(userId: Long, accessToken: String, refreshToken: String) {
         val previousUserId = getUserId()
@@ -70,6 +66,15 @@ class UserSessionStore @Inject constructor(
             preferences.remove(KEY_ACCESS_TOKEN)
             preferences.remove(KEY_REFRESH_TOKEN)
         }
+    }
+
+    private suspend fun decryptStoredToken(key: Preferences.Key<ByteArray>): String? {
+        val encrypted = context.authSessionDataStore.data.first()[key] ?: return null
+        val decrypted = cryptoHelper.decryptBytes(encrypted)
+        if (decrypted == null) {
+            clearSession()
+        }
+        return decrypted
     }
 
     private companion object {

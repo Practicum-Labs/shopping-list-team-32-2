@@ -2,6 +2,8 @@
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.detekt)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
 }
 
 android {
@@ -25,10 +27,11 @@ android {
 
 dependencies {
     detektPlugins(libs.detekt.formatting)
-}
-dependencies {
     implementation(libs.androidx.activity.ktx)
     implementation(libs.androidx.navigation.common.ktx)
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.hilt)
+    ksp(libs.hilt.compiler)
 }
 
 detekt {

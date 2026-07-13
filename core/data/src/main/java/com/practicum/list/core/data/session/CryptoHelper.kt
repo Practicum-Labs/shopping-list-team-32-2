@@ -2,6 +2,7 @@ package com.practicum.list.core.data.session
 
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
+import java.security.GeneralSecurityException
 import java.security.KeyStore
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
@@ -41,14 +42,25 @@ class CryptoHelper @Inject constructor() {
     }
 
     fun decryptBytes(encryptedBytes: ByteArray?): String? {
-        if (encryptedBytes == null) return null
-        val ivSize = encryptedBytes[0].toInt()
-        val iv = encryptedBytes.copyOfRange(1, 1 + ivSize)
-        val ciphertext = encryptedBytes.copyOfRange(1 + ivSize, encryptedBytes.size)
+        if (encryptedBytes == null || encryptedBytes.size < MIN_PAYLOAD_SIZE) {
+            return null
+        }
+        return try {
+            val ivSize = encryptedBytes[0].toInt() and 0xFF
+            if (ivSize == 0 || encryptedBytes.size <= 1 + ivSize) {
+                return null
+            }
+            val iv = encryptedBytes.copyOfRange(1, 1 + ivSize)
+            val ciphertext = encryptedBytes.copyOfRange(1 + ivSize, encryptedBytes.size)
 
-        val cipher = Cipher.getInstance(transformation)
-        cipher.init(Cipher.DECRYPT_MODE, getOrCreateSecretKey(), IvParameterSpec(iv))
-        return String(cipher.doFinal(ciphertext), Charsets.UTF_8)
+            val cipher = Cipher.getInstance(transformation)
+            cipher.init(Cipher.DECRYPT_MODE, getOrCreateSecretKey(), IvParameterSpec(iv))
+            String(cipher.doFinal(ciphertext), Charsets.UTF_8)
+        } catch (_: GeneralSecurityException) {
+            null
+        } catch (_: IndexOutOfBoundsException) {
+            null
+        }
     }
 
     private companion object {
@@ -56,5 +68,6 @@ class CryptoHelper @Inject constructor() {
         const val keyAlias = "my_datastore_key"
         const val androidKeyStore = "AndroidKeyStore"
         const val keySizeBits = 256
+        const val MIN_PAYLOAD_SIZE = 2
     }
 }

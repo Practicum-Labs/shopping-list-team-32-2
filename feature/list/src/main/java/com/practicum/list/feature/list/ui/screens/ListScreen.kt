@@ -37,7 +37,7 @@ fun ListScreen(
         modifier = modifier.fillMaxSize(),
     ) {
         when {
-            state.isLoading && state.items.isEmpty() -> {
+            state.isLoading && state.products.isEmpty() -> {
                 CircularProgressIndicator(
                     modifier = Modifier.align(Alignment.Center),
                     color = MaterialTheme.colorScheme.onPrimary,
@@ -60,15 +60,15 @@ fun ListScreen(
                     modifier = Modifier.fillMaxSize(),
                 ) {
                     items(
-                        items = state.items,
+                        items = state.products,
                         key = { product -> product.id },
                     ) { product ->
                         ProductListItem(
                             name = product.name,
                             quantityLabel = product.formatQuantityLabel(),
                             isChecked = product.isChecked,
-                            onCheckedChange = {
-                                onIntent(ListIntent.ToggleProductChecked(product.id))
+                            onCheckedChange = { checked ->
+                                onIntent(ListIntent.ToggleProductChecked(product, isChecked = checked))
                             },
                             onQuantityClick = {
                                 onIntent(ListIntent.ProductQuantityClicked(product.id))
@@ -153,7 +153,7 @@ private val listStateLoading = ListState(
 private val listStateFilled = ListState(
     listId = previewListId,
     listTitle = "Продукты",
-    items = previewProducts,
+    products = previewProducts,
     isLoading = false,
 )
 

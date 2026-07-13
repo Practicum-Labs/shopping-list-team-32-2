@@ -9,7 +9,7 @@ import com.practicum.list.core.data.local.dao.ShoppingListDao
 import com.practicum.list.core.data.local.mapper.toDomain
 import com.practicum.list.core.data.local.mapper.toEntity
 import com.practicum.list.core.theme.R
-import com.practicum.list.feature.main.domain.repository.ShoppingListRepository
+import com.practicum.list.core.common.domain.repository.ShoppingListRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
@@ -60,6 +60,11 @@ class ShoppingListRepositoryImpl @Inject constructor(
             }
             .distinctUntilChanged()
             .map { list -> list?.toDomain(defaultIconRes) }
+    }
+
+    override fun observeListTitle(listId: Long): Flow<String> {
+        return observeShoppingList(listId)
+            .map { shoppingList -> shoppingList?.name.orEmpty() }
     }
 
     private suspend fun duplicateListAndGetId(shoppingListId: Long, userId: Long): Long? {
