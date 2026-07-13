@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.practicum.list.feature.list.R
 
 private val IllustrationWidth = 324.dp
-private val IllustrationAspectRatio = 324f / 300f
+private const val IllustrationAspectRatio = 324f / 300f
 
 @Composable
 fun ListEmptyPlaceholder(

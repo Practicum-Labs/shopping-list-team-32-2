@@ -7,4 +7,10 @@
     <string name="product_delete_content_description">Удалить товар</string>
     <string name="product_edit_content_description">Редактировать товар</string>
     <string name="product_quantity_content_description">Количество, нажмите для изменения</string>
+    <string name="goods">Товары</string>
+    <string name="amount">Количество</string>
+    <string name="measures">Единицы</string>
+    <string name="expand_dropdown_menu">Развернуть выпадающий список</string>
+    <string name="plus">увеличить количество на один</string>
+    <string name="minus">снизить количество на один</string>
 </resources>

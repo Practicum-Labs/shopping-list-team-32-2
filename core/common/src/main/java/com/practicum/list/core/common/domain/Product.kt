@@ -1,6 +1,6 @@
 package com.practicum.list.core.common.domain
 
-data class Product (
+data class Product(
     val id: Long,
     val name: String,
     val isChecked: Boolean,

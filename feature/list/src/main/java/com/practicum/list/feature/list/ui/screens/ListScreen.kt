@@ -24,14 +24,15 @@ import com.practicum.list.feature.list.R
 import com.practicum.list.feature.list.presentation.ListIntent
 import com.practicum.list.feature.list.presentation.ListState
 import com.practicum.list.feature.list.ui.components.ListEmptyPlaceholder
-import com.practicum.list.feature.list.ui.components.ProductListItem
+import com.practicum.list.feature.list.ui.components.bottomsheet.AddProductBottomSheet
 import com.practicum.list.feature.list.ui.components.formatQuantityLabel
+import com.practicum.list.feature.list.ui.components.listitem.ProductListItem
 
 @Composable
 fun ListScreen(
+    modifier: Modifier = Modifier,
     state: ListState,
     onIntent: (ListIntent) -> Unit,
-    modifier: Modifier = Modifier,
 ) {
     Box(
         modifier = modifier.fillMaxSize(),
@@ -68,13 +69,18 @@ fun ListScreen(
                             quantityLabel = product.formatQuantityLabel(),
                             isChecked = product.isChecked,
                             onCheckedChange = { checked ->
-                                onIntent(ListIntent.ToggleProductChecked(product, isChecked = checked))
+                                onIntent(
+                                    ListIntent.ToggleProductChecked(
+                                        product,
+                                        isChecked = checked
+                                    )
+                                )
                             },
                             onQuantityClick = {
                                 onIntent(ListIntent.ProductQuantityClicked(product.id))
                             },
                             onDelete = {
-                                onIntent(ListIntent.DeleteProduct(product.id))
+                                onIntent(ListIntent.DeleteProductClicked(product.id))
                             },
                             onEdit = {
                                 onIntent(ListIntent.EditProduct(product.id))
@@ -94,17 +100,29 @@ fun ListScreen(
                 onClick = { onIntent(ListIntent.AddProductClicked) },
             )
         }
+        AddProductBottomSheet(
+            bottomSheetIsVisible = state.addProductBottomSheetOpened,
+            name = state.addProductBottomSheetState.name,
+            onNameChange = { onIntent(ListIntent.AddProductNameChanged(it)) },
+            quantity = state.addProductBottomSheetState.quantity,
+            onQuantityChange = { onIntent(ListIntent.AddProductQuantityChanged(it)) },
+            unit = state.addProductBottomSheetState.unit ?: MeasureUnit.Piece,
+            onUnitClick = { onIntent(ListIntent.AddProductUnitChanged(it)) },
+            onDismiss = { onIntent(ListIntent.AddProductDismissClicked) },
+            onApplyClicked = { onIntent(ListIntent.AddProductApplyClicked(it)) },
+            isApplyVisible = state.isAddEnabled
+        )
     }
 }
 
-private val previewListId = 1L
+private const val PREVIEW_LIST_ID = 1L
 
 private val previewProducts = listOf(
     Product(
         id = 1,
         name = "Карты",
         isChecked = true,
-        listId = previewListId,
+        listId = PREVIEW_LIST_ID,
         quantity = 1f,
         unit = MeasureUnit.Kilogram,
         sortPosition = 0,
@@ -113,7 +131,7 @@ private val previewProducts = listOf(
         id = 2,
         name = "Деньги",
         isChecked = false,
-        listId = previewListId,
+        listId = PREVIEW_LIST_ID,
         quantity = 10f,
         unit = MeasureUnit.Piece,
         sortPosition = 1,
@@ -122,7 +140,7 @@ private val previewProducts = listOf(
         id = 3,
         name = "2 ствола",
         isChecked = false,
-        listId = previewListId,
+        listId = PREVIEW_LIST_ID,
         quantity = 1f,
         unit = MeasureUnit.Liter,
         sortPosition = 2,
@@ -131,7 +149,7 @@ private val previewProducts = listOf(
         id = 4,
         name = "Сыр",
         isChecked = false,
-        listId = previewListId,
+        listId = PREVIEW_LIST_ID,
         quantity = 1f,
         unit = MeasureUnit.Package,
         sortPosition = 3,
@@ -139,19 +157,19 @@ private val previewProducts = listOf(
 )
 
 private val listStateEmpty = ListState(
-    listId = previewListId,
+    listId = PREVIEW_LIST_ID,
     listTitle = "Продукты",
     isLoading = false,
 )
 
 private val listStateLoading = ListState(
-    listId = previewListId,
+    listId = PREVIEW_LIST_ID,
     listTitle = "Продукты",
     isLoading = true,
 )
 
 private val listStateFilled = ListState(
-    listId = previewListId,
+    listId = PREVIEW_LIST_ID,
     listTitle = "Продукты",
     products = previewProducts,
     isLoading = false,
