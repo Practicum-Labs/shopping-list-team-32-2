@@ -117,7 +117,6 @@ fun ListScreen(
             isApplyVisible = state.isAddEnabled
         )
 
-
         ListMenu(
             isBottomSheetOpened = state.contextMenuOpened,
             onSortClicked = { onIntent(ListIntent.ListMenuAlphabeticalSortClicked) },
