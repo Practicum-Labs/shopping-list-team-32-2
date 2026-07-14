@@ -8,6 +8,8 @@
 - Epic 2 issues [#39](https://github.com/Practicum-Labs/shopping-list-team-32-2/issues/39)–[#46](https://github.com/Practicum-Labs/shopping-list-team-32-2/issues/46)
 - Figma UI-kit: [Практикум ОП — Список покупок](https://www.figma.com/design/n84usOH28EjTrPXrfCzM3q/%D0%9F%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D0%BA%D1%83%D0%BC-%D0%9E%D0%9F-%D0%A1%D0%BF%D0%B8%D1%81%D0%BE%D0%BA-%D0%BF%D0%BE%D0%BA%D1%83%D0%BF%D0%BE%D0%BA?node-id=0-1) (auth-экранов в файле нет; иконка `logout` — node [1:7294](https://www.figma.com/design/n84usOH28EjTrPXrfCzM3q/%D0%9F%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D0%BA%D1%83%D0%BC-%D0%9E%D0%9F-%D0%A1%D0%BF%D0%B8%D1%81%D0%BE%D0%BA-%D0%BF%D0%BE%D0%BA%D1%83%D0%BF%D0%BE%D0%BA?node-id=1-7294))
 
+**Ориентация приложения:** только portrait (`MainActivity` → `android:screenOrientation="portrait"`). Auth-экраны не поддерживают landscape отдельно. См. [`PROJECT_AUDIT.md`](PROJECT_AUDIT.md#4-androidmanifest-и-application).
+
 ---
 
 ## Backend
@@ -141,19 +143,43 @@ DTO: snake_case в JSON → `@field:Json(name = "access_token")` и т.д.
 
 ### Навигация (type-safe routes)
 
-Планируемые маршруты в `:core:navigation` (issue [#42](https://github.com/Practicum-Labs/shopping-list-team-32-2/issues/42)):
+**Реализованы** в `core/navigation/Destinations.kt` ([#42](https://github.com/Practicum-Labs/shopping-list-team-32-2/issues/42)):
 
 - `LoginRoute`
 - `RegisterRoute`
 - `ResetPasswordRoute`
 
+Регистрация: `feature/auth/.../AuthNavigation.kt` → `authScreenNavigation()`.
+
 **Поведение back stack:**
 - Login → Register / Reset password: `navigate()` (экран остаётся в стеке, «назад» → Login)
 - Register / Reset → Login: `popBackStack()`, не повторный `navigate(LoginRoute)`
+- Успешный login / register → Main с `popUpTo<LoginRoute> { inclusive = true }`
 
-Точка входа и проверка сессии — `RootScreenRoute` + `RootViewModel` ([#45](https://github.com/Practicum-Labs/shopping-list-team-32-2/issues/45)): splash → `auth/check` / refresh → Login или Main.
+Точка входа — `RootScreenRoute` + `RootViewModel` ([#45](https://github.com/Practicum-Labs/shopping-list-team-32-2/issues/45)): splash → `auth/check` / refresh → Login или Main.
 
 Экран списка и товары (Epic 3) — [`PRODUCT.md`](PRODUCT.md).
+
+### Сеть и отказоустойчивость
+
+| Компонент | Роль |
+|-----------|------|
+| `AuthInterceptor` | `Authorization: Bearer` + `Content-Type` |
+| `TokenAuthenticator` | 401 → refresh; при fail → `clearSession` + `SessionEvents` |
+| `ResilientAuthApi` / `ApiHostSelector` | primary Railway → sticky fallback proxy при IO/502/503/504 |
+| Отдельный refresh-клиент | без authenticator loop (`@RefreshResilientAuthApi`) |
+
+Timeouts: primary connect ~3 с, fallback длиннее — см. `NetworkModule.kt`.
+
+### Logout и SessionEvents ([#92](https://github.com/Practicum-Labs/shopping-list-team-32-2/issues/92))
+
+| Путь | Цепочка |
+|------|---------|
+| Ручной | Main TopBar profile → `LogoutDialog` → `SignOutUseCase` → `clearSession()` + `notifySessionExpired()` |
+| Авто | `TokenAuthenticator` после неудачного refresh — то же |
+| UI | `MainActivity.SessionExpiredHandler` → `LoginRoute`, очистка back stack |
+
+Диалог: `core/design/.../dialogs/LogoutDialog.kt` (на базе `CustomLayoutDialog`).
 
 ### Связь пользователя и списков покупок (Room)
 
@@ -162,23 +188,26 @@ Backend не хранит списки — только auth. Локально �
 | Компонент | Роль |
 |-----------|------|
 | `shopping_lists.user_id` | владелец списка; товары наследуют через `list_id` |
-| `UserSession` / `UserSessionStore` | DataStore: `user_id`, `access_token`, `refresh_token` |
+| `UserSession` (`:core:common`) | **интерфейс** сессии |
+| `UserSessionStore` (`:core:data`) | DataStore + **`CryptoHelper`** (Keystore AES) для токенов |
+| `feature/auth/.../models/UserSession` | **DTO** ответа API (другой тип, то же имя) |
 | `UserSessionDefaults.LEGACY_LOCAL_USER_ID` (`0`) | списки до первого логина / без сессии |
 
 **Поведение:**
 - CRUD списков фильтруется по текущему `userId` из `UserSession`
 - При первом `saveSession` после логина списки с `user_id = 0` перепривязываются к `user_id` пользователя
 - Logout очищает сессию; данные в Room остаются (мультиаккаунт на одном устройстве)
-- `LoginUseCase` / #44 вызывает `UserSession.saveSession(userId, accessToken, refreshToken)` после успешного API
+- `LoginUseCase` вызывает `UserSession.saveSession(userId, accessToken, refreshToken)` после успешного API
 
 ### Модули
 
 | Модуль | Роль |
 |--------|------|
-| `:feature:auth` | UI-компоненты (#43), экраны и ViewModel (#44), `authScreenNavigation` (#42) |
-| `:core:data` | `AuthApi`, DTO, `RetrofitNetworkClient`, `AuthError` (#39) |
-| `:core:navigation` | type-safe routes |
-| `:app` | `NavHost`, `RootScreen`, `RootViewModel` (#45) |
+| `:feature:auth` | UI (#43), экраны/VM (#44), `authScreenNavigation` (#42) |
+| `:feature:main` | `SignOutUseCase`, logout dialog wiring |
+| `:core:data` | `AuthApi`, resilient client, interceptor/authenticator, `SessionEvents`, crypto store |
+| `:core:navigation` | type-safe routes + animations |
+| `:app` | `NavHost`, `RootScreen`, `SessionExpiredHandler` (#45) |
 
 ### Design system (`:feature:auth`)
 
@@ -198,11 +227,13 @@ Backend не хранит списки — только auth. Локально �
 
 ## Чеклист для разработчиков
 
-- [ ] Base URL Railway с trailing slash
+- [ ] Base URL Railway с trailing slash; учитывать fallback proxy
 - [ ] Пароль ≥ 7, не 6
 - [ ] Registration success = 200
 - [ ] `auth/check`: `Bearer` + boolean `is_valid`
 - [ ] `auth/recovery`: header `email`, ответ — text/plain
 - [ ] Без Firebase
 - [ ] DTO: snake_case через Moshi `@Json`
+- [ ] Logout / expired session → только через `SessionEvents` (не дублировать navigate в VM)
+- [ ] Не путать `core.common.UserSession` (iface) и `feature.auth...UserSession` (DTO)
 - [ ] Списки покупок: `shopping_lists.user_id` + фильтрация через `UserSession`

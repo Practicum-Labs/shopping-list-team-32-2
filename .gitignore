@@ -22,3 +22,6 @@ app/release/
 *.iml
 *.log
 .DS_Store
+
+# Personal local notes / interactive reports (do not publish)
+docs/private/

@@ -73,6 +73,7 @@ Build system:
 | targetSdk | 35 |
 | JVM target | 21 |
 | Compose | включён в app, core:design, core:navigation, feature:* |
+| Compose BOM | `2025.08.01` (`gradle/libs.versions.toml`) |
 
 **Namespace:** во всех модулях используется единая схема `com.practicum.list.*`.
 
@@ -84,67 +85,56 @@ Build system:
 app/src/main/java/
 └── com.practicum.list/
     ├── ui/
-    │   ├── MainActivity.kt          — NavHost, startDestination = RootScreenRoute
+    │   ├── MainActivity.kt          — NavHost + SessionExpiredHandler
     │   ├── RootScreen.kt            — splash / проверка сессии (#45)
     │   └── RootScreenNavigation.kt
     ├── presentation/
     │   └── RootViewModel.kt
     ├── domain/
     │   └── RootUseCases.kt          — CheckToken, RefreshToken
-    ├── appliction/
-    │   └── ShoppingListApplication.kt
+    ├── appliction/                  — пакет (typo в коде): ShoppingListApplication
     └── di/
         └── AppModule.kt
 
 core/design/src/main/java/
-└── com.practicum.list.core.theme/
-    ├── ColorHex.kt    — HEX-константы light/dark (Figma)
-    ├── Color.kt       — androidx.compose.ui.graphics.Color
-    ├── Theme.kt       — ShoppingListTheme, light/dark ColorScheme
-    ├── Type.kt        — Typography (M3)
-    └── ListIcons.kt   — DEFAULT_LIST_ICON и др.
+├── com.practicum.list.core.theme/
+│   ├── ColorHex.kt, Color.kt, Theme.kt, Type.kt, Shape.kt, Dimens.kt
+│   └── ListIcons.kt
+└── com.practicum.list.core.components/
+    ├── topbar/TopBar.kt
+    ├── dialogs/ — CustomLayoutDialog, Create/Rename/DeleteListDialog, LogoutDialog
+    ├── bottomsheet/CategoryPickerBottomSheet.kt
+    ├── cards/ShoppingListItem.kt (SwipeableListItem)
+    ├── fab/, placeholder/, …
 
-core/mvi/src/main/java/
-└── com.practicum.list.core.mvi/
-    ├── MviState.kt, MviIntent.kt, MviEffect.kt
-    └── MviViewModel.kt
+core/design/src/main/res/ — drawable иконок + strings/arrays (цвета темы — только Kotlin)
 
-core/data/       — Room, Retrofit, DatabaseModule, NetworkModule
-core/common/     — domain-модели (ShoppingList, Product, …)
-core/navigation/ — type-safe маршруты (MainScreenRoute, ListScreenRoute; auth: LoginRoute, RegisterRoute, ResetPasswordRoute — #42)
+core/mvi/        — MviState / Intent / Effect / MviViewModel
+core/data/       — Room v6, Retrofit, SessionEvents, TokenAuthenticator, CryptoHelper
+core/common/     — Product, MeasureUnit, ShoppingList, UserSession (interface),
+                   ShoppingListRepository (interface), ObserveListTitleUseCase
+core/navigation/ — Destinations + anim/DefaultAnimations.kt
 
 feature/main/
-├── presentation/  — MainState, MainIntent, MainEffect, MainViewModel
-├── domain/
-│   ├── repository/ — ShoppingListRepository
-│   └── usecase/    — *UseCase (ObserveShoppingLists, Upsert, …)
-├── data/
-│   ├── impl/       — ShoppingListRepositoryImpl
-│   └── di/         — ShoppingListRepositoryModule
-└── ui/screens/    — MainScreen, mainScreenNavigation
+├── presentation/  — MainViewModel (+ ProfileClicked / logout dialog state)
+├── domain/usecase — Observe/Upsert/Delete/Duplicate + SignOutUseCase
+├── data/impl      — ShoppingListRepositoryImpl
+└── ui/screens/    — MainScreen, mainScreenNavigation (TopBar → profile)
 
 feature/list/
-├── presentation/  — ListState, ListIntent, ListEffect, ListViewModel
-├── domain/
-│   ├── repository/ — ListRepository
-│   └── usecase/    — ObserveProducts, Upsert, Delete, Sort, …
-├── data/
-│   ├── impl/       — ListRepositoryImpl
-│   └── di/         — ListRepositoryModule
-└── ui/
-    ├── screens/    — ListScreen, listScreenNavigation
-    └── components/ — ProductListItem, ProductListActions, …
+├── presentation/  — ListViewModel (sheet, ListMenu, bulk delete)
+├── domain/        — ListRepository + product UseCases
+├── data/          — ListRepositoryImpl
+└── ui/            — ListScreen, ProductBottomSheet, ListMenu, Delete*Dialog, …
 
 feature/auth/
-├── presentation/  — Login / Register / ResetPassword ViewModel + MVI
-├── domain/          — AuthRepository, AuthUseCases, validation
-├── data/            — AuthRepositoryImpl
-└── ui/
-    ├── components/ — AuthOutlinedTextField, PasswordTextField, … (#43)
-    └── screens/    — authScreenNavigation (#42)
+├── presentation/  — Login / Register / ResetPassword MVI
+├── domain/        — AuthRepository, AuthValidation, AuthUseCases
+├── data/          — AuthRepositoryImpl
+└── ui/            — components + authScreenNavigation
 ```
 
-**`:core:design` не содержит `src/main/res/`** — палитра и типографика только в Kotlin (drawable иконок списков — в `:core:design`).
+Палитра/типографика — Compose-only; XML в `:core:design` — иконки и строки, не color attrs.
 
 Раскладка feature-модулей: `presentation`, `domain/usecase`, `data`, `ui` — см. README.
 
@@ -159,8 +149,11 @@ feature/auth/
 | MainActivity | `ComponentActivity` + `setContent` |
 | Application | `ShoppingListApplication` + `@HiltAndroidApp` |
 | Theme (manifest) | `@style/Theme.ShoppingList` → `Theme.Material3.DayNight.NoActionBar` |
+| **Ориентация** | `android:screenOrientation="portrait"` на `MainActivity` |
 
 В `app` остаётся минимальный XML — системная тема окна до старта Compose. Цвета UI задаются в `ShoppingListTheme`, не в XML.
+
+**Portrait only:** макеты Figma и UI-ТЗ рассчитаны на телефон в портрете. Landscape и tablet master-detail ([#79](https://github.com/Practicum-Labs/shopping-list-team-32-2/issues/79)) — отдельно, когда появится layout.
 
 ---
 
@@ -168,17 +161,18 @@ feature/auth/
 
 | Область | Где подключено | Примечание |
 |---------|----------------|------------|
-| Jetpack Compose | app, :core:design, :core:navigation, :feature:* | BOM 2024.11.00 |
+| Jetpack Compose | app, :core:design, :core:navigation, :feature:* | BOM **2025.08.01** |
 | Material 3 | :core:design | `ShoppingListTheme` + `MaterialTheme` |
 | Activity Compose | app | `setContent` в MainActivity |
-| Navigation Compose | :core:navigation | NavHost, composable-маршруты |
+| Navigation Compose | :core:navigation | NavHost, type-safe routes, `DefaultAnimations` |
 | Coroutines / StateFlow | :core:mvi | `MviViewModel` |
 | Detekt | все модули + CI | `config/detekt/detekt.yml` |
-| Room | :core:data | ShoppingDatabase, DAOs, миграции |
+| Room | :core:data | `ShoppingDatabase` **v6**, DAOs, миграции 1→6 |
 | Hilt | :app, :core:data, :feature:* | `@InstallIn(SingletonComponent)`, `@HiltViewModel` |
-| Retrofit / OkHttp | :core:data | `AuthApi` (Railway), `ProductApi` (заглушка) |
+| Retrofit / OkHttp | :core:data | `AuthApi` (Railway + fallback), `ProductApi` (заглушка) |
+| DataStore + Keystore | :core:data | `UserSessionStore` + `CryptoHelper` |
 
-**Тема:** Compose-only по требованию заказчика — без XML attrs/colors в `:core:design`.
+**Тема:** цвета/типографика — Compose-only; drawable/strings иконок — в `res/` модуля design.
 
 В ТЗ Практикума для баллов предусмотрены варианты `theme + attrs` (+2) или `values-night/colors` (+1). Команда сознательно выбрала Compose `MaterialTheme`; с наставником стоит согласовать, какой критерий оценки приоритетнее.
 
@@ -278,19 +272,19 @@ ShoppingListTheme {
 
 ## 10. Навигация
 
-Type-safe маршруты в `:core:navigation` (`@Serializable`):
+Type-safe маршруты в `:core:navigation` (`Destinations.kt`, `@Serializable`):
 
 - `RootScreenRoute` — splash + проверка токена (#45), **startDestination**
-- `MainScreenRoute` — главный экран
+- `MainScreenRoute` — главный экран (списки, logout)
 - `ListScreenRoute(listId: Long)` — экран списка / товаров
-- `LoginRoute`, `RegisterRoute`, `ResetPasswordRoute` — auth-флоу (#42)
+- `LoginRoute`, `RegisterRoute`, `ResetPasswordRoute` — auth (#42), **реализованы**
 
-Feature-модули регистрируют destination через extension (`rootScreenNavigation`, `mainScreenNavigation`, `listScreenNavigation`, `authScreenNavigation`). `:app` собирает `NavHost`.
+Extensions: `rootScreenNavigation`, `mainScreenNavigation`, `listScreenNavigation`, `authScreenNavigation`.  
+Общие transitions: `core/navigation/anim/DefaultAnimations.kt`.
 
-Auth back stack: login → register/reset через `navigate()`; обратно на login — `popBackStack()`. Подробнее — [`AUTH.md`](AUTH.md).  
-Экран списка и товары — [`PRODUCT.md`](PRODUCT.md).
-
-Передача аргументов — через type-safe routes (`ListScreenRoute(id = …)`), не hardcoded path.
+Auth back stack: login → register/reset через `navigate()`; назад — `popBackStack()`.  
+Сессия истекла / logout → `SessionEvents` → `MainActivity` чистит стек и открывает `LoginRoute`.  
+Подробнее — [`AUTH.md`](AUTH.md). Экран списка — [`PRODUCT.md`](PRODUCT.md).
 
 ---
 
@@ -298,13 +292,20 @@ Auth back stack: login → register/reset через `navigate()`; обратн�
 
 | Компонент | Где | Статус |
 |-----------|-----|--------|
-| **Room** | `:core:data` | `ShoppingDatabase` **v5**, `ShoppingListDao`, `ProductDao`; `shopping_lists.user_id`; миграции 1→5 |
-| **UserSession** | `:core:data` | DataStore: `user_id`, токены; миграция legacy-списков при логине |
-| **Hilt** | `:app`, `:core:data`, `:feature:*` | `DatabaseModule`, `NetworkModule`, `AppModule`, feature `@Binds`-модули |
-| **Retrofit** | `:core:data` | `AuthApi` → Railway (+ fallback proxy); `ProductApi` — заглушка |
-| **Auth** | `:core:data`, `:feature:auth`, `:app` | DTO, экраны, `RootViewModel`; см. [`AUTH.md`](AUTH.md) |
-| **Lists** | `:feature:main` | `ShoppingListRepository` — CRUD списков, duplicate с товарами |
-| **Products** | `:feature:list` | `ListRepository` — CRUD товаров, sort, bulk delete; см. [`PRODUCT.md`](PRODUCT.md) |
-| **UseCase** | `:feature:*/domain/usecase` | `*UseCase`-классы (не `interactor`) |
+| **Room** | `:core:data` | `ShoppingDatabase` **v6**, DAOs; `user_id` у списков; миграции **1→6** |
+| **UserSession** | `:core:common` (iface) + `:core:data` | DataStore + `CryptoHelper`; legacy `user_id=0` при логине |
+| **SessionEvents** | `:core:data` | `sessionExpired` Flow; ручной logout + failed refresh |
+| **Hilt** | `:app`, `:core:data`, `:feature:*` | `DatabaseModule`, `NetworkModule`, feature `@Binds` |
+| **Retrofit** | `:core:data` | `AuthApi` + `ResilientAuthApi` / fallback; `ProductApi` stub |
+| **Auth** | `:feature:auth`, `:app` | экраны, validation, `RootViewModel`; [`AUTH.md`](AUTH.md) |
+| **Lists** | `:feature:main` | CRUD, rename/delete dialogs, category picker, duplicate, `SignOutUseCase` |
+| **Products** | `:feature:list` | CRUD, `ProductBottomSheet`, `ListMenu`, bulk delete; [`PRODUCT.md`](PRODUCT.md) |
+| **UseCase** | `:feature:*/domain/usecase` + часть в `:core:common` | `*UseCase`, не `interactor` |
+
+### Lifecycle сессии
+
+1. **Ручной logout:** TopBar profile → `LogoutDialog` → `SignOutUseCase` → `clearSession()` + `SessionEvents.notifySessionExpired()`.
+2. **Авто:** `TokenAuthenticator` — refresh fail → то же уведомление.
+3. **UI:** `MainActivity.SessionExpiredHandler` собирает `sessionExpired` и `navigate(LoginRoute) { popUpTo(0) { inclusive = true } }`.
 
 Domain-слой feature-модулей использует пакет **`domain/usecase`**, не `interactor`.
