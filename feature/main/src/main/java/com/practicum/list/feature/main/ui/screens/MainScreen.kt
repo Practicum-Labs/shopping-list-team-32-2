@@ -90,7 +90,6 @@ fun MainScreen(
                                 )
                             },
                             onIconClick = { onIntent(MainIntent.EditListIcon(list.id)) },
-                            onDeleteClick = { onIntent(MainIntent.DeleteList(list.id)) },
                             onEditClick = {
                                 onIntent(
                                     MainIntent.RenameListClicked(

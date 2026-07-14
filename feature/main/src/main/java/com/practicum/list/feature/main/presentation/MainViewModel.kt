@@ -91,7 +91,7 @@ class MainViewModel @Inject constructor(
             }
 
             is MainIntent.RenameListClicked -> validateRenameDialog(intent.id)
-            is MainIntent.EditListIcon -> emitEffect(MainEffect.ShowCategoryPicker)
+            is MainIntent.EditListIcon -> emitEffect(MainEffect.ShowCategoryPicker(intent.id))
             is MainIntent.DismissEditListIcon -> {
                 if (intent.resId != 0 && intent.id != null) {
                     updateIcon(intent.id, intent.resId)
