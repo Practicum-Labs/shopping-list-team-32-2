@@ -17,6 +17,7 @@ data class ListState(
     val confirmationDialogState: ConfirmationDialogState? = null,
     val editProductMenuState: EditProductMenuState? = null,
     val isBeingSorted: Boolean = false,
+    val isOptionsMenuVisible: Boolean = false,
 ) : MviState {
     val isEmpty: Boolean get() = products.isEmpty() && !isLoading
     val isAddEnabled: Boolean
