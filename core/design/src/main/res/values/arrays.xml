@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="list_icon_description">
+        <item>@string/icon_list_description_1</item>
+        <item>@string/icon_list_description_2</item>
+        <item>@string/icon_list_description_3</item>
+        <item>@string/icon_list_description_4</item>
+        <item>@string/icon_list_description_5</item>
+        <item>@string/icon_list_description_6</item>
+        <item>@string/icon_list_description_7</item>
+        <item>@string/icon_list_description_8</item>
+        <item>@string/icon_list_description_9</item>
+        <item>@string/icon_list_description_10</item>
+        <item>@string/icon_list_description_11</item>
+        <item>@string/icon_list_description_12</item>
+        <item>@string/icon_list_description_13</item>
+        <item>@string/icon_list_description_14</item>
+        <item>@string/icon_list_description_15</item>
+        <item>@string/icon_list_description_16</item>
+        <item>@string/icon_list_description_17</item>
+        <item>@string/icon_list_description_18</item>
+        <item>@string/icon_list_description_19</item>
+        <item>@string/icon_list_description_20</item>
+        <item>@string/icon_list_description_21</item>
+        <item>@string/icon_list_description_22</item>
+        <item>@string/icon_list_description_23</item>
+        <item>@string/icon_list_description_24</item>
+        <item>@string/icon_list_description_25</item>
+        <item>@string/icon_list_description_26</item>
+        <item>@string/icon_list_description_27</item>
+        <item>@string/icon_list_description_28</item>
+        <item>@string/icon_list_description_29</item>
+        <item>@string/icon_list_description_30</item>
+    </array>
+</resources>

@@ -43,6 +43,7 @@ import kotlin.math.roundToInt
 fun SwipeableListItem(
     iconResId: Int,
     text: String,
+    onIconClick: () -> Unit,
     onClick: () -> Unit,
     onDeleteClick: () -> Unit,
     onEditClick: () -> Unit,
@@ -62,7 +63,10 @@ fun SwipeableListItem(
             },
             positionalThreshold = { distance -> distance * 0.5f },
             velocityThreshold = { velocityThresholdPx },
-            snapAnimationSpec = tween(durationMillis = AnimationDuration, easing = FastOutSlowInEasing),
+            snapAnimationSpec = tween(
+                durationMillis = AnimationDuration,
+                easing = FastOutSlowInEasing
+            ),
             decayAnimationSpec = decayAnimationSpec,
         )
     }
@@ -88,7 +92,8 @@ fun SwipeableListItem(
             iconResId = iconResId,
             modifier = Modifier,
             onClick = onClick,
-            state = state,
+            onIconClick = onIconClick,
+            state = state
         )
     }
 }
@@ -100,6 +105,7 @@ fun ShoppingListCell(
     iconResId: Int,
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
+    onIconClick: () -> Unit,
     state: AnchoredDraggableState<DragAnchors>,
 ) {
     ListItem(
@@ -113,7 +119,9 @@ fun ShoppingListCell(
                 elevation = 2.dp,
                 shape = RoundedCornerShape(12.dp),
             )
-            .clickable(onClick = onClick),
+            .clickable(
+                onClick = onClick
+            ),
         headlineContent = {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -121,10 +129,10 @@ fun ShoppingListCell(
             ) {
                 RoundIconButton(
                     resId = iconResId,
-                    onClick = {},
+                    onClick = onIconClick,
                     contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
                     containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                    enabled = false,
+                    enabled = true,
                 )
                 Text(
                     maxLines = 1,

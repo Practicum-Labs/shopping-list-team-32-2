@@ -1,14 +1,17 @@
 package com.practicum.list.feature.main.ui.screens
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -25,6 +28,7 @@ import com.practicum.list.core.navigation.anim.defaultPopExitTransition
 import com.practicum.list.core.theme.R.string
 import com.practicum.list.feature.main.presentation.MainEffect
 import com.practicum.list.feature.main.presentation.MainViewModel
+import kotlinx.coroutines.launch
 
 fun NavGraphBuilder.mainScreenNavigation(navController: NavController) {
     composable<MainScreenRoute>(
@@ -37,11 +41,15 @@ fun NavGraphBuilder.mainScreenNavigation(navController: NavController) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MainScreenRouteContent(navController: NavController) {
     val viewModel: MainViewModel = hiltViewModel()
     val state by viewModel.state.collectAsState()
+
     val snackbarHostState = remember { SnackbarHostState() }
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val scope = rememberCoroutineScope()
 
     LaunchedEffect(viewModel) {
         viewModel.effects.collect { effect ->
@@ -53,7 +61,17 @@ private fun MainScreenRouteContent(navController: NavController) {
 
                 is MainEffect.ShowRenameDialog -> Unit
 
-                is MainEffect.ShowCategoryPicker -> Unit
+                is MainEffect.ShowCategoryPicker -> {
+                    scope.launch {
+                        sheetState.show()
+                    }
+                }
+
+                is MainEffect.HideCategoryPicker -> {
+                    scope.launch {
+                        sheetState.hide()
+                    }
+                }
 
                 is MainEffect.ShowError ->
                     snackbarHostState.showSnackbar(effect.message)
@@ -76,6 +94,7 @@ private fun MainScreenRouteContent(navController: NavController) {
             state = state,
             onIntent = viewModel::dispatch,
             modifier = Modifier.padding(paddingValues),
+            sheetState = sheetState
         )
     }
 }

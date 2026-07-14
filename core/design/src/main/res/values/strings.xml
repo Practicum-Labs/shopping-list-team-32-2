@@ -12,4 +12,39 @@
     <string name="new_list_dialog_title_text">Добавление списка</string>
     <string name="cancel_general_text">Отмена</string>
     <string name="new_list_dialog_create_button_text">Создать</string>
+
+    <!-- Content description для всех иконок списка покупок
+         Тут чисто мое воображение что иконки могут значить, импровизируем -->
+
+    <string name="icon_list_description_1">Продукты</string>
+    <string name="icon_list_description_2">Пошопиться</string>
+    <string name="icon_list_description_3">Цветы</string>
+    <string name="icon_list_description_4">Строй-материалы</string>
+    <string name="icon_list_description_5">На праздник</string>
+    <string name="icon_list_description_6">На день рождение</string>
+    <string name="icon_list_description_7">Подарки</string>
+    <string name="icon_list_description_8">Бухлишко</string>
+    <string name="icon_list_description_9">Для питомца</string>
+    <string name="icon_list_description_10">На пикник</string>
+    <string name="icon_list_description_11">Аптека</string>
+    <string name="icon_list_description_12">Для школы</string>
+    <string name="icon_list_description_13">Уличный спорт</string>
+    <string name="icon_list_description_14">Для дома</string>
+    <string name="icon_list_description_15">Для тренировок</string>
+    <string name="icon_list_description_16">Для детей</string>
+    <string name="icon_list_description_17">Компьютерные игры</string>
+    <string name="icon_list_description_18">Порисовать</string>
+    <string name="icon_list_description_19">Одежда</string>
+    <string name="icon_list_description_20">Для машины</string>
+    <string name="icon_list_description_21">В путешествие</string>
+    <!-- Аптека в макете дублируется)) -->
+    <string name="icon_list_description_22">Аптека</string>
+    <string name="icon_list_description_23">На красоту</string>
+    <string name="icon_list_description_24">На фотосессию</string>
+    <string name="icon_list_description_25">Книги</string>
+    <string name="icon_list_description_26">Радости для себя</string>
+    <string name="icon_list_description_27">Игрушки</string>
+    <string name="icon_list_description_28">Для компьютера</string>
+    <string name="icon_list_description_29">Для младенца</string>
+    <string name="icon_list_description_30">Всякая всячина</string>
 </resources>

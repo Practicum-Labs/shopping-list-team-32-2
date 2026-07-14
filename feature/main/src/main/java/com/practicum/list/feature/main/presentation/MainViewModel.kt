@@ -35,6 +35,7 @@ class MainViewModel @Inject constructor(
             } else {
                 current
             }
+
             is MainIntent.CreateListClicked -> current.copy(createListDialog = CreateListDialogState())
             is MainIntent.CreateListNameChanged -> current.copy(
                 createListDialog = current.createListDialog?.copy(name = intent.name),
@@ -42,6 +43,14 @@ class MainViewModel @Inject constructor(
 
             is MainIntent.DismissCreateListDialog -> current.copy(createListDialog = null)
             is MainIntent.ConfirmCreateList -> current.copy(createListDialog = null)
+            is MainIntent.EditListIcon -> current.copy(
+                selectedListIdForIcon = intent.id
+            )
+
+            is MainIntent.DismissEditListIcon -> current.copy(
+                selectedListIdForIcon = null
+            )
+
             else -> current
         }
 
@@ -59,6 +68,14 @@ class MainViewModel @Inject constructor(
                 if (name.isNotBlank()) {
                     createList(name)
                 }
+            }
+
+            is MainIntent.EditListIcon -> emitEffect(MainEffect.ShowCategoryPicker)
+            is MainIntent.DismissEditListIcon -> {
+                if (intent.resId != 0 && intent.id != null) {
+                    updateIcon(intent.id, intent.resId)
+                }
+                emitEffect(MainEffect.HideCategoryPicker)
             }
 
             else -> Unit
@@ -111,6 +128,16 @@ class MainViewModel @Inject constructor(
             .onFailure { emitEffect(MainEffect.ShowError(it.message ?: ERROR_RENAME_LIST)) }
     }
 
+    private suspend fun updateIcon(id: Long, resId: Int) {
+        val list = state.value.lists.find { it.id == id }
+        if (list == null) {
+            emitEffect(MainEffect.ShowError(ERROR_LIST_NOT_FOUND))
+            return
+        }
+        runCatching { upsertShoppingListUseCase(list.copy(iconResId = resId)) }
+            .onFailure { emitEffect(MainEffect.ShowError(it.message ?: ERROR_UPDATE_ICON_LIST)) }
+    }
+
     private suspend fun duplicateList(id: Long) {
         runCatching { duplicateShoppingListUseCase(id) }
             .onFailure { emitEffect(MainEffect.ShowError(it.message ?: ERROR_DUPLICATE_LIST)) }
@@ -120,6 +147,8 @@ class MainViewModel @Inject constructor(
         private const val ERROR_LIST_NOT_FOUND = "Список не найден"
         private const val ERROR_DELETE_LIST = "Не удалось удалить список"
         private const val ERROR_RENAME_LIST = "Не удалось переименовать список"
+
+        private const val ERROR_UPDATE_ICON_LIST = "Не удалось изменить иконку в списке"
         private const val ERROR_DUPLICATE_LIST = "Не удалось дублировать список"
         private const val ERROR_CREATE_LIST = "Не удалось создать список"
     }
