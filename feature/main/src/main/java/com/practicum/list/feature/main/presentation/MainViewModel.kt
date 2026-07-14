@@ -41,8 +41,29 @@ class MainViewModel @Inject constructor(
                 createListDialog = current.createListDialog?.copy(name = intent.name),
             )
 
+            is MainIntent.RenameListNameChanged -> current.copy(
+                renameListDialog = current.renameListDialog?.copy(newName = intent.name)
+            )
+
             is MainIntent.DismissCreateListDialog -> current.copy(createListDialog = null)
+            is MainIntent.DismissRenameListDialog -> current.copy(renameListDialog = null)
+
             is MainIntent.ConfirmCreateList -> current.copy(createListDialog = null)
+            is MainIntent.ConfirmRenameList -> current.copy(renameListDialog = null)
+            is MainIntent.RenameListClicked -> showRenameDialog(
+                id = intent.id,
+                name = intent.name,
+                current = current
+            )
+
+            is MainIntent.DeleteListClicked -> showDeleteDialog(
+                id = intent.id,
+                name = intent.name,
+                current = current
+            )
+
+            is MainIntent.ConfirmDeleteList -> current.copy(deleteListDialog = null)
+            is MainIntent.DismissDeleteDialog -> current.copy(deleteListDialog = null)
             is MainIntent.EditListIcon -> current.copy(
                 selectedListIdForIcon = intent.id
             )
@@ -58,9 +79,8 @@ class MainViewModel @Inject constructor(
         when (intent) {
             is MainIntent.LoadLists -> Unit
             is MainIntent.OpenList -> emitEffect(MainEffect.NavigateToList(intent.id))
-            is MainIntent.DeleteList -> showDeleteConfirmation(intent.id)
+            is MainIntent.DeleteListClicked -> validateDeleteConfirmation(intent.id)
             is MainIntent.ConfirmDeleteList -> confirmDelete(intent.id)
-            is MainIntent.RenameList -> showRenameDialog(intent.id)
             is MainIntent.ConfirmRenameList -> confirmRename(intent.id, intent.newName)
             is MainIntent.DuplicateList -> duplicateList(intent.id)
             is MainIntent.ConfirmCreateList -> {
@@ -70,7 +90,8 @@ class MainViewModel @Inject constructor(
                 }
             }
 
-            is MainIntent.EditListIcon -> emitEffect(MainEffect.ShowCategoryPicker)
+            is MainIntent.RenameListClicked -> validateRenameDialog(intent.id)
+            is MainIntent.EditListIcon -> emitEffect(MainEffect.ShowCategoryPicker(intent.id))
             is MainIntent.DismissEditListIcon -> {
                 if (intent.resId != 0 && intent.id != null) {
                     updateIcon(intent.id, intent.resId)
@@ -82,12 +103,24 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private suspend fun showDeleteConfirmation(id: Long) {
+    private suspend fun validateDeleteConfirmation(id: Long) {
         val list = state.value.lists.find { it.id == id }
-        if (list != null) {
-            emitEffect(MainEffect.ShowDeleteConfirmation(id, list.name))
-        } else {
+        if (list == null) {
             emitEffect(MainEffect.ShowError(ERROR_LIST_NOT_FOUND))
+        }
+    }
+
+    private fun showDeleteDialog(id: Long, name: String, current: MainState): MainState {
+        val list = state.value.lists.find { it.id == id }
+        return if (list != null) {
+            current.copy(
+                deleteListDialog = DeleteListDialogState(
+                    id = id,
+                    name = name
+                )
+            )
+        } else {
+            current
         }
     }
 
@@ -96,12 +129,25 @@ class MainViewModel @Inject constructor(
             .onFailure { emitEffect(MainEffect.ShowError(it.message ?: ERROR_DELETE_LIST)) }
     }
 
-    private suspend fun showRenameDialog(id: Long) {
+    private suspend fun validateRenameDialog(id: Long) {
         val list = state.value.lists.find { it.id == id }
-        if (list != null) {
-            emitEffect(MainEffect.ShowRenameDialog(id, list.name))
-        } else {
+        if (list == null) {
             emitEffect(MainEffect.ShowError(ERROR_LIST_NOT_FOUND))
+        }
+    }
+
+    private fun showRenameDialog(id: Long, name: String, current: MainState): MainState {
+        val list = current.lists.find { it.id == id }
+        return if (list != null) {
+            current.copy(
+                renameListDialog = RenameListDialogState(
+                    id = id,
+                    currentName = name,
+                    newName = name
+                )
+            )
+        } else {
+            current
         }
     }
 

@@ -22,7 +22,9 @@ import androidx.compose.ui.zIndex
 import com.practicum.list.core.common.domain.ShoppingList
 import com.practicum.list.core.components.bottomsheet.CategoryPickerBottomSheet
 import com.practicum.list.core.components.cards.SwipeableListItem
-import com.practicum.list.core.components.dialogs.CustomLayoutDialog
+import com.practicum.list.core.components.dialogs.CreateListDialog
+import com.practicum.list.core.components.dialogs.DeleteListDialog
+import com.practicum.list.core.components.dialogs.RenameListDialog
 import com.practicum.list.core.components.fab.AddFab
 import com.practicum.list.core.components.placeholder.PlaceholderLayout
 import com.practicum.list.core.theme.ShoppingListTheme
@@ -38,7 +40,9 @@ fun MainScreen(
     sheetState: SheetState? = null,
     onIntent: (MainIntent) -> Unit
 ) {
-    val dialog = state.createListDialog
+    val createDialog = state.createListDialog
+    val renameDialog = state.renameListDialog
+    val deleteDialog = state.deleteListDialog
     val interactionSource = remember { MutableInteractionSource() }
     val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -77,9 +81,23 @@ fun MainScreen(
                             onClick = {
                                 onIntent(MainIntent.OpenList(list.id))
                             },
+                            onDeleteClick = {
+                                onIntent(
+                                    MainIntent.DeleteListClicked(
+                                        list.id,
+                                        list.name
+                                    )
+                                )
+                            },
                             onIconClick = { onIntent(MainIntent.EditListIcon(list.id)) },
-                            onDeleteClick = { onIntent(MainIntent.DeleteList(list.id)) },
-                            onEditClick = { onIntent(MainIntent.RenameList(list.id)) },
+                            onEditClick = {
+                                onIntent(
+                                    MainIntent.RenameListClicked(
+                                        list.id,
+                                        list.name
+                                    )
+                                )
+                            },
                             onCopyClick = { onIntent(MainIntent.DuplicateList(list.id)) }
                         )
                     }
@@ -87,22 +105,43 @@ fun MainScreen(
             }
         }
 
-        if (dialog != null) {
-            CustomLayoutDialog(
-                titleTextRes = R.string.new_list_dialog_title_text,
-                iconRes = R.drawable.ic_docs_add_on,
-                primaryButtonTextRes = R.string.new_list_dialog_create_button_text,
-                secondaryButtonTextRes = R.string.cancel_general_text,
-                textEditLabelRes = R.string.new_list_label_text,
-                textEditText = dialog.name,
+        if (createDialog != null) {
+            CreateListDialog(
+                textEditText = createDialog.name,
                 interactionSource = interactionSource,
-                onConfirm = { onIntent(MainIntent.ConfirmCreateList(dialog.name)) },
+                onConfirm = { onIntent(MainIntent.ConfirmCreateList(createDialog.name)) },
                 onDismiss = { onIntent(MainIntent.DismissCreateListDialog) },
                 onTextChange = { onIntent(MainIntent.CreateListNameChanged(it)) },
-                onKeyboardDone = { keyboardController?.hide() },
+                onKeyboardDone = { keyboardController?.hide() }
             )
         }
 
+        if (renameDialog != null) {
+            RenameListDialog(
+                textEditText = renameDialog.newName,
+                interactionSource = interactionSource,
+                onConfirm = {
+                    onIntent(
+                        MainIntent.ConfirmRenameList(
+                            renameDialog.id,
+                            renameDialog.newName
+                        )
+                    )
+                },
+                onDismiss = { onIntent(MainIntent.DismissRenameListDialog) },
+                onTextChange = { onIntent(MainIntent.RenameListNameChanged(it)) },
+                onKeyboardDone = { keyboardController?.hide() },
+                confirmEnabled = renameDialog.isEnabled
+            )
+        }
+
+        if (deleteDialog != null) {
+            DeleteListDialog(
+                listName = deleteDialog.name,
+                onConfirm = { onIntent(MainIntent.ConfirmDeleteList(id = deleteDialog.id)) },
+                onDismiss = { onIntent(MainIntent.DismissDeleteDialog) }
+            )
+        }
         if (state.selectedListIdForIcon != null) {
             CategoryPickerBottomSheet(
                 sheetState = sheetState,
