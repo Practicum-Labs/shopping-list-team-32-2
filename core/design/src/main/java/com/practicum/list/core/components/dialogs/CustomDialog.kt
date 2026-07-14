@@ -30,6 +30,7 @@ fun CustomLayoutDialog(
     onDismiss: () -> Unit,
     iconRes: Int? = null,
     titleAlignment: Alignment.Horizontal = Alignment.CenterHorizontally,
+    centerActions: Boolean = false,
     title: @Composable () -> Unit,
     content: @Composable (() -> Unit)? = null,
     confirmButton: @Composable () -> Unit,
@@ -63,10 +64,18 @@ fun CustomLayoutDialog(
                 }
 
                 Row(
-                    horizontalArrangement = Arrangement.End,
+                    horizontalArrangement = if (centerActions) {
+                        Arrangement.Center
+                    } else {
+                        Arrangement.End
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 16.dp, end = 36.dp)
+                        .padding(
+                            bottom = 16.dp,
+                            start = if (centerActions) DialogHorizontalPadding else 0.dp,
+                            end = if (centerActions) DialogHorizontalPadding else 36.dp,
+                        )
                 ) {
                     dismissButton(Modifier.padding(end = 10.dp))
                     confirmButton()

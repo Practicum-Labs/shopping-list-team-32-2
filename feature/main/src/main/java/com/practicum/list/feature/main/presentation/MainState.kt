@@ -9,7 +9,8 @@ data class MainState(
     val createListDialog: CreateListDialogState? = null,
     val selectedListIdForIcon: Long? = null,
     val renameListDialog: RenameListDialogState? = null,
-    val deleteListDialog: DeleteListDialogState? = null
+    val deleteListDialog: DeleteListDialogState? = null,
+    val isLogoutDialogVisible: Boolean = false,
 ) : MviState {
     val isEmpty: Boolean get() = lists.isEmpty()
 }

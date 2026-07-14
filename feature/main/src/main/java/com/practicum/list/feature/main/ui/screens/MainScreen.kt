@@ -24,6 +24,7 @@ import com.practicum.list.core.components.bottomsheet.CategoryPickerBottomSheet
 import com.practicum.list.core.components.cards.SwipeableListItem
 import com.practicum.list.core.components.dialogs.CreateListDialog
 import com.practicum.list.core.components.dialogs.DeleteListDialog
+import com.practicum.list.core.components.dialogs.LogoutDialog
 import com.practicum.list.core.components.dialogs.RenameListDialog
 import com.practicum.list.core.components.fab.AddFab
 import com.practicum.list.core.components.placeholder.PlaceholderLayout
@@ -142,6 +143,14 @@ fun MainScreen(
                 onDismiss = { onIntent(MainIntent.DismissDeleteDialog) }
             )
         }
+
+        if (state.isLogoutDialogVisible) {
+            LogoutDialog(
+                onConfirm = { onIntent(MainIntent.LogoutConfirmed) },
+                onDismiss = { onIntent(MainIntent.LogoutDialogDismissed) },
+            )
+        }
+
         if (state.selectedListIdForIcon != null) {
             CategoryPickerBottomSheet(
                 sheetState = sheetState,

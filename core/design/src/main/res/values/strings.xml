@@ -5,6 +5,7 @@
     <string name="action_search">поиск</string>
     <string name="action_delete">удалить</string>
     <string name="action_theme">тема</string>
+    <string name="action_profile">профиль</string>
     <string name="action_options">опции</string>
     <string name="action_add">добавить список</string>
     <string name="new_list_label_text">Название списка</string>
@@ -26,6 +27,10 @@
     <string name="delete_list_dialog_title_text">Удалить список\n«%s»?</string>
     <string name="delete_list_dialog_delete_button_text">Удалить</string>
     <string name="rename_list_rename_button_text">Переименовать</string>
+
+    <!-- Диалог выхода -->
+    <string name="logout_dialog_title">Вы действительно хотите выйти?</string>
+    <string name="logout_confirm">Выйти</string>
 
     <!-- Content description для всех иконок списка покупок
          Тут чисто мое воображение что иконки могут значить, импровизируем -->
