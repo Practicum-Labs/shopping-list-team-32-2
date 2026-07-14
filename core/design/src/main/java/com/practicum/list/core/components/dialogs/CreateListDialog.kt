@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.practicum.list.core.theme.R
@@ -50,7 +49,7 @@ fun CreateListDialog(
         dismissButton = { modifier ->
             DialogButton(
                 modifier = modifier,
-                textRes = R.string.cancel_general_text,
+                textRes = R.string.cancel_dialog_general_text,
                 onClick = onDismiss
             )
         }
@@ -89,7 +88,7 @@ fun DialogButton(
         Text(
             color = MaterialTheme.colorScheme.secondary,
             text = stringResource(textRes),
-            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold)
+            style = MaterialTheme.typography.labelLarge
         )
     }
 }

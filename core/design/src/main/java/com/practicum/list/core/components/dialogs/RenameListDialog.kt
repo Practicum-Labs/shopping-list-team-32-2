@@ -11,7 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.practicum.list.core.theme.Dimens.DialogHorizontalPadding
 import com.practicum.list.core.theme.Dimens.DialogVerticalPadding
 import com.practicum.list.core.theme.R
 import com.practicum.list.core.theme.ShoppingListTheme
@@ -42,7 +41,7 @@ fun RenameListDialog(
         },
         confirmButton = {
             DialogButton(
-                textRes = R.string.rename_list_rename_button_text,
+                textRes = R.string.rename_list_dialog_rename_button_text,
                 onClick = onConfirm,
                 enabled = confirmEnabled
             )
@@ -50,7 +49,7 @@ fun RenameListDialog(
         dismissButton = { modifier ->
             DialogButton(
                 modifier = modifier,
-                textRes = R.string.cancel_general_text,
+                textRes = R.string.cancel_dialog_general_text,
                 onClick = onDismiss
             )
         }
@@ -61,7 +60,7 @@ fun RenameListDialog(
 private fun RenameListDialogTitle() {
     Text(
         modifier = Modifier
-            .padding(start = DialogHorizontalPadding, top = DialogVerticalPadding, bottom = 8.dp),
+            .padding(top = DialogVerticalPadding, bottom = 8.dp),
         text = stringResource(R.string.rename_list_dialog_title_text),
         style = MaterialTheme.typography.bodyLarge
             .copy(color = MaterialTheme.colorScheme.surfaceBright)

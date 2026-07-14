@@ -56,6 +56,14 @@ class MainViewModel @Inject constructor(
                 current = current
             )
 
+            is MainIntent.DeleteListClicked -> showDeleteDialog(
+                id = intent.id,
+                name = intent.name,
+                current = current
+            )
+
+            is MainIntent.ConfirmDeleteList -> current.copy(deleteListDialog = null)
+            is MainIntent.DismissDeleteDialog -> current.copy(deleteListDialog = null)
             is MainIntent.EditListIcon -> current.copy(
                 selectedListIdForIcon = intent.id
             )
@@ -71,7 +79,7 @@ class MainViewModel @Inject constructor(
         when (intent) {
             is MainIntent.LoadLists -> Unit
             is MainIntent.OpenList -> emitEffect(MainEffect.NavigateToList(intent.id))
-            is MainIntent.DeleteList -> showDeleteConfirmation(intent.id)
+            is MainIntent.DeleteListClicked -> validateDeleteConfirmation(intent.id)
             is MainIntent.ConfirmDeleteList -> confirmDelete(intent.id)
             is MainIntent.ConfirmRenameList -> confirmRename(intent.id, intent.newName)
             is MainIntent.DuplicateList -> duplicateList(intent.id)
@@ -95,12 +103,24 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private suspend fun showDeleteConfirmation(id: Long) {
+    private suspend fun validateDeleteConfirmation(id: Long) {
         val list = state.value.lists.find { it.id == id }
-        if (list != null) {
-            emitEffect(MainEffect.ShowDeleteConfirmation(id, list.name))
-        } else {
+        if (list == null) {
             emitEffect(MainEffect.ShowError(ERROR_LIST_NOT_FOUND))
+        }
+    }
+
+    private fun showDeleteDialog(id: Long, name: String, current: MainState): MainState {
+        val list = state.value.lists.find { it.id == id }
+        return if (list != null) {
+            current.copy(
+                deleteListDialog = DeleteListDialogState(
+                    id = id,
+                    name = name
+                )
+            )
+        } else {
+            current
         }
     }
 

@@ -2,17 +2,4 @@
 <resources>
     <string name="placeholder_empty_title">У вас пока нет списков</string>
     <string name="placeholder_empty_message">Нажмите на кнопку + ниже, чтобы создать свой первый список</string>
-
-    <!-- Диалог общее -->
-    <string name="general_list_label_text">Название списка</string>
-    <string name="cancel_general_text">Отмена</string>
-
-    <!-- Диалог создания списка -->
-    <string name="new_list_dialog_title_text">Добавление списка</string>
-    <string name="new_list_placeholder_text">Новый список</string>
-    <string name="new_list_dialog_create_button_text">Создать</string>
-
-    <!-- Диалог переименования списка -->
-    <string name="rename_list_dialog_title_text">Переименование списка</string>
-    <string name="rename_list_rename_button_text">Переименовать</string>
 </resources>

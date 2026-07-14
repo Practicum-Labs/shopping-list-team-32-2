@@ -23,7 +23,7 @@ import com.practicum.list.core.common.domain.ShoppingList
 import com.practicum.list.core.components.bottomsheet.CategoryPickerBottomSheet
 import com.practicum.list.core.components.cards.SwipeableListItem
 import com.practicum.list.core.components.dialogs.CreateListDialog
-import com.practicum.list.core.components.dialogs.CustomLayoutDialog
+import com.practicum.list.core.components.dialogs.DeleteListDialog
 import com.practicum.list.core.components.dialogs.RenameListDialog
 import com.practicum.list.core.components.fab.AddFab
 import com.practicum.list.core.components.placeholder.PlaceholderLayout
@@ -42,6 +42,7 @@ fun MainScreen(
 ) {
     val createDialog = state.createListDialog
     val renameDialog = state.renameListDialog
+    val deleteDialog = state.deleteListDialog
     val interactionSource = remember { MutableInteractionSource() }
     val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -79,6 +80,14 @@ fun MainScreen(
                             iconResId = list.iconResId,
                             onClick = {
                                 onIntent(MainIntent.OpenList(list.id))
+                            },
+                            onDeleteClick = {
+                                onIntent(
+                                    MainIntent.DeleteListClicked(
+                                        list.id,
+                                        list.name
+                                    )
+                                )
                             },
                             onIconClick = { onIntent(MainIntent.EditListIcon(list.id)) },
                             onDeleteClick = { onIntent(MainIntent.DeleteList(list.id)) },
@@ -127,6 +136,13 @@ fun MainScreen(
             )
         }
 
+        if (deleteDialog != null) {
+            DeleteListDialog(
+                listName = deleteDialog.name,
+                onConfirm = { onIntent(MainIntent.ConfirmDeleteList(id = deleteDialog.id)) },
+                onDismiss = { onIntent(MainIntent.DismissDeleteDialog) }
+            )
+        }
         if (state.selectedListIdForIcon != null) {
             CategoryPickerBottomSheet(
                 sheetState = sheetState,

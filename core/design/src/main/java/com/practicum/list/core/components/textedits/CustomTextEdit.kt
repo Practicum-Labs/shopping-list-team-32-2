@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import com.practicum.list.core.theme.R
 import com.practicum.list.core.theme.TextFieldShape
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -67,7 +68,7 @@ fun CustomTextEdit(
                 singleLine = true,
                 visualTransformation = VisualTransformation.None,
                 interactionSource = interactionSource,
-                placeholder = { Text("") },
+                placeholder = { Text(stringResource(R.string.new_list_dialog_placeholder_text)) },
                 colors = colors,
                 container = {
                     OutlinedTextFieldDefaults.Container(

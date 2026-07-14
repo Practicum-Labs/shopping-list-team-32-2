@@ -50,7 +50,7 @@ fun CustomLayoutDialog(
                     )
                 }
                 Column(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = DialogHorizontalPadding),
                     horizontalAlignment = titleAlignment
                 ) {
                     title()
@@ -68,14 +68,13 @@ fun CustomLayoutDialog(
                         .fillMaxWidth()
                         .padding(bottom = 16.dp, end = 36.dp)
                 ) {
-                    dismissButton(Modifier.padding(start = 8.dp))
+                    dismissButton(Modifier.padding(end = 10.dp))
                     confirmButton()
                 }
             }
         }
     }
 }
-
 
 @Composable
 fun DialogIcon(

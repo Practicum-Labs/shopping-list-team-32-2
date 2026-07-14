@@ -19,4 +19,4 @@ data class RenameListDialogState(val id: Long, val currentName: String, val newN
     val isEnabled: Boolean get() = newName != currentName && newName.isNotBlank()
 }
 
-data class DeleteListDialogState(val id: Long)
+data class DeleteListDialogState(val id: Long, val name: String)
