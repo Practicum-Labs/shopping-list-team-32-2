@@ -3,13 +3,13 @@ package com.practicum.list.feature.main.data.impl
 import androidx.room.withTransaction
 import com.practicum.list.core.common.domain.ShoppingList
 import com.practicum.list.core.common.domain.UserSession
+import com.practicum.list.core.common.domain.repository.ShoppingListRepository
 import com.practicum.list.core.data.local.ShoppingDatabase
 import com.practicum.list.core.data.local.dao.ProductDao
 import com.practicum.list.core.data.local.dao.ShoppingListDao
 import com.practicum.list.core.data.local.mapper.toDomain
 import com.practicum.list.core.data.local.mapper.toEntity
 import com.practicum.list.core.theme.R
-import com.practicum.list.core.common.domain.repository.ShoppingListRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest

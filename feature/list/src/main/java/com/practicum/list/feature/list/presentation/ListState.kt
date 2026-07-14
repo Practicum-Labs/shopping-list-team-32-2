@@ -12,6 +12,7 @@ data class ListState(
     val productBottomSheetOpened: Boolean = false,
     val productBottomSheetState: ProductBottomSheetState = ProductBottomSheetState(),
     val addProductError: String? = null,
+    val contextMenuOpened: Boolean = false,
     val contextMenuState: ListContextMenuState? = null,
     val confirmationDialogState: ConfirmationDialogState? = null,
     val isBeingSorted: Boolean = false,

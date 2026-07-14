@@ -16,4 +16,6 @@
     <string name="sort_alphabetically">Сортировать по алфавиту</string>
     <string name="remove_all">Удалить всё</string>
     <string name="remove_bought">Удалить купленные</string>
+    <string name="remove_all_goods">Удалить все товары</string>
+    <string name="remove_all_bought_goods">Удалить все купленные товары</string>
 </resources>

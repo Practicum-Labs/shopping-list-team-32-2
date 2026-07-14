@@ -8,6 +8,8 @@ sealed class ListIntent : MviIntent {
     data object BackClicked : ListIntent()
     data object DeleteDialogDismissed : ListIntent()
     data class DeleteDialogConfirmed(val type: DeleteType) : ListIntent()
+    data object OptionsMenuClicked : ListIntent()
+    data object OptionsMenuDismissClicked : ListIntent()
     data object ListMenuCustomSortClicked : ListIntent()
     data object ListMenuAlphabeticalSortClicked : ListIntent()
     data object ListMenuDeleteCheckedClicked : ListIntent()
@@ -17,9 +19,6 @@ sealed class ListIntent : MviIntent {
     data class ProductContextMenuOpened(val product: Product) : ListIntent()
     data class ProductMenuEditClicked(val product: Product) : ListIntent()
     data object ProductBottomSheetDismissed : ListIntent()
-    data object OptionsMenuClicked : ListIntent()
-    data object OptionsMenuDismissed : ListIntent()
-
     data class ProductQuantityClicked(val productId: Long) : ListIntent()
     data class ToggleProductChecked(val product: Product, val isChecked: Boolean) : ListIntent()
     data class QuantityChanged(val product: Product, val quantity: Float) : ListIntent()

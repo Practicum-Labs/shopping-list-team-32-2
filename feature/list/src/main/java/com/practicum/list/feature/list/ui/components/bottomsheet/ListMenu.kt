@@ -7,16 +7,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.practicum.list.feature.list.R
@@ -25,54 +23,54 @@ import com.practicum.list.feature.list.R
 @Composable
 fun ListMenu(
     modifier: Modifier = Modifier,
+    isBottomSheetOpened: Boolean = false,
     onSortClicked: () -> Unit,
     onRemoveAllClicked: () -> Unit,
     onRemoveChecked: () -> Unit,
+    onDismiss: () -> Unit
 ) {
     val sheetState = rememberModalBottomSheetState()
-    var showBottomSheet by remember { mutableStateOf(true) }
 
-    fun animateAndDismiss(onClick: () -> Unit) {
-        onClick()
-        showBottomSheet = false
-    }
-
-    if (showBottomSheet) {
+    if (isBottomSheetOpened) {
         ModalBottomSheet(
             modifier = modifier,
-            onDismissRequest = {
-                showBottomSheet = false
-            },
+            onDismissRequest = onDismiss,
             sheetState = sheetState
         ) {
             MenuListItem(
                 text = R.string.sort_alphabetically,
                 icon = R.drawable.ic_arrows_24,
-                onClick = { animateAndDismiss(onSortClicked) },
+                onClick = onSortClicked,
             )
             MenuListItem(
                 text = R.string.remove_all,
                 icon = R.drawable.ic_delete_24,
-                onClick = { animateAndDismiss(onRemoveAllClicked) },
+                onClick = onRemoveAllClicked,
             )
             MenuListItem(
                 text = R.string.remove_bought,
                 icon = R.drawable.ic_clear_24,
-                onClick = { animateAndDismiss(onRemoveChecked) },
+                onClick = onRemoveChecked,
             )
-
         }
     }
 }
 
 @Composable
-private fun MenuListItem(@StringRes text: Int, @DrawableRes icon: Int, onClick: () -> Unit) {
+private fun MenuListItem(
+    @StringRes text: Int,
+    @DrawableRes icon: Int,
+    onClick: () -> Unit,
+) {
     ListItem(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(
-                onClick = { onClick() }
+                onClick = onClick
             ),
+        colors = ListItemDefaults.colors(
+            containerColor = Color.Transparent,
+        ),
         headlineContent = {
             Text(
                 text = stringResource(text),
@@ -89,4 +87,3 @@ private fun MenuListItem(@StringRes text: Int, @DrawableRes icon: Int, onClick: 
         }
     )
 }
-

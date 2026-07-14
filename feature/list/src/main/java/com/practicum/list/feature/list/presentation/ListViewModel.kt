@@ -48,17 +48,18 @@ class ListViewModel @Inject constructor(
     }
 
     override fun reduce(intent: ListIntent, current: ListState): ListState = when (intent) {
-        ListIntent.OptionsMenuClicked -> current.copy(isOptionsMenuVisible = true)
-        ListIntent.OptionsMenuDismissed -> current.copy(isOptionsMenuVisible = false)
-
+        ListIntent.OptionsMenuClicked,
+        ListIntent.OptionsMenuDismissClicked,
         ListIntent.ListMenuAlphabeticalSortClicked,
         ListIntent.ListMenuCustomSortClicked,
         ListIntent.ListMenuDeleteCheckedClicked,
         ListIntent.ListMenuDeleteAllClicked,
-        is ListIntent.ListMenuCustomSortConfirmed -> reduceListMenu(intent, current)
+        is ListIntent.ListMenuCustomSortConfirmed,
+            -> reduceListMenu(intent, current)
 
         is ListIntent.DeleteDialogConfirmed,
-        ListIntent.DeleteDialogDismissed -> current.copy(confirmationDialogState = null)
+        ListIntent.DeleteDialogDismissed,
+            -> reduceDeleteDialog(intent, current)
 
         is ListIntent.ProductContextMenuOpened -> current.copy(
             contextMenuState = ListContextMenuState()
@@ -88,6 +89,7 @@ class ListViewModel @Inject constructor(
             productBottomSheetOpened = true,
             productBottomSheetState = ProductBottomSheetState(),
         )
+
         is ListIntent.ProductQuantityChanged -> current.copy(
             productBottomSheetState = current.productBottomSheetState.copy(
                 quantity = intent.quantity
@@ -110,32 +112,43 @@ class ListViewModel @Inject constructor(
     }
 
     private fun reduceListMenu(intent: ListIntent, current: ListState): ListState = when (intent) {
+        ListIntent.OptionsMenuClicked -> current.copy(contextMenuOpened = true)
+        ListIntent.OptionsMenuDismissClicked -> current.copy(contextMenuOpened = false)
         ListIntent.ListMenuAlphabeticalSortClicked -> current.copy(
             contextMenuState = ListContextMenuState(sortType = SortType.Alphabetical),
-            isOptionsMenuVisible = false,
+            contextMenuOpened = false
         )
 
         ListIntent.ListMenuCustomSortClicked -> current.copy(
             contextMenuState = ListContextMenuState(sortType = SortType.Custom),
             isBeingSorted = true,
-            isOptionsMenuVisible = false,
         )
 
         ListIntent.ListMenuDeleteCheckedClicked -> current.copy(
             contextMenuState = null,
             confirmationDialogState = ConfirmationDialogState(deleteType = DeleteType.Checked),
-            isOptionsMenuVisible = false,
-        )
+
+            )
 
         ListIntent.ListMenuDeleteAllClicked -> current.copy(
             contextMenuState = null,
             confirmationDialogState = ConfirmationDialogState(deleteType = DeleteType.All),
-            isOptionsMenuVisible = false,
         )
 
         is ListIntent.ListMenuCustomSortConfirmed -> current.copy(isBeingSorted = false)
         else -> current
     }
+
+    private fun reduceDeleteDialog(intent: ListIntent, current: ListState): ListState =
+        when (intent) {
+            is ListIntent.DeleteDialogConfirmed -> current.copy(
+                confirmationDialogState = null,
+                contextMenuOpened = false
+            )
+
+            is ListIntent.DeleteDialogDismissed -> current.copy(confirmationDialogState = null)
+            else -> current
+        }
 
     override suspend fun handleIntent(intent: ListIntent) {
         when (intent) {
