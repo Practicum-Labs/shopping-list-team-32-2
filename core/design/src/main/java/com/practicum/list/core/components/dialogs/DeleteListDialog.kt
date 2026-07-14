@@ -64,7 +64,7 @@ fun DeleteButtonConfirmDialog(
     DeleteButtonDialog(
         modifier = modifier,
         textRes = R.string.delete_list_dialog_delete_button_text,
-        buttonColor = MaterialTheme.colorScheme.error,
+        buttonColor = MaterialTheme.colorScheme.primary,
         textColor = MaterialTheme.colorScheme.onPrimary,
         onClick = onClick
     )
