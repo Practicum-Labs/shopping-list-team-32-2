@@ -64,8 +64,19 @@ class RegisterViewModel @Inject constructor(
         val password = state.value.password
         val confirmPassword = state.value.confirmPassword
 
-        if (!AuthValidation.isRegisterFormValid(email, password, confirmPassword)) {
-            updateState { it.copy(isLoading = false) }
+        val emailError = AuthValidation.emailFieldError(email)
+        val passwordError = AuthValidation.passwordFieldError(password)
+        val confirmError = AuthValidation.confirmPasswordError(password, confirmPassword)
+
+        if (emailError != null || passwordError != null || confirmError != null) {
+            updateState {
+                it.copy(
+                    isLoading = false,
+                    emailError = emailError,
+                    passwordError = passwordError,
+                    confirmPasswordError = confirmError
+                )
+            }
             return
         }
 
