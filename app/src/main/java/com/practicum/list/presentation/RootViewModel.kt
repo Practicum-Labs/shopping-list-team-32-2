@@ -1,7 +1,6 @@
 package com.practicum.list.presentation
 
 import androidx.lifecycle.viewModelScope
-import com.practicum.list.core.data.SessionEvents
 import com.practicum.list.core.data.session.UserSessionStore
 import com.practicum.list.core.mvi.MviViewModel
 import com.practicum.list.domain.CheckTokenUseCase
@@ -17,19 +16,12 @@ class RootViewModel @Inject constructor(
     private val userSessionStore: UserSessionStore,
     private val checkTokenUseCase: CheckTokenUseCase,
     private val refreshTokenUseCase: RefreshTokenUseCase,
-    private val sessionEvents: SessionEvents,
 ) :
     MviViewModel<RootIntent, RootState, RootEffect>(RootState()) {
     private var isAnimationFinished = false
     private var pendingNavigationEffect: RootEffect? = null
 
     init {
-        viewModelScope.launch {
-            sessionEvents.sessionExpired.collect {
-                finishLoadingAndNavigate(RootEffect.NavigateToLogin)
-            }
-        }
-
         viewModelScope.launch {
             initScreen()
         }
@@ -78,7 +70,6 @@ class RootViewModel @Inject constructor(
 
                 is TokenValidResult.Success -> handleSuccess(res.isValid)
             }
-
         }
     }
 

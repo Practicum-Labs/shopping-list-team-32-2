@@ -6,6 +6,7 @@ import com.practicum.list.core.mvi.MviViewModel
 import com.practicum.list.feature.main.domain.usecase.DeleteShoppingListUseCase
 import com.practicum.list.feature.main.domain.usecase.DuplicateShoppingListUseCase
 import com.practicum.list.feature.main.domain.usecase.ObserveShoppingListsUseCase
+import com.practicum.list.feature.main.domain.usecase.SignOutUseCase
 import com.practicum.list.feature.main.domain.usecase.UpsertShoppingListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -18,6 +19,7 @@ class MainViewModel @Inject constructor(
     private val deleteShoppingListUseCase: DeleteShoppingListUseCase,
     private val duplicateShoppingListUseCase: DuplicateShoppingListUseCase,
     private val upsertShoppingListUseCase: UpsertShoppingListUseCase,
+    private val signOutUseCase: SignOutUseCase,
 ) : MviViewModel<MainIntent, MainState, MainEffect>(MainState()) {
 
     init {
@@ -72,6 +74,11 @@ class MainViewModel @Inject constructor(
                 selectedListIdForIcon = null
             )
 
+            MainIntent.ProfileClicked -> current.copy(isLogoutDialogVisible = true)
+            MainIntent.LogoutDialogDismissed,
+            MainIntent.LogoutConfirmed,
+            -> current.copy(isLogoutDialogVisible = false)
+
             else -> current
         }
 
@@ -99,8 +106,15 @@ class MainViewModel @Inject constructor(
                 emitEffect(MainEffect.HideCategoryPicker)
             }
 
+            MainIntent.LogoutConfirmed -> signOut()
+
             else -> Unit
         }
+    }
+
+    private suspend fun signOut() {
+        runCatching { signOutUseCase() }
+            .onFailure { emitEffect(MainEffect.ShowError(it.message ?: ERROR_SIGN_OUT)) }
     }
 
     private suspend fun validateDeleteConfirmation(id: Long) {
@@ -197,5 +211,6 @@ class MainViewModel @Inject constructor(
         private const val ERROR_UPDATE_ICON_LIST = "Не удалось изменить иконку в списке"
         private const val ERROR_DUPLICATE_LIST = "Не удалось дублировать список"
         private const val ERROR_CREATE_LIST = "Не удалось создать список"
+        private const val ERROR_SIGN_OUT = "Не удалось выйти из аккаунта"
     }
 }

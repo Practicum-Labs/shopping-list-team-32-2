@@ -27,6 +27,7 @@ import com.practicum.list.core.navigation.anim.defaultPopEnterTransition
 import com.practicum.list.core.navigation.anim.defaultPopExitTransition
 import com.practicum.list.core.theme.R.string
 import com.practicum.list.feature.main.presentation.MainEffect
+import com.practicum.list.feature.main.presentation.MainIntent
 import com.practicum.list.feature.main.presentation.MainViewModel
 import kotlinx.coroutines.launch
 
@@ -84,9 +85,9 @@ private fun MainScreenRouteContent(navController: NavController) {
         topBar = {
             TopBar(
                 title = stringResource(string.title_my_lists),
-                onSearchClick = {},
-                onDeleteClick = {},
-                onThemeClick = {},
+                onProfileClick = {
+                    viewModel.dispatch(MainIntent.ProfileClicked)
+                },
             )
         },
     ) { paddingValues ->

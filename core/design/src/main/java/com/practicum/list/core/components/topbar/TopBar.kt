@@ -27,6 +27,7 @@ fun TopBar(
     onSearchClick: (() -> Unit)? = null,
     onDeleteClick: (() -> Unit)? = null,
     onThemeClick: (() -> Unit)? = null,
+    onProfileClick: (() -> Unit)? = null,
     onOptionsClick: (() -> Unit)? = null,
 ) {
     TopAppBar(
@@ -61,6 +62,13 @@ fun TopBar(
                     imageRes = drawable.ic_moon_24,
                     contentDescription = string.action_theme,
                     onButtonClick = onThemeClick
+                )
+            }
+            onProfileClick?.let {
+                DefaultIconButton(
+                    imageRes = drawable.ic_person_24,
+                    contentDescription = string.action_profile,
+                    onButtonClick = onProfileClick
                 )
             }
             onOptionsClick?.let {

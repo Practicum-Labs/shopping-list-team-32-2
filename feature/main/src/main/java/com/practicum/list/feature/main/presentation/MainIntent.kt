@@ -25,4 +25,9 @@ sealed class MainIntent : MviIntent {
     data class DeleteListClicked(val id: Long, val name: String) : MainIntent()
     data class ConfirmDeleteList(val id: Long) : MainIntent()
     data object DismissDeleteDialog : MainIntent()
+
+    // Выход из аккаунта
+    data object ProfileClicked : MainIntent()
+    data object LogoutDialogDismissed : MainIntent()
+    data object LogoutConfirmed : MainIntent()
 }
