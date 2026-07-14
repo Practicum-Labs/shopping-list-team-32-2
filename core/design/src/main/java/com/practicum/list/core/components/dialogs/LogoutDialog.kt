@@ -26,8 +26,8 @@ fun LogoutDialog(
         confirmButton = {
             DeleteButtonDialog(
                 textRes = R.string.logout_confirm,
-                buttonColor = MaterialTheme.colorScheme.error,
-                textColor = MaterialTheme.colorScheme.onError,
+                buttonColor = MaterialTheme.colorScheme.primary,
+                textColor = MaterialTheme.colorScheme.onPrimary,
                 onClick = onConfirm,
             )
         },
