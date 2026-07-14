@@ -9,7 +9,7 @@ sealed class ListIntent : MviIntent {
     data object DeleteDialogDismissed : ListIntent()
     data class DeleteDialogConfirmed(val type: DeleteType) : ListIntent()
     data object OptionsMenuClicked : ListIntent()
-    data object OptionsMenuDismissClicked : ListIntent()
+    data object OptionsMenuDismissed : ListIntent()
     data object ListMenuCustomSortClicked : ListIntent()
     data object ListMenuAlphabeticalSortClicked : ListIntent()
     data object ListMenuDeleteCheckedClicked : ListIntent()

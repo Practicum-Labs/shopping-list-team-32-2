@@ -49,7 +49,7 @@ class ListViewModel @Inject constructor(
 
     override fun reduce(intent: ListIntent, current: ListState): ListState = when (intent) {
         ListIntent.OptionsMenuClicked,
-        ListIntent.OptionsMenuDismissClicked,
+        ListIntent.OptionsMenuDismissed,
         ListIntent.ListMenuAlphabeticalSortClicked,
         ListIntent.ListMenuCustomSortClicked,
         ListIntent.ListMenuDeleteCheckedClicked,
@@ -113,7 +113,7 @@ class ListViewModel @Inject constructor(
 
     private fun reduceListMenu(intent: ListIntent, current: ListState): ListState = when (intent) {
         ListIntent.OptionsMenuClicked -> current.copy(contextMenuOpened = true)
-        ListIntent.OptionsMenuDismissClicked -> current.copy(contextMenuOpened = false)
+        ListIntent.OptionsMenuDismissed -> current.copy(contextMenuOpened = false)
 
         ListIntent.ListMenuAlphabeticalSortClicked -> if (current.products.isNotEmpty()) {
             current.copy(

@@ -122,7 +122,7 @@ fun ListScreen(
             onSortClicked = { onIntent(ListIntent.ListMenuAlphabeticalSortClicked) },
             onRemoveAllClicked = { onIntent(ListIntent.ListMenuDeleteAllClicked) },
             onRemoveChecked = { onIntent(ListIntent.ListMenuDeleteCheckedClicked) },
-            onDismiss = { onIntent(ListIntent.OptionsMenuDismissClicked) },
+            onDismiss = { onIntent(ListIntent.OptionsMenuDismissed) },
         )
 
         when (state.confirmationDialogState?.deleteType) {
