@@ -18,15 +18,12 @@ sealed class ListIntent : MviIntent {
     data class ProductMenuEditClicked(val product: Product) : ListIntent()
     data object ProductBottomSheetDismissed : ListIntent()
     data object OptionsMenuClicked : ListIntent()
-
     data object OptionsMenuDismissed : ListIntent()
-    data class EditProduct(val productId: Long) : ListIntent()
 
     data class ProductQuantityClicked(val productId: Long) : ListIntent()
     data class ToggleProductChecked(val product: Product, val isChecked: Boolean) : ListIntent()
     data class QuantityChanged(val product: Product, val quantity: Float) : ListIntent()
     data object AddProductClicked : ListIntent()
-    data object ProductDismissClicked : ListIntent()
     data class ProductNameChanged(val name: String) : ListIntent()
     data class ProductQuantityChanged(val quantity: Float) : ListIntent()
     data class ProductUnitChanged(val unit: MeasureUnit) : ListIntent()

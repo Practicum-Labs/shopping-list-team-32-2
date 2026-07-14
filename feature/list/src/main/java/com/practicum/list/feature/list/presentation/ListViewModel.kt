@@ -48,15 +48,9 @@ class ListViewModel @Inject constructor(
     }
 
     override fun reduce(intent: ListIntent, current: ListState): ListState = when (intent) {
-        ////
-        ListIntent.OptionsMenuClicked,
-        ListIntent.OptionsMenuDismissed,
-        -> reduceOptionsMenu(intent, current)
+        ListIntent.OptionsMenuClicked -> current.copy(isOptionsMenuVisible = true)
+        ListIntent.OptionsMenuDismissed -> current.copy(isOptionsMenuVisible = false)
 
-        is ListIntent.EditProduct,
-        is ListIntent.ProductQuantityClicked,
-        -> reduceOpenEditSheet(intent, current)
-//////
         ListIntent.ListMenuAlphabeticalSortClicked,
         ListIntent.ListMenuCustomSortClicked,
         ListIntent.ListMenuDeleteCheckedClicked,
@@ -113,29 +107,6 @@ class ListViewModel @Inject constructor(
         )
 
         else -> current
-    }
-
-    private fun reduceOptionsMenu(intent: ListIntent, current: ListState): ListState = when (intent) {
-        ListIntent.OptionsMenuClicked -> current.copy(isOptionsMenuVisible = true)
-        ListIntent.OptionsMenuDismissed -> current.copy(isOptionsMenuVisible = false)
-        else -> current
-    }
-
-    private fun reduceOpenEditSheet(intent: ListIntent, current: ListState): ListState {
-        val productId = when (intent) {
-            is ListIntent.EditProduct -> intent.productId
-            is ListIntent.ProductQuantityClicked -> intent.productId
-            else -> return current
-        }
-        val product = current.products.find { it.id == productId } ?: return current
-        return current.copy(
-            editProductBottomSheetState = EditProductBottomSheetState(
-                name = product.name,
-                productId = product.id,
-                quantity = product.quantity,
-                measureUnits = product.unit,
-            ),
-        )
     }
 
     private fun reduceListMenu(intent: ListIntent, current: ListState): ListState = when (intent) {
