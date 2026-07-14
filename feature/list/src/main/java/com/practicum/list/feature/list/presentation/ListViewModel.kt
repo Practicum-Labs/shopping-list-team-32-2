@@ -48,23 +48,31 @@ class ListViewModel @Inject constructor(
     }
 
     override fun reduce(intent: ListIntent, current: ListState): ListState = when (intent) {
+        ListIntent.OptionsMenuClicked,
+        ListIntent.OptionsMenuDismissed,
+        -> reduceOptionsMenu(intent, current)
+
+        is ListIntent.EditProduct,
+        is ListIntent.ProductQuantityClicked,
+        -> reduceOpenEditSheet(intent, current)
+
         ListIntent.ListMenuAlphabeticalSortClicked,
         ListIntent.ListMenuCustomSortClicked,
         ListIntent.ListMenuDeleteCheckedClicked,
         ListIntent.ListMenuDeleteAllClicked,
         is ListIntent.ListMenuCustomSortConfirmed,
-            -> reduceListMenu(intent, current)
+        -> reduceListMenu(intent, current)
 
         is ListIntent.DeleteDialogConfirmed,
         ListIntent.DeleteDialogDismissed,
-            -> reduceDeleteDialog(current)
+        -> reduceDeleteDialog(current)
 
         is ListIntent.ProductContextMenuOpened,
         ListIntent.ProductMenuEditClicked,
         ListIntent.EditProductBottomSheetDismissed,
         is ListIntent.EditProductConfirmClicked,
         is ListIntent.DeleteProductClicked,
-            -> reduceProductEdit(intent, current)
+        -> reduceProductEdit(intent, current)
 
         ListIntent.BackClicked -> current
         ListIntent.AddProductClicked -> current.copy(addProductBottomSheetOpened = true)
@@ -95,24 +103,51 @@ class ListViewModel @Inject constructor(
         else -> current
     }
 
+    private fun reduceOptionsMenu(intent: ListIntent, current: ListState): ListState = when (intent) {
+        ListIntent.OptionsMenuClicked -> current.copy(isOptionsMenuVisible = true)
+        ListIntent.OptionsMenuDismissed -> current.copy(isOptionsMenuVisible = false)
+        else -> current
+    }
+
+    private fun reduceOpenEditSheet(intent: ListIntent, current: ListState): ListState {
+        val productId = when (intent) {
+            is ListIntent.EditProduct -> intent.productId
+            is ListIntent.ProductQuantityClicked -> intent.productId
+            else -> return current
+        }
+        val product = current.products.find { it.id == productId } ?: return current
+        return current.copy(
+            editProductBottomSheetState = EditProductBottomSheetState(
+                name = product.name,
+                productId = product.id,
+                quantity = product.quantity,
+                measureUnits = product.unit,
+            ),
+        )
+    }
+
     private fun reduceListMenu(intent: ListIntent, current: ListState): ListState = when (intent) {
         ListIntent.ListMenuAlphabeticalSortClicked -> current.copy(
             contextMenuState = ListContextMenuState(sortType = SortType.Alphabetical),
+            isOptionsMenuVisible = false,
         )
 
         ListIntent.ListMenuCustomSortClicked -> current.copy(
             contextMenuState = ListContextMenuState(sortType = SortType.Custom),
             isBeingSorted = true,
+            isOptionsMenuVisible = false,
         )
 
         ListIntent.ListMenuDeleteCheckedClicked -> current.copy(
             contextMenuState = null,
             confirmationDialogState = ConfirmationDialogState(deleteType = DeleteType.Checked),
+            isOptionsMenuVisible = false,
         )
 
         ListIntent.ListMenuDeleteAllClicked -> current.copy(
             contextMenuState = null,
             confirmationDialogState = ConfirmationDialogState(deleteType = DeleteType.All),
+            isOptionsMenuVisible = false,
         )
 
         is ListIntent.ListMenuCustomSortConfirmed -> current.copy(isBeingSorted = false)
@@ -162,13 +197,13 @@ class ListViewModel @Inject constructor(
 
             is ListIntent.ListMenuAlphabeticalSortClicked -> sortAlphabetically()
             is ListIntent.ListMenuCustomSortConfirmed -> sortCustom(intent.newList)
-            is ListIntent.EditProductConfirmClicked -> upsertProduct(intent.product)
+            is ListIntent.EditProductConfirmClicked -> updateProduct(intent.product)
             is ListIntent.ToggleProductChecked -> upsertProduct(
-                intent.product.copy(isChecked = intent.isChecked)
+                intent.product.copy(isChecked = intent.isChecked),
             )
 
             is ListIntent.QuantityChanged -> upsertProduct(
-                intent.product.copy(quantity = intent.quantity)
+                intent.product.copy(quantity = intent.quantity.coerceAtLeast(MIN_PRODUCT_QUANTITY)),
             )
 
             is ListIntent.DeleteProductClicked -> deleteProduct(intent.productId)
@@ -176,6 +211,17 @@ class ListViewModel @Inject constructor(
 
             else -> Unit
         }
+    }
+
+    private suspend fun updateProduct(updatedProduct: Product) {
+        val existing = state.value.products.find { it.id == updatedProduct.id } ?: updatedProduct
+        upsertProduct(
+            existing.copy(
+                name = updatedProduct.name.trim(),
+                quantity = updatedProduct.quantity.coerceAtLeast(MIN_PRODUCT_QUANTITY),
+                unit = updatedProduct.unit,
+            ),
+        )
     }
 
     private suspend fun addProduct(intent: ListIntent.AddProductApplyClicked) {
@@ -237,6 +283,7 @@ class ListViewModel @Inject constructor(
         private const val UNKNOWN_ERROR = "Unknown error"
         private const val QUANTITY_ERROR = "Количество должно быть больше нуля"
         private const val ERROR_QUANTITY = 0f
+        private const val MIN_PRODUCT_QUANTITY = 1f
 
         private fun createInitialState(handle: SavedStateHandle): ListState {
             val route = handle.toRoute<ListScreenRoute>()

@@ -19,6 +19,7 @@ sealed class ListIntent : MviIntent {
     data object EditProductBottomSheetDismissed : ListIntent()
     data class EditProductConfirmClicked(val product: Product) : ListIntent()
     data object OptionsMenuClicked : ListIntent()
+    data object OptionsMenuDismissed : ListIntent()
     data class EditProduct(val productId: Long) : ListIntent()
     data class ProductQuantityClicked(val productId: Long) : ListIntent()
     data class ToggleProductChecked(val product: Product, val isChecked: Boolean) : ListIntent()
