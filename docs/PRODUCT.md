@@ -5,7 +5,7 @@
 Источники:
 - Epic 3 issues [#63](https://github.com/Practicum-Labs/shopping-list-team-32-2/issues/63)–[#75](https://github.com/Practicum-Labs/shopping-list-team-32-2/issues/75)
 - [Figma — Практикум ОП, Список покупок](#figma) (экраны `shopping lists`, `list - …`)
-- Реализация в `:feature:list` на ветке `develop`
+- Реализация в `:feature:list` (актуально для текущего `develop`)
 
 ---
 
@@ -114,11 +114,12 @@ DAO: `core/data/.../dao/ProductDao.kt` — сортировка в UI: `ORDER BY
 
 ### Версия БД
 
-`ShoppingDatabase` **v5** (миграции `MIGRATION_1_2` … `MIGRATION_4_5` в `ShoppingDatabaseMigrations.kt`):
+`ShoppingDatabase` **v6** (миграции `MIGRATION_1_2` … `MIGRATION_5_6` в `ShoppingDatabaseMigrations.kt`):
 - v2 — `icon_res_id` у списков
 - v3 — `user_id` у списков
 - v4 — `unit`, `sortPosition`, `quantity` как `REAL` у товаров
 - v5 — нормализация пустых `unit` → `'pcs'`
+- v6 — `icon_res_id = 0` → `ListIcons.DEFAULT_LIST_ICON`
 
 ### Domain-модель
 
@@ -151,8 +152,8 @@ UserSession.userId → shopping_lists.user_id → products.listId
 
 Подробнее про `user_id` и legacy-списки — [`AUTH.md`](AUTH.md#связь-пользователя-и-списков-покупок-room).
 
-**Канонический путь заголовка:** `ObserveListTitleUseCase` в `:core:common` → `ShoppingListRepository.observeListTitle` (`:feature:main`).  
-Дубликат `observeListTitle` в `ListRepository` — legacy; `ListViewModel` использует UseCase из `:core:common`.
+**Канонический путь заголовка:** `ObserveListTitleUseCase` в `:core:common` → `ShoppingListRepository` (интерфейс в `:core:common`, impl в `:feature:main`).  
+В `feature/list/.../ListUseCases.kt` может оставаться legacy-дубликат — `ListViewModel` берёт UseCase из `:core:common`.
 
 ---
 
@@ -185,12 +186,13 @@ Extension: `feature/list/.../ListScreenNavigation.kt` → `listScreenNavigation(
 | `listId`, `listTitle` | контекст экрана |
 | `products` | товары из Room (Flow) |
 | `isLoading` | первичная загрузка |
-| `addProductDialogState` | bottom sheet / dialog добавления |
-| `editProductBottomSheetState` | редактирование количества и единицы |
-| `contextMenuState` | меню списка (сортировка) |
+| `productBottomSheetOpened` | единый bottom sheet add/edit |
+| `productBottomSheetState` | поля формы (`id`, `name`, `quantity`, `unit`, …) |
+| `addProductError` | ошибка формы (если нужна) |
+| `contextMenuOpened` | видимость `ListMenu` (⋮ → ModalBottomSheet) |
+| `contextMenuState` | метаданные сортировки (`sortType`), не visibility меню |
 | `confirmationDialogState` | подтверждение «удалить все / купленные» |
-| `editProductMenuState` | контекстное меню товара |
-| `isBeingSorted` | режим drag-and-drop сортировки |
+| `isBeingSorted` | задел под drag-and-drop (UI режима пока нет) |
 
 ### Effect (`ListEffect`)
 
@@ -232,38 +234,44 @@ Scaffold (ListScreenNavigation)
 
 ### `ProductListItem`
 
-Компонент: `feature/list/ui/components/ProductListItem.kt`
+Компонент: `feature/list/.../ui/components/listitem/ProductListItem.kt`
 
-| Элемент | Intent |
-|---------|--------|
-| Checkbox | `ToggleProductChecked` → upsert |
-| Tap на quantity | `ProductQuantityClicked` |
-| Swipe → Edit | `EditProduct` |
-| Swipe → Delete | `DeleteProduct` |
+| Элемент | Intent | Статус |
+|---------|--------|--------|
+| Checkbox | `ToggleProductChecked` → upsert | ✅ |
+| Tap на quantity | `ProductQuantityClicked` | ⚠️ UI шлёт intent, VM **не обрабатывает** |
+| Swipe → Edit | `ProductMenuEditClicked` → `ProductBottomSheet` | ✅ |
+| Swipe → Delete | `DeleteProductClicked` | ✅ |
 
 Swipe через `AnchoredDraggable` (`ProductListActions`: edit + delete).
 
-Формат количества: `Product.formatQuantityLabel()` — `"1 кг"`, целые без `.0`.
+Формат количества: `@Composable Product.formatQuantityLabel()` в `ProductQuantityFormatter.kt` — `"1 кг"`, целые без `.0`.
 
 ### Меню списка (TopBar ⋮)
 
-Intents (presentation готов, UI overlay — в открытых PR):
+UI: `ListMenu` — `ModalBottomSheet` (`feature/list/.../bottomsheet/ListMenu.kt`), флаг `contextMenuOpened`.  
+Открытие: `OptionsMenuClicked` из `ListScreenNavigation` / TopBar options.
 
-| Пункт | Intent | Side-effect |
-|-------|--------|-------------|
-| Сортировка A→Я | `ListMenuAlphabeticalSortClicked` | `SortProductsAlphabeticallyUseCase` |
-| Своя сортировка | `ListMenuCustomSortClicked` → drag → `ListMenuCustomSortConfirmed` | `SortProductsCustomUseCase` |
-| Удалить купленные | `ListMenuDeleteCheckedClicked` → dialog → `DeleteDialogConfirmed(Checked)` | `DeleteBoughtProductsUseCase` |
-| Удалить всё | `ListMenuDeleteAllClicked` → dialog → `DeleteDialogConfirmed(All)` | `DeleteAllProductsUseCase` |
+| Пункт в UI | Intent | Side-effect | Статус |
+|------------|--------|-------------|--------|
+| Сортировать по алфавиту | `ListMenuAlphabeticalSortClicked` | `SortProductsAlphabeticallyUseCase` | ✅ |
+| Удалить купленные | `ListMenuDeleteCheckedClicked` → `DeleteBoughtDialog` → `DeleteDialogConfirmed(Checked)` | `DeleteBoughtProductsUseCase` | ✅ |
+| Удалить всё | `ListMenuDeleteAllClicked` → `DeleteAllDialog` → `DeleteDialogConfirmed(All)` | `DeleteAllProductsUseCase` | ✅ |
+| Своя сортировка (DnD) | `ListMenuCustomSortClicked` / `ListMenuCustomSortConfirmed` | `SortProductsCustomUseCase` | ⚠️ только VM; **пункта в `ListMenu` нет**, DnD UI нет |
+
+На пустом списке пункты меню закрывают sheet и показывают `ShowError("Список товаров пуст")`.
 
 ### Добавление и редактирование товара
 
-| Flow | State | Статус на `develop` |
-|------|-------|---------------------|
-| FAB → add | `AddProductDialogState` | intent есть, VM wiring — [#69](https://github.com/Practicum-Labs/shopping-list-team-32-2/issues/69) / PR [#99](https://github.com/Practicum-Labs/shopping-list-team-32-2/pull/99) |
-| Edit quantity/unit | `EditProductBottomSheetState` | reduce готов; UI sheet — [#72](https://github.com/Practicum-Labs/shopping-list-team-32-2/issues/72) / PR [#102](https://github.com/Practicum-Labs/shopping-list-team-32-2/pull/102) |
+Единый `ProductBottomSheet` (`feature/list/.../bottomsheet/ProductBottomSheet.kt`):
 
-**Принято:** upsert одного товара — через `UpsertProductUseCase`; `id = 0` → insert, иначе update (Room `REPLACE`).
+| Flow | Как открывается | State | Статус |
+|------|-----------------|-------|--------|
+| FAB → add | `AddProductClicked` | `productBottomSheetOpened` + пустой `ProductBottomSheetState` | ✅ |
+| Edit | swipe → `ProductMenuEditClicked(product)` | sheet с полями товара | ✅ |
+| Apply | `ProductApplyClicked` → `applyProductForm()` → `UpsertProductUseCase` | sheet закрывается | ✅ |
+
+**Принято:** upsert — `UpsertProductUseCase`; `id = 0` → insert, иначе update (Room `REPLACE`).
 
 ---
 
@@ -275,9 +283,11 @@ Sealed class в `:core:common`. Код хранится в Room как `TEXT`, �
 |-----|------|-------------------|
 | `pcs` | `Piece` | шт |
 | `kg` | `Kilogram` | кг |
-| `pkg` | `Package` | уп |
+| `g` | `Gram` | г |
 | `mg` | `Milligram` | мг |
 | `l` | `Liter` | л |
+| `ml` | `Milliliter` | мл |
+| `pkg` | `Package` | уп |
 
 ```kotlin
 fun fromCode(code: String?): MeasureUnit =
@@ -285,8 +295,6 @@ fun fromCode(code: String?): MeasureUnit =
 ```
 
 Nullable `fromCode` + fallback `Piece` — обязательны после ProGuard/minify ([#98](https://github.com/Practicum-Labs/shopping-list-team-32-2/pull/98)).
-
-**В работе:** `g` (Gram), `ml` (Milliliter) — [#71](https://github.com/Practicum-Labs/shopping-list-team-32-2/issues/71) / PR [#103](https://github.com/Practicum-Labs/shopping-list-team-32-2/pull/103).
 
 ---
 
@@ -313,7 +321,7 @@ Nullable `fromCode` + fallback `Piece` — обязательны после Pro
 │   └── ListEffect.kt
 ├── domain/
 │   ├── repository/ListRepository.kt
-│   └── usecase/ListUseCases.kt
+│   └── usecase/… (Observe, Upsert, Delete*, Sort*)
 ├── data/
 │   ├── impl/ListRepositoryImpl.kt
 │   └── di/ListRepositoryModule.kt
@@ -322,15 +330,18 @@ Nullable `fromCode` + fallback `Piece` — обязательны после Pro
     │   ├── ListScreen.kt
     │   └── ListScreenNavigation.kt
     └── components/
-        ├── ProductListItem.kt
+        ├── bottomsheet/ProductBottomSheet.kt
+        ├── bottomsheet/ListMenu.kt
+        ├── dialogs/DeleteAllDialog.kt, DeleteBoughtDialog.kt
+        ├── listitem/ProductListItem.kt
         ├── ProductListActions.kt
-        ├── ProductRoundCheckbox.kt
+        ├── checkbox/ProductRoundCheckbox.kt
         ├── ProductQuantityFormatter.kt
         └── ListEmptyPlaceholder.kt
 
-:core:data/          — ProductEntity, ProductDao, ProductApi (stub)
-:core:common/        — Product, MeasureUnit
-:feature:main/       — DuplicateShoppingListUseCase, ShoppingListRepository
+:core:data/      — ProductEntity, ProductDao, ProductApi (stub), Room v6
+:core:common/    — Product, MeasureUnit, ShoppingListRepository (interface), ObserveListTitleUseCase
+:feature:main/   — ShoppingListRepositoryImpl, duplicate, Main CRUD, SignOutUseCase
 ```
 
 ---
@@ -341,28 +352,28 @@ Nullable `fromCode` + fallback `Piece` — обязательны после Pro
 |------|---------------|--------------|-----|
 | Observe products + title | ✅ | ✅ | ✅ |
 | Toggle checked | ✅ | ✅ | ✅ |
-| Swipe delete / edit | ✅ | ⚠️ intents `DeleteProduct` / `EditProduct` не в `handleIntent` — нужен wiring [#72](https://github.com/Practicum-Labs/shopping-list-team-32-2/issues/72) | ✅ |
-| Sort A→Я / custom | ✅ | ✅ | ⚠️ options menu UI — в PR |
-| Delete all / checked | ✅ | ✅ | ⚠️ confirmation dialog UI — в PR |
-| Add product | ✅ upsert | ⚠️ | ⚠️ [#69](https://github.com/Practicum-Labs/shopping-list-team-32-2/issues/69) |
-| Edit quantity/unit sheet | ✅ upsert | ⚠️ reduce | ⚠️ [#72](https://github.com/Practicum-Labs/shopping-list-team-32-2/issues/72) |
+| Swipe delete / edit | ✅ | ✅ `DeleteProductClicked` / `ProductMenuEditClicked` | ✅ |
+| Sort A→Я | ✅ | ✅ | ✅ `ListMenu` |
+| Custom sort (DnD) | ✅ UseCase | ✅ intents | ⚠️ нет пункта меню и DnD UI |
+| Delete all / checked | ✅ | ✅ | ✅ `DeleteAllDialog` / `DeleteBoughtDialog` |
+| Add / edit product | ✅ upsert | ✅ единый sheet | ✅ `ProductBottomSheet` |
+| Tap quantity → edit | — | ⚠️ `ProductQuantityClicked` не handled | UI шлёт intent |
 | Duplicate list + products | ✅ | ✅ (`:feature:main`) | ✅ |
-
-Документ описывает **целевую архитектуру**; колонка UI отражает фактическое состояние на момент написания.
 
 ---
 
-## Вне scope Epic 3
+## Вне scope Epic 3 (или реализовано в других эпиках)
 
-| Тема | Причина |
-|------|---------|
-| `ProductApi` / популярные товары | Нет endpoint в Swagger |
-| `CategoryPickerBottomSheet` | [#25](https://github.com/Practicum-Labs/shopping-list-team-32-2/issues/25), Epic 1 |
-| Auth / сессия | [#45](https://github.com/Practicum-Labs/shopping-list-team-32-2/issues/45), [`AUTH.md`](AUTH.md) |
-| Logout / профиль | [#92](https://github.com/Practicum-Labs/shopping-list-team-32-2/issues/92), Epic 4 |
-| Онбординг | [#61](https://github.com/Practicum-Labs/shopping-list-team-32-2/issues/61) |
-| Rename/delete списка на Main | [#24](https://github.com/Practicum-Labs/shopping-list-team-32-2/issues/24) |
-| Редактирование **названия** товара отдельным flow | Нет в текущем scope |
+| Тема | Статус |
+|------|--------|
+| `ProductApi` / популярные товары | Stub; нет endpoint в Swagger |
+| Auth / сессия / login–register | ✅ Epic 2 — [`AUTH.md`](AUTH.md) |
+| Logout / профиль | ✅ [#92](https://github.com/Practicum-Labs/shopping-list-team-32-2/issues/92) — `LogoutDialog` + `SignOutUseCase` |
+| `CategoryPickerBottomSheet` на Main | ✅ [#25](https://github.com/Practicum-Labs/shopping-list-team-32-2/issues/25) |
+| Rename / delete списка на Main | ✅ [#24](https://github.com/Practicum-Labs/shopping-list-team-32-2/issues/24) |
+| Онбординг / splash | ✅ / частично [#61](https://github.com/Practicum-Labs/shopping-list-team-32-2/issues/61), [#45](https://github.com/Practicum-Labs/shopping-list-team-32-2/issues/45) |
+| Landscape / tablet | Follow-up [#79](https://github.com/Practicum-Labs/shopping-list-team-32-2/issues/79); сейчас portrait-only |
+| Отдельный flow только «переименовать товар» | Нет; имя правится в том же `ProductBottomSheet` |
 
 ---
 
@@ -374,6 +385,7 @@ Nullable `fromCode` + fallback `Piece` — обязательны после Pro
 - [ ] Upsert: `Product(id = 0, …)` для insert; `sortPosition` задаёт порядок в DAO
 - [ ] `MeasureUnit.fromCode(null)` → `Piece`; не использовать `first { }` без fallback
 - [ ] Не подключать `ProductApi` без endpoint в Swagger
-- [ ] Swipe / menu intents: согласовать `DeleteProduct` vs `DeleteProductClicked` при wiring UI ↔ VM
+- [ ] Swipe: `DeleteProductClicked`, `ProductMenuEditClicked`; меню — `contextMenuOpened` + `ListMenu`
+- [ ] Tap quantity: доработать handler для `ProductQuantityClicked` (сейчас noop)
 - [ ] Ошибки UseCase → `ListEffect.ShowError`, не silent fail
 - [ ] Duplicate — только через `DuplicateShoppingListUseCase` в `:feature:main`

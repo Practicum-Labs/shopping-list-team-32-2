@@ -17,18 +17,18 @@
 ## Модули
 
 ```
-:app              — Application, MainActivity, NavHost
-:core:design      — тема (Compose-only)
+:app              — Application, MainActivity, NavHost, SessionExpiredHandler
+:core:design      — тема (Compose) + shared components (TopBar, dialogs, FAB) + icon drawables
 :core:mvi         — MviViewModel, State, Intent, Effect
-:core:common      — domain-модели
-:core:data        — Room, Retrofit, Hilt modules
-:core:navigation  — type-safe маршруты
-:feature:main     — главный экран (presentation / domain / data)
-:feature:list  — экран списка / товаров (Epic 3)
-:feature:auth     — auth design system, экраны login / register / recovery (Epic 2)
+:core:common      — domain-модели, ShoppingListRepository iface, ObserveListTitleUseCase
+:core:data        — Room v6, Retrofit/auth resilient, SessionEvents, Hilt
+:core:navigation  — type-safe маршруты + DefaultAnimations
+:feature:main     — списки CRUD, category picker, logout (SignOutUseCase)
+:feature:list     — товары, ProductBottomSheet, ListMenu, bulk delete (Epic 3)
+:feature:auth     — login / register / recovery UI + VM (Epic 2)
 ```
 
-**Ориентация:** приложение зафиксировано в **portrait** (`MainActivity` в `AndroidManifest`). Landscape / tablet — [#79](https://github.com/Practicum-Labs/shopping-list-team-32-2/issues/79).
+**Ориентация:** **portrait** only (`MainActivity`). Landscape / tablet — [#79](https://github.com/Practicum-Labs/shopping-list-team-32-2/issues/79).
 
 ## Auth (Epic 2)
 
@@ -40,11 +40,13 @@
 
 Точка входа: `RootScreenRoute` — splash, проверка токена, redirect на Login или Main ([#45](https://github.com/Practicum-Labs/shopping-list-team-32-2/issues/45)).
 
+**Logout:** иконка профиля на Main → confirm → `SignOutUseCase`; failed refresh — через `TokenAuthenticator`. Оба пути → `SessionEvents` → Login ([#92](https://github.com/Practicum-Labs/shopping-list-team-32-2/issues/92)). Детали — [`docs/AUTH.md`](docs/AUTH.md).
+
 ## Products & List Screen (Epic 3)
 
-Экран списка покупок: товары, сортировка, swipe-действия, FAB «добавить». Данные — только Room, backend не хранит товары.
+Экран списка: товары, swipe edit/delete, `ProductBottomSheet` (add/edit), меню ⋮ (сортировка A→Я, удалить всё / купленные). Данные — Room; `ProductApi` — stub.
 
-Архитектура, MVI, `MeasureUnit`, duplicate, статус реализации — в [`docs/PRODUCT.md`](docs/PRODUCT.md).
+В работе: UI своей (DnD) сортировки; handler `ProductQuantityClicked`. Статус и соглашения — [`docs/PRODUCT.md`](docs/PRODUCT.md).
 
 ## Слои feature-модуля
 
