@@ -14,7 +14,7 @@
 | Сеть | Retrofit + OkHttp + Moshi | auth API (Railway) + заглушка ProductApi |
 | Качество кода | Detekt | статический анализ в CI |
 
-# Обоснование выбора технологического стека
+## Обоснование выбора технологического стека
 
 | Компонент | Выбранный инструмент | Обоснование выбора |
 |-----------|----------------------|--------------------|
@@ -45,7 +45,7 @@
 
 **Ориентация:** **portrait** only (`MainActivity`). Landscape / tablet — [#79](https://github.com/Practicum-Labs/shopping-list-team-32-2/issues/79).
 
-# Доска задач
+## Доска задач
 
 Для организации процесса разработки использовалась **GitHub Projects** в формате Kanban-доски.
 
@@ -93,6 +93,12 @@ feature/<name>/
 ./gradlew assembleDebug
 ./gradlew detekt
 ```
+## Демонстрация работы приложения
+
+Для демонстрации работы приложения подготовлены отдельные видеозаписи для обеих поддерживаемых тем оформления.
+
+- 🌞 **Светлая тема:** <https://drive.google.com/file/d/1gLQQDve1os-3amj-fnu26ElSQhH5L6Mv/view?usp=sharing>
+- 🌙 **Тёмная тема:** <https://drive.google.com/file/d/17R6SShiki9pYPdyiPIJn8NmTf1vTuFhL/view?usp=sharing>
 
 ## Команда
 
