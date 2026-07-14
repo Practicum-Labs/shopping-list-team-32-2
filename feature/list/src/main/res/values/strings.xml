@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="list">Список</string>
+    <string name="list_empty_title">В списке покупок пока пусто</string>
+    <string name="list_empty_message">Нажмите на кнопку + ниже,\nчтобы добавить товары</string>
+    <string name="product_checkbox_content_description">Отметить товар как купленный</string>
+    <string name="product_delete_content_description">Удалить товар</string>
+    <string name="product_edit_content_description">Редактировать товар</string>
+    <string name="product_quantity_content_description">Количество, нажмите для изменения</string>
+    <string name="goods">Товары</string>
+    <string name="amount">Количество</string>
+    <string name="measures">Единицы</string>
+    <string name="expand_dropdown_menu">Развернуть выпадающий список</string>
+    <string name="plus">увеличить количество на один</string>
+    <string name="minus">снизить количество на один</string>
+    <string name="sort_alphabetically">Сортировать по алфавиту</string>
+    <string name="remove_all">Удалить всё</string>
+    <string name="remove_bought">Удалить купленные</string>
+    <string name="remove_all_goods">Удалить все товары</string>
+    <string name="remove_all_bought_goods">Удалить все купленные товары</string>
+</resources>

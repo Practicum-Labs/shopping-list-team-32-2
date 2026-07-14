@@ -1,0 +1,28 @@
+<!--
+  ~ Copyright (C) 2026 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+  <group>
+    <clip-path
+        android:pathData="M0,0h24v24h-24z"/>
+    <path
+        android:pathData="M3,22V20H5V16.8C4.417,16.6 3.938,16.246 3.563,15.738C3.188,15.229 3,14.65 3,14V6H9V14C9,14.65 8.813,15.229 8.438,15.738C8.063,16.246 7.583,16.6 7,16.8V20H9V22H3ZM5,11H7V8H5V11ZM6,15C6.283,15 6.521,14.904 6.713,14.712C6.904,14.521 7,14.283 7,14V13H5V14C5,14.283 5.096,14.521 5.287,14.712C5.479,14.904 5.717,15 6,15ZM13,22C12.45,22 11.979,21.804 11.587,21.413C11.196,21.021 11,20.55 11,20V10.45C11,10.017 11.125,9.629 11.375,9.288C11.625,8.946 11.95,8.7 12.35,8.55L13.3,8.2C13.533,8.117 13.708,7.996 13.825,7.838C13.942,7.679 14,7.483 14,7.25V3C14,2.717 14.096,2.479 14.288,2.287C14.479,2.096 14.717,2 15,2H18C18.283,2 18.521,2.096 18.712,2.287C18.904,2.479 19,2.717 19,3V7.25C19,7.483 19.058,7.679 19.175,7.838C19.292,7.996 19.467,8.117 19.7,8.2L20.65,8.55C21.05,8.7 21.375,8.946 21.625,9.288C21.875,9.629 22,10.017 22,10.45V20C22,20.55 21.804,21.021 21.413,21.413C21.021,21.804 20.55,22 20,22H13ZM16,5H17V4H16V5ZM13,12H20V10.45L19.05,10.1C18.417,9.867 17.917,9.5 17.55,9C17.183,8.5 17,7.933 17,7.3V7H16V7.3C16,7.933 15.817,8.5 15.45,9C15.083,9.5 14.583,9.867 13.95,10.1L13,10.45V12ZM13,20H20V18H13V20ZM13,16H20V14H13V16Z"
+        android:fillColor="#281805"/>
+  </group>
+</vector>
