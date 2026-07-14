@@ -131,7 +131,6 @@ fun ShoppingListCell(
         modifier = modifier
             .offset { IntOffset(state.requireOffset().roundToInt(), 0) }
             .anchoredDraggable(state, Orientation.Horizontal)
-            .padding(start = 16.dp)
             .height(ListItemHeight)
             .width(380.dp)
             .shadow(
