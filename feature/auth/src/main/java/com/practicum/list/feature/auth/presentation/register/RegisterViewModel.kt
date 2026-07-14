@@ -16,7 +16,7 @@ class RegisterViewModel @Inject constructor(
         is RegisterIntent.EmailChanged -> current.copy(
             email = intent.email,
             emailError = AuthValidation.emailFieldError(intent.email),
-            generalError = null,
+            generalError = null
         )
 
         is RegisterIntent.PasswordChanged -> current.copy(
@@ -28,7 +28,7 @@ class RegisterViewModel @Inject constructor(
             ),
             passwordStrengthLevel = AuthValidation.passwordStrengthLevel(intent.password),
             passwordRequirements = AuthValidation.passwordRequirements(intent.password),
-            generalError = null,
+            generalError = null
         )
 
         is RegisterIntent.ConfirmPasswordChanged -> current.copy(
@@ -37,7 +37,13 @@ class RegisterViewModel @Inject constructor(
                 current.password,
                 intent.confirmPassword,
             ),
-            generalError = null,
+            generalError = null
+        )
+
+        is RegisterIntent.SubmitEmailClicked -> current.copy(
+            email = intent.email,
+            emailError = AuthValidation.emailFieldError(intent.email),
+            generalError = null
         )
 
         RegisterIntent.SubmitClicked -> current.copy(isLoading = true, generalError = null)
@@ -58,8 +64,19 @@ class RegisterViewModel @Inject constructor(
         val password = state.value.password
         val confirmPassword = state.value.confirmPassword
 
-        if (!AuthValidation.isRegisterFormValid(email, password, confirmPassword)) {
-            updateState { it.copy(isLoading = false) }
+        val emailError = AuthValidation.emailFieldError(email)
+        val passwordError = AuthValidation.passwordFieldError(password)
+        val confirmError = AuthValidation.confirmPasswordError(password, confirmPassword)
+
+        if (emailError != null || passwordError != null || confirmError != null) {
+            updateState {
+                it.copy(
+                    isLoading = false,
+                    emailError = emailError,
+                    passwordError = passwordError,
+                    confirmPasswordError = confirmError
+                )
+            }
             return
         }
 
