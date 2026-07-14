@@ -1,5 +1,10 @@
 package com.practicum.list.feature.auth.ui.screens.register
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -76,24 +81,30 @@ fun RegisterScreen(
                 modifier = Modifier.fillMaxWidth()
             )
 
-            if (state.password.isNotEmpty()) {
-                PasswordStrengthIndicator(
-                    modifier = Modifier.padding(top = 8.dp),
-                    level = state.passwordStrengthLevel
-                )
-
-                val minLengthText = stringResource(R.string.auth_requirement_min_length)
-                val hasDigitText = stringResource(R.string.auth_requirement_has_digit)
-                val hasUppercaseText = stringResource(R.string.auth_requirement_has_uppercase)
-
-                PasswordRequirementsChecklist(
-                    modifier = Modifier.padding(top = 8.dp, bottom = 16.dp),
-                    requirements = listOf(
-                        minLengthText to state.passwordRequirements.hasMinLength,
-                        hasDigitText to state.passwordRequirements.hasDigit,
-                        hasUppercaseText to state.passwordRequirements.hasUppercase
+            AnimatedVisibility(
+                visible = state.password.isNotEmpty(),
+                enter = fadeIn() + expandVertically(),
+                exit = fadeOut() + shrinkVertically()
+            ) {
+                Column {
+                    PasswordStrengthIndicator(
+                        modifier = Modifier.padding(top = 8.dp),
+                        level = state.passwordStrengthLevel
                     )
-                )
+
+                    val minLengthText = stringResource(R.string.auth_requirement_min_length)
+                    val hasDigitText = stringResource(R.string.auth_requirement_has_digit)
+                    val hasUppercaseText = stringResource(R.string.auth_requirement_has_uppercase)
+
+                    PasswordRequirementsChecklist(
+                        modifier = Modifier.padding(top = 8.dp, bottom = 16.dp),
+                        requirements = listOf(
+                            minLengthText to state.passwordRequirements.hasMinLength,
+                            hasDigitText to state.passwordRequirements.hasDigit,
+                            hasUppercaseText to state.passwordRequirements.hasUppercase
+                        )
+                    )
+                }
             }
 
             PasswordTextField(
