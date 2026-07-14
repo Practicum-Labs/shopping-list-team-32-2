@@ -28,7 +28,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.practicum.list.core.common.domain.MeasureUnit
-import com.practicum.list.core.common.domain.Product
 import com.practicum.list.core.components.fab.AddFab
 import com.practicum.list.core.theme.ShoppingListTheme
 import com.practicum.list.feature.list.R
@@ -42,7 +41,7 @@ private const val KEYBOARD_OPEN_DELAY = 200L
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddProductBottomSheet(
+fun ProductBottomSheet(
     isApplyVisible: Boolean,
     bottomSheetIsVisible: Boolean,
     name: String,
@@ -52,7 +51,7 @@ fun AddProductBottomSheet(
     unit: MeasureUnit,
     onUnitClick: (MeasureUnit) -> Unit,
     onDismiss: () -> Unit,
-    onApplyClicked: (Product) -> Unit,
+    onApplyClicked: () -> Unit,
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val focusRequester = remember { FocusRequester() }
@@ -86,19 +85,7 @@ fun AddProductBottomSheet(
                             .align(Alignment.TopEnd)
                             .padding(end = 16.dp)
                             .size(56.dp),
-                        onClick = {
-                            onApplyClicked(
-                                Product(
-                                    name = name.trim(),
-                                    isChecked = false,
-                                    quantity = quantity,
-                                    unit = unit,
-                                    id = 0,
-                                    listId = 0,
-                                    sortPosition = 0,
-                                )
-                            )
-                        },
+                        onClick = onApplyClicked,
                         iconRes = R.drawable.ic_apply_24
                     )
                 }
@@ -163,7 +150,7 @@ internal fun textFieldColors() = OutlinedTextFieldDefaults.colors(
 @Composable
 private fun BottomSheetFilledPreview() {
     ShoppingListTheme {
-        AddProductBottomSheet(
+        ProductBottomSheet(
             bottomSheetIsVisible = true,
             name = "лабубы",
             onNameChange = {},
@@ -182,7 +169,7 @@ private fun BottomSheetFilledPreview() {
 @Composable
 private fun BottomSheetEmptyPreview() {
     ShoppingListTheme {
-        AddProductBottomSheet(
+        ProductBottomSheet(
             bottomSheetIsVisible = true,
             name = "",
             onNameChange = {},

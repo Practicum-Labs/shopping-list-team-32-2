@@ -58,6 +58,7 @@ private fun ProductActionIcon(
             .background(MaterialTheme.colorScheme.surface),
     ) {
         RoundIconButton(
+            enabled = true,
             resId = resId,
             onClick = onClick,
             modifier = Modifier.align(Alignment.Center),

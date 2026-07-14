@@ -14,7 +14,7 @@ import com.practicum.list.core.data.local.entity.ShoppingListEntity
         ShoppingListEntity::class,
         ProductEntity::class,
     ],
-    version = 5,
+    version = 6,
     exportSchema = false,
 )
 @TypeConverters(MeasureUnitConverter::class)

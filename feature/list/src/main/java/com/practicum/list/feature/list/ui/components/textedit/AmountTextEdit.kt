@@ -12,13 +12,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import com.practicum.list.feature.list.R
+import com.practicum.list.feature.list.ui.components.DECIMAL_PLACES
 import com.practicum.list.feature.list.ui.components.bottomsheet.textFieldColors
-import java.math.BigDecimal
+import com.practicum.list.feature.list.ui.components.formatQuantityValue
 import java.math.RoundingMode
 
 private const val DOTS_ACCEPTABLE = 1
 private const val DEFAULT_ZERO_AMOUNT = 0f
-private const val DECIMAL_PLACES = 2
 private const val DELETE_SYMBOLS = 1
 
 @Composable
@@ -29,7 +29,7 @@ fun AmountTextField(
 ) {
     var localAmountText by remember { mutableStateOf("") }
     LaunchedEffect(amount) {
-        val formatted = if (amount == DEFAULT_ZERO_AMOUNT) "" else formatAmount(amount)
+        val formatted = if (amount == DEFAULT_ZERO_AMOUNT) "" else formatQuantityValue(amount)
         if (formatted.toFloatOrNull() != localAmountText.toFloatOrNull()) {
             localAmountText = formatted
         }
@@ -46,13 +46,10 @@ fun AmountTextField(
                 } else {
                     val cleanValue =
                         if (filtered.endsWith(".")) filtered.dropLast(DELETE_SYMBOLS) else filtered
-                    cleanValue.toFloatOrNull()?.let { parsedFloat ->
-
-                        val preciseFloat = BigDecimal(parsedFloat.toDouble())
-                            .setScale(DECIMAL_PLACES, RoundingMode.HALF_UP)
-                            .toFloat()
-
-                        onAmountChanged(preciseFloat)
+                    cleanValue.toBigDecimalOrNull()?.let { decimal ->
+                        onAmountChanged(
+                            decimal.setScale(DECIMAL_PLACES, RoundingMode.HALF_UP).toFloat()
+                        )
                     }
                 }
             }
@@ -67,14 +64,4 @@ fun AmountTextField(
             imeAction = ImeAction.Done
         ),
     )
-}
-
-private fun formatAmount(value: Float): String {
-    if (value == 0f) return ""
-
-    val rounded = BigDecimal(value.toDouble())
-        .setScale(2, RoundingMode.HALF_UP)
-        .stripTrailingZeros()
-
-    return rounded.toPlainString()
 }

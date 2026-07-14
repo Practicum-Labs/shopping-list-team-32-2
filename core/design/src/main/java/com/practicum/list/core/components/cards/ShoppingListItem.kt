@@ -10,6 +10,7 @@ import androidx.compose.foundation.gestures.AnchoredDraggableState
 import androidx.compose.foundation.gestures.DraggableAnchors
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.anchoredDraggable
+import androidx.compose.foundation.gestures.snapTo
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -25,6 +26,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -36,6 +38,7 @@ import com.practicum.list.core.components.buttons.RoundIconButton
 import com.practicum.list.core.components.buttons.ShoppingListActions
 import com.practicum.list.core.theme.Dimens.AnimationDuration
 import com.practicum.list.core.theme.Dimens.ListItemHeight
+import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -53,6 +56,7 @@ fun SwipeableListItem(
     val actionWidthPx = with(density) { 160.dp.toPx() }
     val velocityThresholdPx = with(density) { 100.dp.toPx() }
     val decayAnimationSpec = rememberSplineBasedDecay<Float>()
+    val scope = rememberCoroutineScope()
 
     val state = remember(actionWidthPx) {
         AnchoredDraggableState(
@@ -71,6 +75,12 @@ fun SwipeableListItem(
         )
     }
 
+    fun closeSwipeMenu() {
+        scope.launch {
+            state.snapTo(DragAnchors.MenuClosed)
+        }
+    }
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -83,9 +93,18 @@ fun SwipeableListItem(
                 .graphicsLayer {
                     alpha = (-state.requireOffset() / actionWidthPx).coerceIn(0f, 1f)
                 },
-            onDeleteClick = onDeleteClick,
-            onCopyClick = onCopyClick,
-            onEditClick = onEditClick,
+            onDeleteClick = {
+                closeSwipeMenu()
+                onDeleteClick()
+                            },
+            onCopyClick = {
+                closeSwipeMenu()
+                onCopyClick()
+                          } ,
+            onEditClick = {
+                closeSwipeMenu()
+                onEditClick()
+                          },
         )
         ShoppingListCell(
             text = text,

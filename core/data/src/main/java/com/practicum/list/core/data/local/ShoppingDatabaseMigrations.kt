@@ -2,11 +2,15 @@ package com.practicum.list.core.data.local
 
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.practicum.list.core.theme.ListIcons
 
 val MIGRATION_1_2 = object : Migration(1, 2) {
     override fun migrate(db: SupportSQLiteDatabase) {
         db.execSQL(
-            "ALTER TABLE shopping_lists ADD COLUMN icon_res_id INTEGER NOT NULL DEFAULT 0",
+            """
+            ALTER TABLE shopping_lists
+            ADD COLUMN icon_res_id INTEGER NOT NULL DEFAULT ${ListIcons.DEFAULT_LIST_ICON}
+            """.trimIndent(),
         )
     }
 }
@@ -58,6 +62,18 @@ val MIGRATION_4_5 = object : Migration(4, 5) {
     override fun migrate(db: SupportSQLiteDatabase) {
         db.execSQL(
             "UPDATE products SET unit = 'pcs' WHERE unit IS NULL OR unit = ''",
+        )
+    }
+}
+
+val MIGRATION_5_6 = object : Migration(5, 6) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
+            """
+            UPDATE shopping_lists
+            SET icon_res_id = ${ListIcons.DEFAULT_LIST_ICON}
+            WHERE icon_res_id = 0
+            """.trimIndent(),
         )
     }
 }

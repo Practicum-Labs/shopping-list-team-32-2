@@ -24,7 +24,7 @@ import com.practicum.list.feature.list.R
 import com.practicum.list.feature.list.presentation.ListIntent
 import com.practicum.list.feature.list.presentation.ListState
 import com.practicum.list.feature.list.ui.components.ListEmptyPlaceholder
-import com.practicum.list.feature.list.ui.components.bottomsheet.AddProductBottomSheet
+import com.practicum.list.feature.list.ui.components.bottomsheet.ProductBottomSheet
 import com.practicum.list.feature.list.ui.components.formatQuantityLabel
 import com.practicum.list.feature.list.ui.components.listitem.ProductListItem
 
@@ -83,7 +83,7 @@ fun ListScreen(
                                 onIntent(ListIntent.DeleteProductClicked(product.id))
                             },
                             onEdit = {
-                                onIntent(ListIntent.EditProduct(product.id))
+                                onIntent(ListIntent.ProductMenuEditClicked(product))
                             },
                         )
                     }
@@ -100,16 +100,16 @@ fun ListScreen(
                 onClick = { onIntent(ListIntent.AddProductClicked) },
             )
         }
-        AddProductBottomSheet(
-            bottomSheetIsVisible = state.addProductBottomSheetOpened,
-            name = state.addProductBottomSheetState.name,
-            onNameChange = { onIntent(ListIntent.AddProductNameChanged(it)) },
-            quantity = state.addProductBottomSheetState.quantity,
-            onQuantityChange = { onIntent(ListIntent.AddProductQuantityChanged(it)) },
-            unit = state.addProductBottomSheetState.unit ?: MeasureUnit.Piece,
-            onUnitClick = { onIntent(ListIntent.AddProductUnitChanged(it)) },
-            onDismiss = { onIntent(ListIntent.AddProductDismissClicked) },
-            onApplyClicked = { onIntent(ListIntent.AddProductApplyClicked(it)) },
+        ProductBottomSheet(
+            bottomSheetIsVisible = state.productBottomSheetOpened,
+            name = state.productBottomSheetState.name,
+            onNameChange = { onIntent(ListIntent.ProductNameChanged(it)) },
+            quantity = state.productBottomSheetState.quantity,
+            onQuantityChange = { onIntent(ListIntent.ProductQuantityChanged(it)) },
+            unit = state.productBottomSheetState.unit,
+            onUnitClick = { onIntent(ListIntent.ProductUnitChanged(it)) },
+            onDismiss = { onIntent(ListIntent.ProductBottomSheetDismissed) },
+            onApplyClicked = { onIntent(ListIntent.ProductApplyClicked) },
             isApplyVisible = state.isAddEnabled
         )
     }

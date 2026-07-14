@@ -11,6 +11,7 @@ import androidx.compose.foundation.gestures.AnchoredDraggableState
 import androidx.compose.foundation.gestures.DraggableAnchors
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.anchoredDraggable
+import androidx.compose.foundation.gestures.snapTo
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,6 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
@@ -40,6 +42,7 @@ import com.practicum.list.core.theme.ShoppingListTheme
 import com.practicum.list.feature.list.R
 import com.practicum.list.feature.list.ui.components.ProductListActions
 import com.practicum.list.feature.list.ui.components.checkbox.ProductRoundCheckbox
+import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 private const val PREVIEW_PRODUCT_NAME = "Яблоки"
@@ -62,6 +65,7 @@ fun ProductListItem(
     modifier: Modifier = Modifier,
 ) {
     val density = LocalDensity.current
+    val scope = rememberCoroutineScope()
     val actionWidthPx = with(density) { ProductSwipeActionsWidth.toPx() }
     val velocityThresholdPx = with(density) { 100.dp.toPx() }
     val decayAnimationSpec = rememberSplineBasedDecay<Float>()
@@ -76,11 +80,16 @@ fun ProductListItem(
             positionalThreshold = { distance -> distance * 0.5f },
             velocityThreshold = { velocityThresholdPx },
             snapAnimationSpec = tween(
-                durationMillis = AnimationDuration,
-                easing = FastOutSlowInEasing
+                durationMillis = AnimationDuration, easing = FastOutSlowInEasing
             ),
             decayAnimationSpec = decayAnimationSpec,
         )
+    }
+
+    fun closeSwipeMenu() {
+        scope.launch {
+            dragState.snapTo(DragAnchors.MenuClosed)
+        }
     }
 
     Box(
@@ -94,8 +103,14 @@ fun ProductListItem(
                 .graphicsLayer {
                     alpha = (-dragState.requireOffset() / actionWidthPx).coerceIn(0f, 1f)
                 },
-            onEditClick = onEdit,
-            onDeleteClick = onDelete,
+            onEditClick = {
+                closeSwipeMenu()
+                onEdit()
+            },
+            onDeleteClick = {
+                closeSwipeMenu()
+                onDelete()
+            },
         )
         ProductListItemContent(
             name = name,

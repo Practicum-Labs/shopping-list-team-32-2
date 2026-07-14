@@ -9,36 +9,30 @@ data class ListState(
     val listTitle: String = "",
     val products: List<Product> = emptyList(),
     val isLoading: Boolean = true,
-    val addProductBottomSheetOpened: Boolean = false,
-    val addProductBottomSheetState: AddProductBottomSheetState = AddProductBottomSheetState(),
+    val productBottomSheetOpened: Boolean = false,
+    val productBottomSheetState: ProductBottomSheetState = ProductBottomSheetState(),
     val addProductError: String? = null,
-    val editProductBottomSheetState: EditProductBottomSheetState? = null,
     val contextMenuState: ListContextMenuState? = null,
     val confirmationDialogState: ConfirmationDialogState? = null,
-    val editProductMenuState: EditProductMenuState? = null,
     val isBeingSorted: Boolean = false,
     val isOptionsMenuVisible: Boolean = false,
 ) : MviState {
     val isEmpty: Boolean get() = products.isEmpty() && !isLoading
     val isAddEnabled: Boolean
-        get() = addProductBottomSheetState.name.trim().isNotEmpty()
+        get() = productBottomSheetState.name.trim().isNotEmpty()
 }
 
-data class AddProductBottomSheetState(
+data class ProductBottomSheetState(
+    val id: Long = 0L,
     val name: String = "",
     val quantity: Float = 1f,
-    val unit: MeasureUnit? = MeasureUnit.Package
-)
-
-data class EditProductBottomSheetState(
-    val name: String,
-    val productId: Long,
-    val quantity: Float,
-    val measureUnits: MeasureUnit
+    val unit: MeasureUnit = MeasureUnit.Piece,
+    val isChecked: Boolean = false,
+    val sortPosition: Int = 0,
 )
 
 data class ListContextMenuState(
-    val sortType: SortType,
+    val sortType: SortType? = null,
 )
 
 data class EditProductMenuState(
