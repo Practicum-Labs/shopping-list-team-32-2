@@ -28,6 +28,8 @@
 :feature:auth     — auth design system, экраны login / register / recovery (Epic 2)
 ```
 
+**Ориентация:** приложение зафиксировано в **portrait** (`MainActivity` в `AndroidManifest`). Landscape / tablet — [#79](https://github.com/Practicum-Labs/shopping-list-team-32-2/issues/79).
+
 ## Auth (Epic 2)
 
 Три экрана: **login → register / reset password**. Backend — [Railway REST API](https://practicumopbackend-production.up.railway.app/swagger-ui/index.html), не Firebase.

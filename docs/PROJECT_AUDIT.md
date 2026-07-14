@@ -159,8 +159,11 @@ feature/auth/
 | MainActivity | `ComponentActivity` + `setContent` |
 | Application | `ShoppingListApplication` + `@HiltAndroidApp` |
 | Theme (manifest) | `@style/Theme.ShoppingList` → `Theme.Material3.DayNight.NoActionBar` |
+| **Ориентация** | `android:screenOrientation="portrait"` на `MainActivity` |
 
 В `app` остаётся минимальный XML — системная тема окна до старта Compose. Цвета UI задаются в `ShoppingListTheme`, не в XML.
+
+**Portrait only:** макеты Figma и UI-ТЗ рассчитаны на телефон в портрете. Landscape и tablet master-detail ([#79](https://github.com/Practicum-Labs/shopping-list-team-32-2/issues/79)) — отдельно, когда появится layout.
 
 ---
 

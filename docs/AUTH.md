@@ -8,6 +8,8 @@
 - Epic 2 issues [#39](https://github.com/Practicum-Labs/shopping-list-team-32-2/issues/39)–[#46](https://github.com/Practicum-Labs/shopping-list-team-32-2/issues/46)
 - Figma UI-kit: [Практикум ОП — Список покупок](https://www.figma.com/design/n84usOH28EjTrPXrfCzM3q/%D0%9F%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D0%BA%D1%83%D0%BC-%D0%9E%D0%9F-%D0%A1%D0%BF%D0%B8%D1%81%D0%BE%D0%BA-%D0%BF%D0%BE%D0%BA%D1%83%D0%BF%D0%BE%D0%BA?node-id=0-1) (auth-экранов в файле нет; иконка `logout` — node [1:7294](https://www.figma.com/design/n84usOH28EjTrPXrfCzM3q/%D0%9F%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D0%BA%D1%83%D0%BC-%D0%9E%D0%9F-%D0%A1%D0%BF%D0%B8%D1%81%D0%BE%D0%BA-%D0%BF%D0%BE%D0%BA%D1%83%D0%BF%D0%BE%D0%BA?node-id=1-7294))
 
+**Ориентация приложения:** только portrait (`MainActivity` → `android:screenOrientation="portrait"`). Auth-экраны не поддерживают landscape отдельно. См. [`PROJECT_AUDIT.md`](PROJECT_AUDIT.md#4-androidmanifest-и-application).
+
 ---
 
 ## Backend

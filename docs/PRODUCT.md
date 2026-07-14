@@ -76,6 +76,7 @@ Auth-экраны (login / register) **в этом файле нет** — то�
 | **Связанный модуль** | `:feature:main` — дублирование списка **вместе с товарами** |
 | **Domain-модели** | `:core:common` — `Product`, `MeasureUnit` |
 | **Persistence** | `:core:data` — Room (`ProductEntity`, `ProductDao`) |
+| **Ориентация** | только **portrait** (`MainActivity` в манифесте); landscape / tablet — [#79](https://github.com/Practicum-Labs/shopping-list-team-32-2/issues/79) |
 
 Экран списка включает: TopBar, список товаров, FAB «добавить», swipe-действия, сортировку, массовое удаление, редактирование количества/единицы — см. раздел «Статус реализации».
 
