@@ -48,17 +48,18 @@ class ListViewModel @Inject constructor(
     }
 
     override fun reduce(intent: ListIntent, current: ListState): ListState = when (intent) {
-        ListIntent.OptionsMenuClicked -> current.copy(isOptionsMenuVisible = true)
-        ListIntent.OptionsMenuDismissed -> current.copy(isOptionsMenuVisible = false)
-
+        ListIntent.OptionsMenuClicked,
+        ListIntent.OptionsMenuDismissed,
         ListIntent.ListMenuAlphabeticalSortClicked,
         ListIntent.ListMenuCustomSortClicked,
         ListIntent.ListMenuDeleteCheckedClicked,
         ListIntent.ListMenuDeleteAllClicked,
-        is ListIntent.ListMenuCustomSortConfirmed -> reduceListMenu(intent, current)
+        is ListIntent.ListMenuCustomSortConfirmed,
+            -> reduceListMenu(intent, current)
 
         is ListIntent.DeleteDialogConfirmed,
-        ListIntent.DeleteDialogDismissed -> current.copy(confirmationDialogState = null)
+        ListIntent.DeleteDialogDismissed,
+            -> reduceDeleteDialog(intent, current)
 
         is ListIntent.ProductContextMenuOpened -> current.copy(
             contextMenuState = ListContextMenuState()
@@ -88,6 +89,7 @@ class ListViewModel @Inject constructor(
             productBottomSheetOpened = true,
             productBottomSheetState = ProductBottomSheetState(),
         )
+
         is ListIntent.ProductQuantityChanged -> current.copy(
             productBottomSheetState = current.productBottomSheetState.copy(
                 quantity = intent.quantity
@@ -110,36 +112,76 @@ class ListViewModel @Inject constructor(
     }
 
     private fun reduceListMenu(intent: ListIntent, current: ListState): ListState = when (intent) {
-        ListIntent.ListMenuAlphabeticalSortClicked -> current.copy(
-            contextMenuState = ListContextMenuState(sortType = SortType.Alphabetical),
-            isOptionsMenuVisible = false,
-        )
+        ListIntent.OptionsMenuClicked -> current.copy(contextMenuOpened = true)
+        ListIntent.OptionsMenuDismissed -> current.copy(contextMenuOpened = false)
 
-        ListIntent.ListMenuCustomSortClicked -> current.copy(
-            contextMenuState = ListContextMenuState(sortType = SortType.Custom),
-            isBeingSorted = true,
-            isOptionsMenuVisible = false,
-        )
+        ListIntent.ListMenuAlphabeticalSortClicked -> if (current.products.isNotEmpty()) {
+            current.copy(
+                contextMenuState = ListContextMenuState(sortType = SortType.Alphabetical),
+                contextMenuOpened = false
+            )
+        } else {
+            current.copy(contextMenuOpened = false)
+        }
 
-        ListIntent.ListMenuDeleteCheckedClicked -> current.copy(
-            contextMenuState = null,
-            confirmationDialogState = ConfirmationDialogState(deleteType = DeleteType.Checked),
-            isOptionsMenuVisible = false,
-        )
+        ListIntent.ListMenuCustomSortClicked -> if (current.products.isNotEmpty()) {
+            current.copy(
+                contextMenuState = ListContextMenuState(sortType = SortType.Custom),
+                isBeingSorted = true,
+            )
+        } else {
+            current.copy(contextMenuOpened = false)
+        }
 
-        ListIntent.ListMenuDeleteAllClicked -> current.copy(
-            contextMenuState = null,
-            confirmationDialogState = ConfirmationDialogState(deleteType = DeleteType.All),
-            isOptionsMenuVisible = false,
-        )
 
-        is ListIntent.ListMenuCustomSortConfirmed -> current.copy(isBeingSorted = false)
+        ListIntent.ListMenuDeleteCheckedClicked -> if (current.products.isNotEmpty()) {
+            current.copy(
+                contextMenuState = null,
+                confirmationDialogState = ConfirmationDialogState(deleteType = DeleteType.Checked),
+
+                )
+        } else {
+            current.copy(contextMenuOpened = false)
+        }
+
+        ListIntent.ListMenuDeleteAllClicked -> if (current.products.isNotEmpty()) {
+            current.copy(
+                contextMenuState = null,
+                confirmationDialogState = ConfirmationDialogState(deleteType = DeleteType.All),
+            )
+        } else {
+            current.copy(contextMenuOpened = false)
+        }
+
+        is ListIntent.ListMenuCustomSortConfirmed -> if (current.products.isNotEmpty()) {
+            current.copy(isBeingSorted = false)
+        } else {
+            current.copy(contextMenuOpened = false)
+        }
+
         else -> current
     }
+
+    private fun reduceDeleteDialog(intent: ListIntent, current: ListState): ListState =
+        when (intent) {
+            is ListIntent.DeleteDialogConfirmed -> current.copy(
+                confirmationDialogState = null,
+                contextMenuOpened = false
+            )
+
+            is ListIntent.DeleteDialogDismissed -> current.copy(confirmationDialogState = null)
+            else -> current
+        }
 
     override suspend fun handleIntent(intent: ListIntent) {
         when (intent) {
             ListIntent.BackClicked -> emitEffect(ListEffect.NavigateToMain)
+            ListIntent.ListMenuCustomSortClicked,
+            ListIntent.ListMenuDeleteAllClicked,
+            ListIntent.ListMenuDeleteCheckedClicked -> if (state.value.products.isEmpty()) {
+                emitEffect(ListEffect.ShowError(EMPTY_LIST_ERROR))
+            }
+
             is ListIntent.DeleteDialogConfirmed -> {
                 when (intent.type) {
                     DeleteType.All -> deleteAllItems()
@@ -147,7 +189,11 @@ class ListViewModel @Inject constructor(
                 }
             }
 
-            is ListIntent.ListMenuAlphabeticalSortClicked -> sortAlphabetically()
+            is ListIntent.ListMenuAlphabeticalSortClicked ->if (state.value.products.isEmpty()) {
+                emitEffect(ListEffect.ShowError(EMPTY_LIST_ERROR))
+            } else {
+                sortAlphabetically()
+            }
             is ListIntent.ListMenuCustomSortConfirmed -> sortCustom(intent.newList)
             is ListIntent.ToggleProductChecked -> upsertProduct(
                 intent.product.copy(isChecked = intent.isChecked),
@@ -235,6 +281,7 @@ class ListViewModel @Inject constructor(
     companion object {
         private const val UNKNOWN_ERROR = "Unknown error"
         private const val QUANTITY_ERROR = "Количество должно быть больше нуля"
+        private const val EMPTY_LIST_ERROR = "Список товаров пуст"
         private const val ERROR_QUANTITY = 0f
         private const val MIN_PRODUCT_QUANTITY = 1f
 

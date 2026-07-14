@@ -12,10 +12,10 @@ data class ListState(
     val productBottomSheetOpened: Boolean = false,
     val productBottomSheetState: ProductBottomSheetState = ProductBottomSheetState(),
     val addProductError: String? = null,
+    val contextMenuOpened: Boolean = false,
     val contextMenuState: ListContextMenuState? = null,
     val confirmationDialogState: ConfirmationDialogState? = null,
     val isBeingSorted: Boolean = false,
-    val isOptionsMenuVisible: Boolean = false,
 ) : MviState {
     val isEmpty: Boolean get() = products.isEmpty() && !isLoading
     val isAddEnabled: Boolean
@@ -33,10 +33,6 @@ data class ProductBottomSheetState(
 
 data class ListContextMenuState(
     val sortType: SortType? = null,
-)
-
-data class EditProductMenuState(
-    val product: Product
 )
 
 data class ConfirmationDialogState(

@@ -1,5 +1,6 @@
 package com.practicum.list.core.components.dialogs
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -18,10 +19,12 @@ import com.practicum.list.core.theme.R
 import com.practicum.list.core.theme.ShoppingListTheme
 
 private const val TEST_LIST_NAME = "Продукты"
+
 @Composable
 fun DeleteListDialog(
     modifier: Modifier = Modifier,
-    listName: String,
+    listName: String? = null,
+    @StringRes title: Int? = null,
     onDismiss: () -> Unit = {},
     onConfirm: () -> Unit = {}
 ) {
@@ -29,7 +32,7 @@ fun DeleteListDialog(
         modifier = modifier,
         onDismiss = onDismiss,
         iconRes = R.drawable.ic_delete_warning,
-        title = { DeleteListDialogTitle(listName) },
+        title = { DeleteListDialogTitle(listName, title) },
         confirmButton = {
             DeleteButtonConfirmDialog(
                 modifier = modifier,
@@ -46,11 +49,21 @@ fun DeleteListDialog(
 }
 
 @Composable
-fun DeleteListDialogTitle(listName: String) {
+fun DeleteListDialogTitle(listName: String?, @StringRes title: Int? = null) {
+    val titleString = when {
+        title != null -> stringResource(title)
+        listName != null -> stringResource(
+            R.string.delete_list_dialog_title_text,
+            listName
+        )
+
+        else -> ""
+    }
+
     Text(
         modifier = Modifier.padding(vertical = 16.dp),
         textAlign = TextAlign.Center,
-        text = stringResource(R.string.delete_list_dialog_title_text, listName),
+        text = titleString,
         style = MaterialTheme.typography.headlineLarge
             .copy(color = MaterialTheme.colorScheme.surfaceBright)
     )

@@ -21,10 +21,14 @@ import com.practicum.list.core.common.domain.Product
 import com.practicum.list.core.components.fab.AddFab
 import com.practicum.list.core.theme.ShoppingListTheme
 import com.practicum.list.feature.list.R
+import com.practicum.list.feature.list.presentation.DeleteType
 import com.practicum.list.feature.list.presentation.ListIntent
 import com.practicum.list.feature.list.presentation.ListState
 import com.practicum.list.feature.list.ui.components.ListEmptyPlaceholder
+import com.practicum.list.feature.list.ui.components.bottomsheet.ListMenu
 import com.practicum.list.feature.list.ui.components.bottomsheet.ProductBottomSheet
+import com.practicum.list.feature.list.ui.components.dialogs.DeleteAllDialog
+import com.practicum.list.feature.list.ui.components.dialogs.DeleteBoughtDialog
 import com.practicum.list.feature.list.ui.components.formatQuantityLabel
 import com.practicum.list.feature.list.ui.components.listitem.ProductListItem
 
@@ -112,6 +116,28 @@ fun ListScreen(
             onApplyClicked = { onIntent(ListIntent.ProductApplyClicked) },
             isApplyVisible = state.isAddEnabled
         )
+
+        ListMenu(
+            isBottomSheetOpened = state.contextMenuOpened,
+            onSortClicked = { onIntent(ListIntent.ListMenuAlphabeticalSortClicked) },
+            onRemoveAllClicked = { onIntent(ListIntent.ListMenuDeleteAllClicked) },
+            onRemoveChecked = { onIntent(ListIntent.ListMenuDeleteCheckedClicked) },
+            onDismiss = { onIntent(ListIntent.OptionsMenuDismissed) },
+        )
+
+        when (state.confirmationDialogState?.deleteType) {
+            DeleteType.All -> DeleteAllDialog(
+                onDismiss = { onIntent(ListIntent.DeleteDialogDismissed) },
+                onConfirm = { onIntent(ListIntent.DeleteDialogConfirmed(DeleteType.All)) }
+            )
+
+            DeleteType.Checked -> DeleteBoughtDialog(
+                onDismiss = { onIntent(ListIntent.DeleteDialogDismissed) },
+                onConfirm = { onIntent(ListIntent.DeleteDialogConfirmed(DeleteType.Checked)) }
+            )
+
+            null -> {}
+        }
     }
 }
 
