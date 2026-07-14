@@ -3,6 +3,10 @@ package com.practicum.list.feature.list.ui.components
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.practicum.list.core.common.domain.Product
+import java.math.BigDecimal
+import java.math.RoundingMode
+
+const val DECIMAL_PLACES = 2
 
 @Composable
 fun Product.formatQuantityLabel(): String {
@@ -10,11 +14,9 @@ fun Product.formatQuantityLabel(): String {
     return "${formatQuantityValue(quantity)} $unitLabel"
 }
 
-private fun formatQuantityValue(quantity: Float): String {
-    val longValue = quantity.toLong()
-    return if (quantity == longValue.toFloat()) {
-        longValue.toString()
-    } else {
-        quantity.toString()
-    }
+fun formatQuantityValue(quantity: Float): String {
+    return BigDecimal(quantity.toString())
+        .setScale(DECIMAL_PLACES, RoundingMode.HALF_UP)
+        .stripTrailingZeros()
+        .toPlainString()
 }
